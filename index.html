@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ujian Kompetensi Sistem Komputer & Jaringan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .option-btn:hover {
+        transform: translateY(-2px);
+      }
+      .selected-option {
+        background-color: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+      }
+      /* Scrollbar custom */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-blue-900 text-white p-4 shadow-lg sticky top-0 z-50">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold tracking-wide">E-Learning TKJ</h1>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 flex-grow max-w-4xl">
+      <!-- Welcome Screen -->
+      <div
+        id="start-screen"
+        class="bg-white p-8 rounded-xl shadow-md text-center mt-10"
+      >
+        <div class="mb-6">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-24 w-24 mx-auto text-blue-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+        </div>
+        <h2 class="text-3xl font-bold mb-4 text-slate-800">
+          Ujian Teori Sistem Operasi & Jaringan
+        </h2>
+        <p class="text-slate-600 mb-6 max-w-2xl mx-auto">
+          Ujian ini terdiri dari <strong>50 Soal Pilihan Ganda</strong> yang
+          mencakup materi Windows, Manajemen File, Hardware (CPU, GPU, RAM),
+          Virtualisasi, dan Dasar Mikrotik.
+        </p>
+        <div
+          class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left text-sm text-slate-600 mb-8 max-w-lg mx-auto bg-slate-50 p-4 rounded-lg"
+        >
+          <div class="flex items-center">
+            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span> Waktu:
+            Bebas
+          </div>
+          <div class="flex items-center">
+            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span> Jumlah
+            Soal: 50
+          </div>
+          <div class="flex items-center">
+            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span> KKM: 75
+          </div>
+        </div>
+        <button
+          onclick="startQuiz()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg hover:shadow-xl transform active:scale-95"
+        >
+          Mulai Ujian
+        </button>
+      </div>
+
+      <!-- Quiz Container -->
+      <div id="quiz-container" class="hidden">
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+          <div
+            id="progress-bar"
+            class="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+            style="width: 0%"
+          ></div>
+        </div>
+
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-sm font-semibold text-gray-500"
+            >Soal <span id="current-question-num">1</span> dari 50</span
+          >
+          <span class="text-sm font-semibold text-gray-500" id="category-badge"
+            >Kategori</span
+          >
+        </div>
+
+        <!-- Question Card -->
+        <div
+          class="bg-white p-6 md:p-8 rounded-xl shadow-md min-h-[300px] flex flex-col relative"
+        >
+          <h3
+            id="question-text"
+            class="text-xl md:text-2xl font-semibold mb-6 text-slate-800 leading-relaxed"
+          >
+            <!-- Question goes here -->
+          </h3>
+
+          <div id="options-container" class="grid grid-cols-1 gap-3 mb-6">
+            <!-- Options go here -->
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between mt-6">
+          <button
+            id="prev-btn"
+            onclick="prevQuestion()"
+            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
+          >
+            &larr; Sebelumnya
+          </button>
+          <div class="flex gap-2">
+            <button
+              id="flag-btn"
+              onclick="toggleFlag()"
+              class="px-4 py-2 border border-yellow-400 text-yellow-600 rounded-lg hover:bg-yellow-50 transition hidden md:block"
+            >
+              Ragu-ragu
+            </button>
+            <button
+              id="next-btn"
+              onclick="nextQuestion()"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium shadow-md"
+            >
+              Selanjutnya &rarr;
+            </button>
+            <button
+              id="finish-btn"
+              onclick="finishQuiz()"
+              class="hidden px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium shadow-md"
+            >
+              Selesai
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation Map (Question Numbers) -->
+        <div class="mt-8 bg-white p-4 rounded-xl shadow-sm">
+          <p class="text-sm font-semibold mb-3 text-gray-500">Navigasi Soal:</p>
+          <div id="question-map" class="grid grid-cols-5 md:grid-cols-10 gap-2">
+            <!-- Numbers generated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Screen -->
+      <div
+        id="result-screen"
+        class="hidden bg-white p-8 rounded-xl shadow-lg text-center mt-6"
+      >
+        <h2 class="text-3xl font-bold text-slate-800 mb-2">Hasil Ujian</h2>
+        <p class="text-gray-500 mb-8">Berikut adalah perolehan nilai anda</p>
+
+        <div class="flex justify-center items-center mb-8">
+          <div class="relative w-40 h-40">
+            <svg class="w-full h-full" viewBox="0 0 36 36">
+              <path
+                class="text-gray-200"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              />
+              <path
+                id="score-circle"
+                class="text-blue-600"
+                stroke-dasharray="0, 100"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+              />
+            </svg>
+            <div
+              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
+            >
+              <span id="final-score" class="text-4xl font-bold text-slate-800"
+                >0</span
+              >
+              <span class="block text-xs text-gray-500">POIN</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 mb-8 text-center">
+          <div class="bg-green-100 p-3 rounded-lg">
+            <p class="text-green-800 font-bold text-xl" id="correct-count">0</p>
+            <p class="text-xs text-green-600 uppercase">Benar</p>
+          </div>
+          <div class="bg-red-100 p-3 rounded-lg">
+            <p class="text-red-800 font-bold text-xl" id="wrong-count">0</p>
+            <p class="text-xs text-red-600 uppercase">Salah</p>
+          </div>
+          <div class="bg-gray-100 p-3 rounded-lg">
+            <p class="text-gray-800 font-bold text-xl" id="unanswered-count">
+              0
+            </p>
+            <p class="text-xs text-gray-600 uppercase">Dikosongkan</p>
+          </div>
+        </div>
+
+        <button
+          onclick="toggleReview()"
+          class="mb-4 text-blue-600 hover:underline font-medium"
+        >
+          Lihat Pembahasan & Jawaban
+        </button>
+
+        <div
+          id="review-container"
+          class="hidden text-left mt-6 space-y-4 border-t pt-6"
+        >
+          <!-- Review items generated by JS -->
+        </div>
+
+        <div class="mt-8">
+          <button
+            onclick="location.reload()"
+            class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-8 rounded-lg shadow transition"
+          >
+            Ulangi Ujian
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 py-6 mt-8 text-center text-sm">
+      <p>&copy; 2025 E-Learning SMK Cyber Media Jakarta.</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+      // DATA SOAL (50 Soal LENGKAP)
+      const questionsDB = [
+        // Topik 1: Windows (1-5)
+        {
+          id: 1,
+          category: "OS Windows",
+          q: "Salah satu alasan utama Windows sangat populer adalah karena antarmukanya yang berbasis...",
+          options: [
+            "CLI (Command Line Interface)",
+            "GUI (Graphical User Interface)",
+            "Text Based",
+            "Kernel Mode",
+            "Assembly",
+          ],
+          a: 1,
+        },
+        {
+          id: 2,
+          category: "OS Windows",
+          q: "Kelebihan Windows yang memudahkannya digunakan oleh berbagai kalangan tanpa perlu menghafal kode perintah disebut...",
+          options: [
+            "User Friendly",
+            "Open Source",
+            "Freeware",
+            "Multitasking",
+            "Complex",
+          ],
+          a: 0,
+        },
+        {
+          id: 3,
+          category: "OS Windows",
+          q: "Dukungan pengembang perangkat lunak (software) terhadap Windows sangat besar. Hal ini mengakibatkan...",
+          options: [
+            "Windows menjadi sulit digunakan",
+            "Banyak aplikasi dan game yang kompatibel dengan Windows",
+            "Windows menjadi sistem operasi gratis",
+            "Windows tidak butuh antivirus",
+            "Windows hanya bisa digunakan untuk server",
+          ],
+          a: 1,
+        },
+        {
+          id: 4,
+          category: "OS Windows",
+          q: "Windows bersifat 'Closed Source', yang berarti...",
+          options: [
+            "Kode sumbernya terbuka untuk umum",
+            "Gratis untuk disebarluaskan",
+            "Kode sumbernya tertutup dan berlisensi",
+            "Hanya bisa berjalan di satu komputer",
+            "Tidak memiliki bug",
+          ],
+          a: 2,
+        },
+        {
+          id: 5,
+          category: "OS Windows",
+          q: "Fitur pada Windows yang memungkinkan komputer mendeteksi perangkat keras baru secara otomatis disebut...",
+          options: [
+            "Drag and Drop",
+            "Plug and Play",
+            "Copy Paste",
+            "Task Manager",
+            "Control Panel",
+          ],
+          a: 1,
+        },
+
+        // Topik 2: File & Folder (6-10)
+        {
+          id: 6,
+          category: "Manajemen File",
+          q: "Perbedaan mendasar antara file dan folder adalah...",
+          options: [
+            "File adalah wadah, folder adalah isi",
+            "Folder adalah wadah penampung, file adalah unit data",
+            "Folder memiliki ekstensi, file tidak",
+            "File bisa berisi folder, folder tidak bisa berisi file",
+            "Tidak ada perbedaan",
+          ],
+          a: 1,
+        },
+        {
+          id: 7,
+          category: "Manajemen File",
+          q: "Manakah di bawah ini yang merupakan contoh ekstensi sebuah file dokumen?",
+          options: [".mp3", ".docx", ".jpg", ".exe", ".mp4"],
+          a: 1,
+        },
+        {
+          id: 8,
+          category: "Manajemen File",
+          q: "Dalam analogi lemari arsip, Folder diibaratkan sebagai...",
+          options: [
+            "Lembaran kertas",
+            "Tinta pulpen",
+            "Map/Rak penyimpan",
+            "Meja kerja",
+            "Mesin ketik",
+          ],
+          a: 2,
+        },
+        {
+          id: 9,
+          category: "Manajemen File",
+          q: "Apakah sebuah folder dapat berisi folder lain di dalamnya?",
+          options: [
+            "Tidak bisa",
+            "Hanya satu folder",
+            "Ya, disebut sub-folder",
+            "Hanya jika folder kosong",
+            "Tergantung merk harddisk",
+          ],
+          a: 2,
+        },
+        {
+          id: 10,
+          category: "Manajemen File",
+          q: "Sebuah file biasanya memiliki 'nama' dan 'ekstensi' yang dipisahkan oleh tanda...",
+          options: [
+            "Koma (,)",
+            "Titik (.)",
+            "Garis miring (/)",
+            "Spasi ( )",
+            "Titik dua (:)",
+          ],
+          a: 1,
+        },
+
+        // Topik 3: Manajemen File (11-15)
+        {
+          id: 11,
+          category: "Manajemen File",
+          q: "Tujuan utama menerapkan manajemen file dan folder yang baik adalah...",
+          options: [
+            "Agar harddisk cepat penuh",
+            "Untuk memperlambat kinerja komputer",
+            "Memudahkan pencarian dan pengorganisasian data",
+            "Agar komputer terlihat canggih",
+            "Menghapus data otomatis",
+          ],
+          a: 2,
+        },
+        {
+          id: 12,
+          category: "Manajemen File",
+          q: "Apa yang terjadi jika kita tidak menerapkan manajemen file (file berantakan)?",
+          options: [
+            "Komputer akan meledak",
+            "Data sulit ditemukan dan risiko terhapus tidak sengaja",
+            "Internet menjadi lambat",
+            "Monitor menjadi buram",
+            "Mouse tidak berfungsi",
+          ],
+          a: 1,
+        },
+        {
+          id: 13,
+          category: "Manajemen File",
+          q: "Salah satu fungsi manajemen file adalah 'Archiving', yang berarti...",
+          options: [
+            "Menghapus file",
+            "Menggandakan file",
+            "Penyimpanan/pengarsipan data jangka panjang",
+            "Memainkan file musik",
+            "Mengirim email",
+          ],
+          a: 2,
+        },
+        {
+          id: 14,
+          category: "Manajemen File",
+          q: "Struktur penyimpanan folder di Windows Explorer berbentuk...",
+          options: [
+            "Circular (Lingkaran)",
+            "Hierarki (Pohon)",
+            "Random (Acak)",
+            "Linear (Garis lurus)",
+            "Abstrak",
+          ],
+          a: 1,
+        },
+        {
+          id: 15,
+          category: "Manajemen File",
+          q: "Tindakan membuat salinan data ke lokasi penyimpanan lain untuk keamanan disebut...",
+          options: ["Restore", "Backup", "Format", "Delete", "Rename"],
+          a: 1,
+        },
+
+        // Topik 4: Virtual Machine (16-20)
+        {
+          id: 16,
+          category: "Virtualisasi",
+          q: "Apa yang dimaksud dengan Mesin Virtual (Virtual Machine)?",
+          options: [
+            "Mesin robot",
+            "Komputer fisik yang nyata",
+            "Emulasi sistem komputer yang berjalan di atas OS fisik",
+            "Game simulator",
+            "Alat perakit komputer",
+          ],
+          a: 2,
+        },
+        {
+          id: 17,
+          category: "Virtualisasi",
+          q: "Salah satu kegunaan utama Virtual Machine bagi teknisi adalah...",
+          options: [
+            "Bermain game berat",
+            "Menguji coba sistem operasi baru tanpa merusak OS utama",
+            "Mendinginkan prosesor",
+            "Mempercepat koneksi internet",
+            "Menambah kapasitas RAM fisik",
+          ],
+          a: 1,
+        },
+        {
+          id: 18,
+          category: "Virtualisasi",
+          q: "Dalam virtualisasi, sistem operasi fisik tempat VM berjalan disebut...",
+          options: ["Guest OS", "Host OS", "Cloud OS", "Terminal", "Kernel"],
+          a: 1,
+        },
+        {
+          id: 19,
+          category: "Virtualisasi",
+          q: "Aplikasi populer untuk membuat Virtual Machine adalah...",
+          options: [
+            "Microsoft Word",
+            "Adobe Photoshop",
+            "VirtualBox",
+            "Google Chrome",
+            "WinAmp",
+          ],
+          a: 2,
+        },
+        {
+          id: 20,
+          category: "Virtualisasi",
+          q: "Karakteristik 'Isolasi' pada Virtual Machine berarti...",
+          options: [
+            "VM tidak bisa terhubung internet",
+            "Kerusakan pada VM tidak berdampak langsung pada komputer fisik (Host)",
+            "VM bekerja lebih cepat dari Host",
+            "VM hanya bisa dibuka satu kali",
+            "VM tidak butuh RAM",
+          ],
+          a: 1,
+        },
+
+        // Topik 5: Processor (21-25)
+        {
+          id: 21,
+          category: "Hardware",
+          q: "Mengapa Processor disebut sebagai 'Otak' dari komputer?",
+          options: [
+            "Karena bentuknya bulat",
+            "Karena terletak di kepala monitor",
+            "Karena memproses instruksi aritmatika dan logika serta mengontrol komponen lain",
+            "Karena menyimpan data secara permanen",
+            "Karena menyuplai listrik",
+          ],
+          a: 2,
+        },
+        {
+          id: 22,
+          category: "Hardware",
+          q: "Bagian processor yang bertugas melakukan operasi perhitungan matematika (tambah, kurang, bagi) adalah...",
+          options: [
+            "CU (Control Unit)",
+            "ALU (Arithmetic Logic Unit)",
+            "Register",
+            "Cache",
+            "Heatsink",
+          ],
+          a: 1,
+        },
+        {
+          id: 23,
+          category: "Hardware",
+          q: "Satuan kecepatan sebuah Processor biasanya dinyatakan dalam...",
+          options: ["Byte", "Hertz (GHz/MHz)", "Pixel", "RPM", "Volt"],
+          a: 1,
+        },
+        {
+          id: 24,
+          category: "Hardware",
+          q: "Proses utama yang dilakukan processor adalah...",
+          options: [
+            "Fetch, Decode, Execute",
+            "Input, Output, Storage",
+            "Print, Scan, Copy",
+            "Play, Pause, Stop",
+            "Cut, Copy, Paste",
+          ],
+          a: 0,
+        },
+        {
+          id: 25,
+          category: "Hardware",
+          q: "Komponen pendingin yang wajib dipasang di atas processor agar tidak overheat adalah...",
+          options: [
+            "Flashdisk",
+            "Heatsink & Fan",
+            "Harddisk",
+            "Power Supply",
+            "DVD Rom",
+          ],
+          a: 1,
+        },
+
+        // Topik 6: RAM (26-30)
+        {
+          id: 26,
+          category: "Hardware",
+          q: "RAM disebut penyimpanan sementara (volatile) karena...",
+          options: [
+            "Harganya murah",
+            "Kapasitasnya kecil",
+            "Data akan hilang jika aliran listrik diputus/komputer mati",
+            "Data tersimpan selamanya",
+            "Bisa dibawa kemana-mana",
+          ],
+          a: 2,
+        },
+        {
+          id: 27,
+          category: "Hardware",
+          q: "Fungsi utama RAM pada komputer adalah...",
+          options: [
+            "Menyimpan file foto dan video",
+            "Menyimpan instruksi program yang sedang berjalan agar akses processor lebih cepat",
+            "Memproses grafis game",
+            "Menghubungkan ke internet",
+            "Menyuplai daya listrik",
+          ],
+          a: 1,
+        },
+        {
+          id: 28,
+          category: "Hardware",
+          q: "Semakin besar kapasitas RAM, maka komputer akan semakin baik dalam hal...",
+          options: [
+            "Menyimpan file permanen",
+            "Multitasking (membuka banyak aplikasi)",
+            "Kualitas suara",
+            "Kecepatan internet",
+            "Kecerahan layar",
+          ],
+          a: 1,
+        },
+        {
+          id: 29,
+          category: "Hardware",
+          q: "Apa kepanjangan dari RAM?",
+          options: [
+            "Read Access Memory",
+            "Random Access Memory",
+            "Run Access Memory",
+            "Real Access Mode",
+            "Rapid Action Machine",
+          ],
+          a: 1,
+        },
+        {
+          id: 30,
+          category: "Hardware",
+          q: "Perbedaan RAM dan Harddisk adalah...",
+          options: [
+            "RAM lebih lambat dari Harddisk",
+            "RAM menyimpan permanen, Harddisk sementara",
+            "RAM menyimpan sementara & cepat, Harddisk permanen & lebih lambat",
+            "Keduanya sama saja",
+            "RAM ada di luar CPU",
+          ],
+          a: 2,
+        },
+
+        // Topik 7: CPU vs GPU (31-35)
+        {
+          id: 31,
+          category: "Hardware",
+          q: "Fungsi utama CPU (Central Processing Unit) adalah...",
+          options: [
+            "Rendering grafis 3D",
+            "General purpose processing (tugas umum dan serial)",
+            "Koneksi jaringan",
+            "Menyimpan daya",
+            "Memutar suara",
+          ],
+          a: 1,
+        },
+        {
+          id: 32,
+          category: "Hardware",
+          q: "GPU (Graphics Processing Unit) dirancang khusus untuk...",
+          options: [
+            "Mengetik dokumen",
+            "Pemrosesan paralel seperti rendering gambar dan video",
+            "Menjalankan OS",
+            "Menyimpan data BIOS",
+            "Pendingin komputer",
+          ],
+          a: 1,
+        },
+        {
+          id: 33,
+          category: "Hardware",
+          q: "Mengapa GPU lebih baik untuk bermain game berat dibanding mengandalkan CPU saja?",
+          options: [
+            "GPU memiliki ribuan core kecil untuk mengolah pixel secara bersamaan",
+            "GPU lebih murah",
+            "CPU tidak bisa menghitung",
+            "GPU adalah otak utama komputer",
+            "GPU tidak butuh listrik",
+          ],
+          a: 0,
+        },
+        {
+          id: 34,
+          category: "Hardware",
+          q: "Dalam arsitektur komputer, letak GPU biasanya terdapat pada...",
+          options: [
+            "Kartu VGA (Video Card)",
+            "Power Supply",
+            "Harddisk",
+            "Casing",
+            "Keyboard",
+          ],
+          a: 0,
+        },
+        {
+          id: 35,
+          category: "Hardware",
+          q: "Jika CPU memiliki sedikit core yang kuat, maka GPU memiliki...",
+          options: [
+            "Sedikit core yang lemah",
+            "Satu core besar",
+            "Banyak core (ribuan) yang lebih sederhana",
+            "Tidak punya core",
+            "Core berbentuk cair",
+          ],
+          a: 2,
+        },
+
+        // Topik 8: Mikrotik (36-40)
+        {
+          id: 36,
+          category: "Mikrotik",
+          q: "MikroTik adalah perusahaan yang berasal dari negara...",
+          options: ["Amerika Serikat", "Cina", "Latvia", "Indonesia", "Jerman"],
+          a: 2,
+        },
+        {
+          id: 37,
+          category: "Mikrotik",
+          q: "Tujuan awal pendirian Mikrotik pada tahun 1996 adalah...",
+          options: [
+            "Membuat laptop gaming",
+            "Pengembangan router dan sistem ISP nirkabel (Wireless)",
+            "Membuat antivirus",
+            "Membuat sosial media",
+            "Membuat smartphone",
+          ],
+          a: 1,
+        },
+        {
+          id: 38,
+          category: "Mikrotik",
+          q: "Slogan atau motto dari Mikrotik adalah...",
+          options: [
+            "Connecting People",
+            "Just Do It",
+            "Routing The World",
+            "Think Different",
+            "Life's Good",
+          ],
+          a: 2,
+        },
+        {
+          id: 39,
+          category: "Mikrotik",
+          q: "Produk perangkat keras (Hardware) router buatan Mikrotik disebut...",
+          options: ["RouterOS", "RouterBoard", "Cisco", "TP-Link", "SwitchHub"],
+          a: 1,
+        },
+        {
+          id: 40,
+          category: "Mikrotik",
+          q: "Mikrotik didirikan oleh John Trully dan...",
+          options: [
+            "Bill Gates",
+            "Arnis Riekstins",
+            "Steve Jobs",
+            "Mark Zuckerberg",
+            "Linus Torvalds",
+          ],
+          a: 1,
+        },
+
+        // Topik 9: RouterOS (41-45)
+        {
+          id: 41,
+          category: "Mikrotik",
+          q: "RouterOS disebut sistem operasi 'Standalone', artinya...",
+          options: [
+            "Harus diinstall di atas Windows",
+            "Dapat berdiri sendiri sebagai OS utama pada perangkat router/PC",
+            "Hanya bisa berjalan di HP",
+            "Tidak memiliki fitur",
+            "Hanya untuk game",
+          ],
+          a: 1,
+        },
+        {
+          id: 42,
+          category: "Mikrotik",
+          q: "Basis kernel yang digunakan oleh RouterOS Mikrotik adalah...",
+          options: ["Windows", "Linux", "Mac OS", "Android", "Unix murni"],
+          a: 1,
+        },
+        {
+          id: 43,
+          category: "Mikrotik",
+          q: "Aplikasi berbasis GUI di Windows yang paling umum digunakan untuk meremote/mengkonfigurasi RouterOS adalah...",
+          options: [
+            "Putty",
+            "Winbox",
+            "TeamViewer",
+            "Browser",
+            "Command Prompt",
+          ],
+          a: 1,
+        },
+        {
+          id: 44,
+          category: "Mikrotik",
+          q: "Manakah fitur yang dimiliki oleh RouterOS?",
+          options: [
+            "Firewall & Bandwidth Management",
+            "Photo Editing",
+            "Video Rendering",
+            "Spreadsheet",
+            "Music Player",
+          ],
+          a: 0,
+        },
+        {
+          id: 45,
+          category: "Mikrotik",
+          q: "Apakah RouterOS bisa diinstall di PC biasa (bukan RouterBoard)?",
+          options: [
+            "Tidak bisa",
+            "Bisa, menjadikan PC sebagai router",
+            "Bisa, tapi PC akan rusak",
+            "Hanya di laptop",
+            "Hanya di tablet",
+          ],
+          a: 1,
+        },
+
+        // Topik 10: Sertifikasi (46-50)
+        {
+          id: 46,
+          category: "Mikrotik",
+          q: "MTCNA adalah singkatan dari...",
+          options: [
+            "MikroTik Certified Network Administrator",
+            "MikroTik Certified Network Associate",
+            "MikroTik Center Network Access",
+            "MikroTik Computer Network Academy",
+            "MikroTik Central Node Area",
+          ],
+          a: 1,
+        },
+        {
+          id: 47,
+          category: "Mikrotik",
+          q: "Tingkatan sertifikasi MTCNA adalah...",
+          options: [
+            "Expert (Ahli)",
+            "Basic/Entry Level (Dasar)",
+            "Engineer (Teknisi)",
+            "Trainer (Pengajar)",
+            "Advanced",
+          ],
+          a: 1,
+        },
+        {
+          id: 48,
+          category: "Mikrotik",
+          q: "Masa berlaku sertifikasi internasional Mikrotik seperti MTCNA adalah...",
+          options: [
+            "Seumur hidup",
+            "1 Tahun",
+            "3 Tahun",
+            "5 Tahun",
+            "10 Tahun",
+          ],
+          a: 2,
+        },
+        {
+          id: 49,
+          category: "Mikrotik",
+          q: "Sertifikasi MTCNA merupakan syarat wajib untuk...",
+          options: [
+            "Membeli RouterBoard",
+            "Mengambil sertifikasi lanjutan (MTCRE, MTCWE, dll)",
+            "Menginstall Winbox",
+            "Menggunakan Internet",
+            "Menjadi programmer",
+          ],
+          a: 1,
+        },
+        {
+          id: 50,
+          category: "Mikrotik",
+          q: "Materi yang dipelajari dalam MTCNA meliputi, KECUALI...",
+          options: [
+            "Firewall Basic",
+            "Routing Static",
+            "QoS (Quality of Service)",
+            "Pemrograman Web PHP",
+            "Wireless Basic",
+          ],
+          a: 3,
+        },
+      ];
+
+      // STATE VARIABLES
+      let currentQuestionIndex = 0;
+      let userAnswers = new Array(questionsDB.length).fill(null); // null = belum dijawab
+      let score = 0;
+
+      // ELEMENT REFERENCES
+      const startScreen = document.getElementById("start-screen");
+      const quizContainer = document.getElementById("quiz-container");
+      const resultScreen = document.getElementById("result-screen");
+      const questionText = document.getElementById("question-text");
+      const optionsContainer = document.getElementById("options-container");
+      const progressBar = document.getElementById("progress-bar");
+      const prevBtn = document.getElementById("prev-btn");
+      const nextBtn = document.getElementById("next-btn");
+      const finishBtn = document.getElementById("finish-btn");
+      const questionMap = document.getElementById("question-map");
+      const currentQNum = document.getElementById("current-question-num");
+      const categoryBadge = document.getElementById("category-badge");
+
+      // --- FUNCTIONS ---
+
+      function startQuiz() {
+        startScreen.classList.add("hidden");
+        quizContainer.classList.remove("hidden");
+
+        // Generate question map buttons
+        questionMap.innerHTML = "";
+        questionsDB.forEach((q, index) => {
+          const btn = document.createElement("button");
+          btn.innerText = index + 1;
+          btn.className = `p-2 rounded bg-gray-200 text-xs md:text-sm hover:bg-gray-300 q-map-btn`;
+          btn.onclick = () => jumpToQuestion(index);
+          btn.id = `map-btn-${index}`;
+          questionMap.appendChild(btn);
+        });
+
+        loadQuestion(0);
+      }
+
+      function loadQuestion(index) {
+        currentQuestionIndex = index;
+        const q = questionsDB[index];
+
+        // Update Text
+        currentQNum.innerText = index + 1;
+        categoryBadge.innerText = q.category;
+        questionText.innerText = q.q;
+
+        // Update Progress Bar
+        const percent = ((index + 1) / questionsDB.length) * 100;
+        progressBar.style.width = `${percent}%`;
+
+        // Update Options
+        optionsContainer.innerHTML = "";
+        q.options.forEach((opt, optIndex) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "option-btn w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition duration-200 flex items-center";
+
+          // Cek jika sudah dijawab sebelumnya
+          if (userAnswers[index] === optIndex) {
+            btn.classList.add("selected-option");
+          }
+
+          // A, B, C, D, E labels
+          const label = String.fromCharCode(65 + optIndex);
+
+          btn.innerHTML = `<span class="font-bold mr-3 bg-gray-200 w-8 h-8 flex items-center justify-center rounded-full text-gray-700 option-label">${label}</span> ${opt}`;
+
+          btn.onclick = () => selectOption(index, optIndex);
+          optionsContainer.appendChild(btn);
+        });
+
+        // Update Buttons State
+        prevBtn.disabled = index === 0;
+        if (index === questionsDB.length - 1) {
+          nextBtn.classList.add("hidden");
+          finishBtn.classList.remove("hidden");
+        } else {
+          nextBtn.classList.remove("hidden");
+          finishBtn.classList.add("hidden");
+        }
+
+        updateMapHighlight();
+      }
+
+      function selectOption(qIndex, optIndex) {
+        userAnswers[qIndex] = optIndex;
+
+        // Update UI pilihan saat ini
+        const buttons = optionsContainer.children;
+        for (let btn of buttons) {
+          btn.classList.remove("selected-option");
+          btn
+            .querySelector(".option-label")
+            .classList.remove("bg-white", "text-blue-600");
+          btn
+            .querySelector(".option-label")
+            .classList.add("bg-gray-200", "text-gray-700");
+        }
+        buttons[optIndex].classList.add("selected-option");
+        buttons[optIndex]
+          .querySelector(".option-label")
+          .classList.remove("bg-gray-200", "text-gray-700");
+        buttons[optIndex]
+          .querySelector(".option-label")
+          .classList.add("bg-white", "text-blue-600");
+
+        // Update Map color
+        const mapBtn = document.getElementById(`map-btn-${qIndex}`);
+        mapBtn.classList.remove("bg-gray-200");
+        mapBtn.classList.add("bg-blue-600", "text-white");
+      }
+
+      function nextQuestion() {
+        if (currentQuestionIndex < questionsDB.length - 1) {
+          loadQuestion(currentQuestionIndex + 1);
+        }
+      }
+
+      function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+          loadQuestion(currentQuestionIndex - 1);
+        }
+      }
+
+      function jumpToQuestion(index) {
+        loadQuestion(index);
+      }
+
+      function toggleFlag() {
+        const mapBtn = document.getElementById(
+          `map-btn-${currentQuestionIndex}`
+        );
+        if (mapBtn.classList.contains("ring-4")) {
+          mapBtn.classList.remove("ring-4", "ring-yellow-400");
+        } else {
+          mapBtn.classList.add("ring-4", "ring-yellow-400");
+        }
+      }
+
+      function updateMapHighlight() {
+        // Reset border highlight
+        const allMapBtns = document.querySelectorAll(".q-map-btn");
+        allMapBtns.forEach((b) =>
+          b.classList.remove("border-2", "border-black")
+        );
+
+        // Add to current
+        const currentMapBtn = document.getElementById(
+          `map-btn-${currentQuestionIndex}`
+        );
+        currentMapBtn.classList.add("border-2", "border-black");
+      }
+
+      function finishQuiz(auto = false) {
+        if (!auto) {
+          const unanswered = userAnswers.filter((a) => a === null).length;
+          if (unanswered > 0) {
+            if (
+              !confirm(
+                `Masih ada ${unanswered} soal yang belum dijawab. Yakin ingin mengumpulkan?`
+              )
+            ) {
+              return;
+            }
+          } else {
+            if (!confirm("Yakin ingin menyelesaikan ujian?")) return;
+          }
+        }
+
+        calculateResult();
+      }
+
+      function calculateResult() {
+        let correct = 0;
+        let wrong = 0;
+        let empty = 0;
+
+        questionsDB.forEach((q, idx) => {
+          if (userAnswers[idx] === null) {
+            empty++;
+          } else if (userAnswers[idx] === q.a) {
+            correct++;
+          } else {
+            wrong++;
+          }
+        });
+
+        // Score formula: (Benar / Total) * 100
+        score = Math.round((correct / questionsDB.length) * 100);
+
+        // Render Result
+        quizContainer.classList.add("hidden");
+        resultScreen.classList.remove("hidden");
+
+        document.getElementById("final-score").innerText = score;
+        document.getElementById("correct-count").innerText = correct;
+        document.getElementById("wrong-count").innerText = wrong;
+        document.getElementById("unanswered-count").innerText = empty;
+
+        // Animate Circle
+        const circle = document.getElementById("score-circle");
+        const circumference = 2 * Math.PI * 15.9155;
+        const offset = circumference - (score / 100) * circumference;
+
+        // Set circle color based on score
+        if (score < 50)
+          circle.classList.replace("text-blue-600", "text-red-600");
+        else if (score < 75)
+          circle.classList.replace("text-blue-600", "text-yellow-500");
+        else circle.classList.replace("text-blue-600", "text-green-500");
+
+        // Trigger animation via style
+        setTimeout(() => {
+          circle.style.strokeDashoffset = offset;
+          circle.style.transition = "stroke-dashoffset 1s ease-in-out";
+        }, 100);
+
+        generateReview();
+      }
+
+      function generateReview() {
+        const container = document.getElementById("review-container");
+        container.innerHTML = "";
+
+        questionsDB.forEach((q, idx) => {
+          const userAnswer = userAnswers[idx];
+          const isCorrect = userAnswer === q.a;
+          const isSkipped = userAnswer === null;
+
+          let statusClass = isCorrect
+            ? "bg-green-50 border-green-200"
+            : "bg-red-50 border-red-200";
+          if (isSkipped) statusClass = "bg-gray-50 border-gray-200";
+
+          const div = document.createElement("div");
+          div.className = `p-4 rounded border ${statusClass}`;
+
+          const statusIcon = isCorrect
+            ? "✅ Benar"
+            : isSkipped
+            ? "⚪ Dilewati"
+            : "❌ Salah";
+
+          div.innerHTML = `
+                    <p class="font-bold text-sm text-gray-500 mb-1">Soal No. ${
+                      idx + 1
+                    } (${q.category}) - ${statusIcon}</p>
+                    <p class="font-semibold mb-2">${q.q}</p>
+                    <p class="text-sm">Jawaban Anda: <span class="font-medium ${
+                      isCorrect ? "text-green-700" : "text-red-700"
+                    }">${isSkipped ? "-" : q.options[userAnswer]}</span></p>
+                    ${
+                      !isCorrect
+                        ? `<p class="text-sm text-green-700">Kunci Jawaban: <span class="font-bold">${
+                            q.options[q.a]
+                          }</span></p>`
+                        : ""
+                    }
+                `;
+          container.appendChild(div);
+        });
+      }
+
+      function toggleReview() {
+        const reviewDiv = document.getElementById("review-container");
+        reviewDiv.classList.toggle("hidden");
+      }
+    </script>
+  </body>
+</html>
