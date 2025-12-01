@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kuis E-Learning Informatika Dasar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3f4f6;
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .option-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+      .correct-answer {
+        background-color: #d1fae5 !important;
+        border-color: #10b981 !important;
+        color: #065f46 !important;
+      }
+      .wrong-answer {
+        background-color: #fee2e2 !important;
+        border-color: #ef4444 !important;
+        color: #991b1b !important;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4"
+  >
+    <!-- Container Utama -->
+    <div
+      class="w-full max-w-3xl bg-white rounded-2xl shadow-xl overflow-hidden min-h-[500px] flex flex-col relative"
+    >
+      <!-- Header -->
+      <header
+        class="bg-blue-600 p-6 text-white flex justify-between items-center"
+      >
+        <div>
+          <h1 class="text-2xl font-bold">
+            <i class="fas fa-laptop-code mr-2"></i>E-Learning Informatika
+          </h1>
+          <p class="text-blue-100 text-sm">Python & Berpikir Komputasional</p>
+        </div>
+        <div
+          id="timer-display"
+          class="hidden bg-blue-700 px-4 py-2 rounded-lg font-mono font-bold"
+        >
+          00:00
+        </div>
+      </header>
+
+      <!-- Halaman Awal (Start Screen) -->
+      <div
+        id="start-screen"
+        class="p-8 flex-1 flex flex-col items-center justify-center text-center fade-in"
+      >
+        <div
+          class="mb-6 bg-blue-100 p-4 rounded-full text-blue-600 text-4xl w-24 h-24 flex items-center justify-center mx-auto"
+        >
+          <i class="fas fa-brain"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+          Selamat Datang di Kuis Informatika
+        </h2>
+        <p class="text-gray-600 mb-8">
+          Kuis ini terdiri dari 50 soal pilihan ganda mencakup materi Berpikir
+          Komputasional, Algoritma, dan Dasar Python.
+        </p>
+
+        <div class="w-full max-w-xs space-y-4">
+          <input
+            type="text"
+            id="username"
+            placeholder="Masukkan Nama Anda"
+            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+          />
+          <button
+            onclick="startQuiz()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-300 shadow-lg"
+          >
+            Mulai Kuis
+          </button>
+        </div>
+      </div>
+
+      <!-- Halaman Kuis (Quiz Screen) -->
+      <div id="quiz-screen" class="hidden flex-1 flex flex-col p-6 fade-in">
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+          <div
+            id="progress-bar"
+            class="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+            style="width: 0%"
+          ></div>
+        </div>
+
+        <!-- Info Soal -->
+        <div
+          class="flex justify-between items-center mb-4 text-sm text-gray-500 font-semibold"
+        >
+          <span id="question-counter">Soal 1/50</span>
+          <span id="score-temp" class="hidden">Score: 0</span>
+        </div>
+
+        <!-- Pertanyaan -->
+        <div class="flex-1">
+          <h3
+            id="question-text"
+            class="text-xl font-bold text-gray-800 mb-6 leading-relaxed"
+          >
+            Pertanyaan akan muncul di sini...
+          </h3>
+
+          <!-- Opsi Jawaban -->
+          <div id="options-container" class="space-y-3">
+            <!-- Opsi digenerate via JS -->
+          </div>
+        </div>
+
+        <!-- Navigasi -->
+        <div class="mt-8 flex justify-end">
+          <button
+            id="next-btn"
+            onclick="nextQuestion()"
+            class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled
+          >
+            Lanjut <i class="fas fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Halaman Hasil (Result Screen) -->
+      <div
+        id="result-screen"
+        class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center fade-in"
+      >
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">Hasil Kuis</h2>
+        <p class="text-gray-600 mb-6">
+          Halo,
+          <span id="result-name" class="font-bold text-blue-600">User</span>!
+        </p>
+
+        <div class="relative w-40 h-40 mb-6">
+          <svg class="w-full h-full" viewBox="0 0 36 36">
+            <path
+              class="text-gray-200"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+            />
+            <path
+              id="score-circle"
+              class="text-blue-500"
+              stroke-dasharray="0, 100"
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+            />
+          </svg>
+          <div
+            class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center"
+          >
+            <span id="final-score" class="text-4xl font-bold text-gray-800"
+              >0</span
+            >
+            <span class="text-xs text-gray-500">POIN</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 w-full max-w-sm mb-8">
+          <div class="bg-green-100 p-3 rounded-lg text-green-700">
+            <p class="text-xs font-bold uppercase">Benar</p>
+            <p id="correct-count" class="text-2xl font-bold">0</p>
+          </div>
+          <div class="bg-red-100 p-3 rounded-lg text-red-700">
+            <p class="text-xs font-bold uppercase">Salah</p>
+            <p id="wrong-count" class="text-2xl font-bold">0</p>
+          </div>
+        </div>
+
+        <div class="flex space-x-3">
+          <button
+            onclick="toggleReview()"
+            class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-300 transition"
+          >
+            Lihat Pembahasan
+          </button>
+          <button
+            onclick="location.reload()"
+            class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+          >
+            Coba Lagi
+          </button>
+        </div>
+      </div>
+
+      <!-- Halaman Review (Hidden initially) -->
+      <div
+        id="review-section"
+        class="hidden bg-gray-50 p-6 border-t border-gray-200 max-h-[400px] overflow-y-auto"
+      >
+        <h3 class="font-bold text-lg mb-4 text-gray-800">Pembahasan Jawaban</h3>
+        <div id="review-container" class="space-y-4">
+          <!-- Review items generated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Database Soal (50 Soal berdasarkan topik yang diminta)
+      const questionsDB = [
+        // Topik 1: Berpikir Komputasional
+        {
+          q: "Apa yang dimaksud dengan Berpikir Komputasional?",
+          options: [
+            "Berpikir seperti komputer yang kaku",
+            "Metode pemecahan masalah dengan menerapkan prinsip ilmu komputer",
+            "Kemampuan merakit komputer",
+            "Menghafal sintaks pemrograman",
+          ],
+          a: 1,
+        },
+        {
+          q: "Manakah yang BUKAN merupakan 4 pilar Berpikir Komputasional?",
+          options: [
+            "Decomposition",
+            "Pattern Recognition",
+            "Abstraction",
+            "Compilation",
+          ],
+          a: 3,
+        },
+        {
+          q: "Memecah masalah besar menjadi bagian-bagian kecil yang lebih mudah dikelola disebut...",
+          options: ["Abstraction", "Decomposition", "Algorithm", "Evaluation"],
+          a: 1,
+        },
+        {
+          q: "Mengenali kesamaan atau pola dalam masalah yang berbeda disebut...",
+          options: [
+            "Pattern Recognition",
+            "Decomposition",
+            "Coding",
+            "Debugging",
+          ],
+          a: 0,
+        },
+        {
+          q: "Berpikir komputasional penting karena...",
+          options: [
+            "Hanya untuk programmer",
+            "Membantu menyelesaikan masalah secara efektif dan efisien",
+            "Agar bisa merakit PC",
+            "Supaya nilai matematika bagus",
+          ],
+          a: 1,
+        },
+
+        // Topik 2: Tipe Data Float dan Integer
+        {
+          q: "Apa perbedaan mendasar antara tipe data Float dan Integer?",
+          options: [
+            "Float untuk teks, Integer untuk angka",
+            "Float bilangan bulat, Integer bilangan desimal",
+            "Float bilangan desimal, Integer bilangan bulat",
+            "Tidak ada perbedaan",
+          ],
+          a: 2,
+        },
+        {
+          q: "Manakah contoh data tipe Integer?",
+          options: ["3.14", '"10"', "10", "True"],
+          a: 2,
+        },
+        {
+          q: "Manakah contoh data tipe Float?",
+          options: ["5", "5.0", '"Lima"', "False"],
+          a: 1,
+        },
+        {
+          q: "Hasil dari operasi 10 / 2 di Python (Python 3) akan menghasilkan tipe data...",
+          options: ["Integer", "Float", "String", "Boolean"],
+          a: 1,
+        },
+        {
+          q: "Jika variabel a = 5 dan b = 2.5, maka tipe data hasil a + b adalah...",
+          options: ["Integer", "Float", "String", "Error"],
+          a: 1,
+        },
+
+        // Topik 3: 4 Tipe Data Python & Karakteristik
+        {
+          q: "Tipe data yang digunakan untuk menyimpan teks atau karakter adalah...",
+          options: ["Integer", "Float", "String", "Boolean"],
+          a: 2,
+        },
+        {
+          q: "Tipe data yang hanya memiliki dua nilai, yaitu True dan False adalah...",
+          options: ["Binary", "Boolean", "Integer", "String"],
+          a: 1,
+        },
+        {
+          q: "Karakteristik tipe data String di Python ditandai dengan...",
+          options: [
+            "Tanda kurung ()",
+            "Tanda petik ('' atau \"\")",
+            "Tanda kurung siku []",
+            "Tanda pagar #",
+          ],
+          a: 1,
+        },
+        {
+          q: "Fungsi untuk mengecek tipe data sebuah variabel di Python adalah...",
+          options: ["check()", "type()", "typeof()", "datatype()"],
+          a: 1,
+        },
+        {
+          q: "Manakah yang merupakan tipe data Boolean?",
+          options: ['"True"', "True", "1", "yes"],
+          a: 1,
+        },
+
+        // Topik 4: Popularitas Python
+        {
+          q: "Salah satu alasan Python menjadi bahasa pemrograman populer no 1 adalah...",
+          options: [
+            "Syntax yang sulit dan rumit",
+            "Hanya bisa berjalan di Windows",
+            "Syntax sederhana dan mudah dibaca (readable)",
+            "Harus berbayar",
+          ],
+          a: 2,
+        },
+        {
+          q: "Python sangat populer digunakan dalam bidang teknologi modern, yaitu...",
+          options: [
+            "Pembuatan Driver Hardware",
+            "Data Science dan Artificial Intelligence (AI)",
+            "Desain Grafis",
+            "Edit Video",
+          ],
+          a: 1,
+        },
+        {
+          q: "Situs yang meranking popularitas bahasa pemrograman secara internasional adalah...",
+          options: ["google.com", "tiobe.com", "python.org", "w3schools.com"],
+          a: 1,
+        },
+        {
+          q: "Dukungan komunitas yang besar pada Python berarti...",
+          options: [
+            "Banyak library dan solusi tersedia",
+            "Python menjadi mahal",
+            "Python menjadi lambat",
+            "Python sulit dipelajari",
+          ],
+          a: 0,
+        },
+        {
+          q: "Sifat Python yang 'Interpreted' berarti...",
+          options: [
+            "Kode dijalankan baris per baris",
+            "Kode harus dikompilasi jadi .exe dulu",
+            "Kode hanya bisa dibaca mesin",
+            "Kode tidak bisa error",
+          ],
+          a: 0,
+        },
+
+        // Topik 5: Abstraction
+        {
+          q: "Apa itu Abstraction dalam berpikir komputasional?",
+          options: [
+            "Menghafal semua detail masalah",
+            "Mengabaikan detail yang tidak penting dan fokus pada informasi utama",
+            "Memecah masalah menjadi kecil",
+            "Mencari pola berulang",
+          ],
+          a: 1,
+        },
+        {
+          q: "Contoh Abstraction dalam kehidupan sehari-hari adalah...",
+          options: [
+            "Melihat peta tanpa melihat detail setiap pohon di jalan",
+            "Menghitung jumlah langkah kaki per hari",
+            "Memasak nasi",
+            "Memperbaiki mesin mobil",
+          ],
+          a: 0,
+        },
+        {
+          q: "Mengapa Abstraction penting?",
+          options: [
+            "Agar masalah terlihat lebih rumit",
+            "Untuk mengelola kompleksitas masalah",
+            "Agar komputer bisa bekerja lebih cepat",
+            "Tidak terlalu penting",
+          ],
+          a: 1,
+        },
+        {
+          q: "Dalam pemrograman, fungsi (function) adalah bentuk abstraksi karena...",
+          options: [
+            "Kita perlu tahu cara kerja internalnya setiap saat",
+            "Kita hanya perlu tahu input dan outputnya tanpa memikirkan detail proses di dalamnya",
+            "Fungsi membuat kode jadi panjang",
+            "Fungsi sulit dibuat",
+          ],
+          a: 1,
+        },
+        {
+          q: "Saat melihat mobil, kita fokus pada 'bisa menyetir' bukan 'cara kerja pembakaran mesin'. Ini contoh...",
+          options: [
+            "Decomposition",
+            "Algorithm",
+            "Abstraction",
+            "Pattern Recognition",
+          ],
+          a: 2,
+        },
+
+        // Topik 6: Algoritma & Kehidupan Sehari-hari
+        {
+          q: "Definisi Algoritma yang paling tepat adalah...",
+          options: [
+            "Cara berpikir cepat",
+            "Langkah-langkah sistematis dan logis untuk menyelesaikan masalah",
+            "Kode program komputer",
+            "Alat hitung matematika",
+          ],
+          a: 1,
+        },
+        {
+          q: "Contoh algoritma dalam kehidupan sehari-hari adalah...",
+          options: [
+            "Mimpi tidur",
+            "Resep membuat kue",
+            "Merasakan sedih",
+            "Melihat pemandangan",
+          ],
+          a: 1,
+        },
+        {
+          q: "Langkah pertama dalam algoritma biasanya adalah...",
+          options: ["Stop", "Proses", "Start/Mulai", "Output"],
+          a: 2,
+        },
+        {
+          q: "Ciri algoritma yang baik adalah...",
+          options: [
+            "Langkahnya ambigu",
+            "Berakhir (Finite) dan Jelas (Definite)",
+            "Tidak memiliki hasil",
+            "Langkahnya acak",
+          ],
+          a: 1,
+        },
+        {
+          q: "Urutan langkah mencuci baju secara manual adalah bentuk...",
+          options: ["Abstraksi", "Algoritma", "Variabel", "Tipe Data"],
+          a: 1,
+        },
+
+        // Topik 7: Evaluasi Berpikir Komputasional
+        {
+          q: "Mengapa kita harus berpikir secara komputasional di era digital?",
+          options: [
+            "Agar terlihat pintar",
+            "Untuk dapat bersaing dan memecahkan masalah kompleks secara efisien",
+            "Supaya bisa meretas situs",
+            "Agar tidak perlu belajar matematika",
+          ],
+          a: 1,
+        },
+        {
+          q: "Berpikir komputasional melatih otak untuk...",
+          options: [
+            "Berpikir tidak terstruktur",
+            "Berpikir logis dan terstruktur",
+            "Menghafal cepat",
+            "Menulis cepat",
+          ],
+          a: 1,
+        },
+        {
+          q: "Siapa yang membutuhkan kemampuan berpikir komputasional?",
+          options: [
+            "Hanya Programmer",
+            "Hanya Ilmuwan",
+            "Hanya Guru",
+            "Semua orang dalam berbagai profesi",
+          ],
+          a: 3,
+        },
+        {
+          q: "Salah satu manfaat berpikir komputasional adalah...",
+          options: [
+            "Meningkatkan bias",
+            "Menemukan solusi yang dapat diotomatisasi",
+            "Memperumit masalah sederhana",
+            "Menghindari teknologi",
+          ],
+          a: 1,
+        },
+        {
+          q: "Dengan Pattern Recognition, kita bisa...",
+          options: [
+            "Memprediksi masalah di masa depan berdasarkan data masa lalu",
+            "Melupakan masalah",
+            "Membuat masalah baru",
+            "Menghapus data",
+          ],
+          a: 0,
+        },
+
+        // Topik 8: Mencetak Kalimat di Python
+        {
+          q: "Perintah untuk mencetak teks ke layar di Python adalah...",
+          options: ["echo()", "printf()", "print()", "console.log()"],
+          a: 2,
+        },
+        {
+          q: "Bagaimana cara mencetak kalimat: aku suka JKT48 ?",
+          options: [
+            "print(aku suka JKT48)",
+            'print("aku suka JKT48")',
+            'output("aku suka JKT48")',
+            'write("aku suka JKT48")',
+          ],
+          a: 1,
+        },
+        {
+          q: "Tanda apa yang bisa digunakan untuk mengapit string di dalam print?",
+          options: [
+            "Hanya petik satu (')",
+            'Hanya petik dua (")',
+            "Bisa petik satu (') atau petik dua (\")",
+            "Tanda kurung siku ([])",
+          ],
+          a: 2,
+        },
+        {
+          q: "Apa output dari: print(10 + 5) ?",
+          options: ["10 + 5", '"15"', "15", "Error"],
+          a: 2,
+        },
+        {
+          q: 'Apa output dari: print("10" + "5") ?',
+          options: ["15", "105", "Error", "10 + 5"],
+          a: 1,
+        },
+
+        // Topik 9: Variabel di Python
+        {
+          q: "Syarat penulisan variabel yang BENAR di Python adalah...",
+          options: [
+            "Boleh diawali angka",
+            "Tidak boleh mengandung spasi",
+            "Boleh menggunakan kata kunci (keyword) Python",
+            "Harus diawali simbol $",
+          ],
+          a: 1,
+        },
+        {
+          q: "Manakah nama variabel yang VALID?",
+          options: ["1nama", "nama saya", "nama_saya", "for"],
+          a: 2,
+        },
+        {
+          q: "Apakah Python case-sensitive (huruf besar/kecil berpengaruh) dalam penamaan variabel?",
+          options: ["Ya", "Tidak", "Tergantung OS", "Kadang-kadang"],
+          a: 0,
+        },
+        {
+          q: "Gaya penulisan variabel 'nama_lengkap' disebut...",
+          options: ["CamelCase", "Snake Case", "PascalCase", "Kebab Case"],
+          a: 1,
+        },
+        {
+          q: "Apa arti tanda '=' dalam coding: x = 10 ?",
+          options: [
+            "Sama dengan matematika",
+            "Operator perbandingan",
+            "Operator Assignment (Pemberian Nilai)",
+            "Operator Logika",
+          ],
+          a: 2,
+        },
+
+        // Topik 10: Program Sederhana & Assignment
+        {
+          q: "Kode untuk membuat variabel myName dengan nilai Budi adalah...",
+          options: [
+            'var myName = "Budi"',
+            'myName : "Budi"',
+            'myName = "Budi"',
+            'String myName = "Budi"',
+          ],
+          a: 2,
+        },
+        {
+          q: "Jika x = 10, kemudian x = 20. Berapa nilai x sekarang?",
+          options: ["10", "20", "30", "Error"],
+          a: 1,
+        },
+        {
+          q: 'Bagaimana cara menggabungkan variabel nama = "Budi" dengan teks lain di print?',
+          options: [
+            'print("Halo " - nama)',
+            'print("Halo " * nama)',
+            'print("Halo " + nama)',
+            'print("Halo " / nama)',
+          ],
+          a: 2,
+        },
+        {
+          q: "Program sederhana: a = 5, b = 10, print(a, b). Outputnya?",
+          options: ["5 10", "15", "510", "Error"],
+          a: 0,
+        },
+        {
+          q: "Manakah kode yang benar untuk input data dari user?",
+          options: ["scan()", "input()", "get()", "read()"],
+          a: 1,
+        },
+      ];
+
+      // State Aplikasi
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let userAnswers = []; // Menyimpan jawaban user untuk review
+      let userName = "";
+
+      // DOM Elements
+      const startScreen = document.getElementById("start-screen");
+      const quizScreen = document.getElementById("quiz-screen");
+      const resultScreen = document.getElementById("result-screen");
+
+      const questionText = document.getElementById("question-text");
+      const optionsContainer = document.getElementById("options-container");
+      const questionCounter = document.getElementById("question-counter");
+      const progressBar = document.getElementById("progress-bar");
+      const nextBtn = document.getElementById("next-btn");
+      const finalScore = document.getElementById("final-score");
+      const scoreCircle = document.getElementById("score-circle");
+
+      // Fungsi Mulai Kuis
+      function startQuiz() {
+        const inputName = document.getElementById("username").value;
+        if (inputName.trim() === "") {
+          alert("Silakan masukkan nama Anda terlebih dahulu!");
+          return;
+        }
+        userName = inputName;
+
+        // Animasi transisi
+        startScreen.classList.add("hidden");
+        quizScreen.classList.remove("hidden");
+
+        // Acak urutan soal (Opsional, saat ini urut topik biar rapi, uncomment jika ingin acak)
+        // questionsDB.sort(() => Math.random() - 0.5);
+
+        loadQuestion();
+      }
+
+      // Fungsi Load Pertanyaan
+      function loadQuestion() {
+        const currentQuestion = questionsDB[currentQuestionIndex];
+
+        // Update UI
+        questionText.innerText = currentQuestion.q;
+        questionCounter.innerText = `Soal ${currentQuestionIndex + 1}/${
+          questionsDB.length
+        }`;
+
+        // Update Progress Bar
+        const progress = (currentQuestionIndex / questionsDB.length) * 100;
+        progressBar.style.width = `${progress}%`;
+
+        // Reset Opsi
+        optionsContainer.innerHTML = "";
+        nextBtn.disabled = true;
+
+        // Generate Opsi
+        currentQuestion.options.forEach((opt, index) => {
+          const btn = document.createElement("div");
+          btn.className =
+            "option-card border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition flex items-center gap-3";
+          btn.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600 shrink-0 option-label">${String.fromCharCode(
+                      65 + index
+                    )}</div>
+                    <span class="text-gray-700 font-medium">${opt}</span>
+                `;
+          btn.onclick = () => selectOption(index, btn);
+          optionsContainer.appendChild(btn);
+        });
+      }
+
+      // Fungsi Memilih Jawaban
+      function selectOption(selectedIndex, element) {
+        // Hapus style seleksi sebelumnya
+        const allOptions = optionsContainer.children;
+        for (let i = 0; i < allOptions.length; i++) {
+          allOptions[i].classList.remove(
+            "bg-blue-100",
+            "border-blue-600",
+            "ring-2",
+            "ring-blue-500"
+          );
+          allOptions[i]
+            .querySelector(".option-label")
+            .classList.remove("bg-blue-600", "text-white");
+        }
+
+        // Tambahkan style ke yang dipilih
+        element.classList.add(
+          "bg-blue-100",
+          "border-blue-600",
+          "ring-2",
+          "ring-blue-500"
+        );
+        element
+          .querySelector(".option-label")
+          .classList.add("bg-blue-600", "text-white");
+
+        // Simpan jawaban sementara di tombol next
+        nextBtn.dataset.selected = selectedIndex;
+        nextBtn.disabled = false;
+      }
+
+      // Fungsi Lanjut Soal
+      function nextQuestion() {
+        const selectedAnswer = parseInt(nextBtn.dataset.selected);
+        const currentQ = questionsDB[currentQuestionIndex];
+
+        // Simpan data untuk review
+        userAnswers.push({
+          question: currentQ.q,
+          options: currentQ.options,
+          correct: currentQ.a,
+          selected: selectedAnswer,
+          isCorrect: selectedAnswer === currentQ.a,
+        });
+
+        // Hitung Skor
+        if (selectedAnswer === currentQ.a) {
+          score++;
+        }
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questionsDB.length) {
+          loadQuestion();
+        } else {
+          showResults();
+        }
+      }
+
+      // Fungsi Menampilkan Hasil
+      function showResults() {
+        quizScreen.classList.add("hidden");
+        resultScreen.classList.remove("hidden");
+
+        // Hitung Nilai Akhir (Skala 0-100)
+        const finalScoreVal = Math.round((score / questionsDB.length) * 100);
+
+        // Animasi Angka
+        document.getElementById("result-name").innerText = userName;
+        finalScore.innerText = finalScoreVal;
+
+        document.getElementById("correct-count").innerText = score;
+        document.getElementById("wrong-count").innerText =
+          questionsDB.length - score;
+
+        // Set Progress Circle (SVG Stroke Dasharray)
+        // 100 is full circumference in pathLength terms
+        setTimeout(() => {
+          scoreCircle.setAttribute("stroke-dasharray", `${finalScoreVal}, 100`);
+        }, 100);
+
+        generateReview();
+      }
+
+      // Fungsi Generate Review
+      function generateReview() {
+        const container = document.getElementById("review-container");
+        container.innerHTML = "";
+
+        userAnswers.forEach((item, idx) => {
+          const isCorrect = item.isCorrect;
+          const div = document.createElement("div");
+          div.className = `p-4 rounded-lg border ${
+            isCorrect
+              ? "border-green-200 bg-green-50"
+              : "border-red-200 bg-red-50"
+          }`;
+
+          div.innerHTML = `
+                    <p class="font-semibold text-gray-800 mb-2"><span class="text-gray-500 text-sm mr-2">#${
+                      idx + 1
+                    }</span> ${item.question}</p>
+                    <div class="text-sm space-y-1">
+                        <p class="${
+                          isCorrect
+                            ? "text-green-700 font-bold"
+                            : "text-red-600 line-through"
+                        }">
+                            <i class="fas ${
+                              isCorrect ? "fa-check" : "fa-times"
+                            } w-5"></i> Jawaban Anda: ${
+            item.options[item.selected]
+          }
+                        </p>
+                        ${
+                          !isCorrect
+                            ? `
+                        <p class="text-green-700 font-bold">
+                            <i class="fas fa-check w-5"></i> Jawaban Benar: ${
+                              item.options[item.correct]
+                            }
+                        </p>`
+                            : ""
+                        }
+                    </div>
+                `;
+          container.appendChild(div);
+        });
+      }
+
+      function toggleReview() {
+        const reviewSection = document.getElementById("review-section");
+        if (reviewSection.classList.contains("hidden")) {
+          reviewSection.classList.remove("hidden");
+          // Scroll ke bawah
+          setTimeout(() => {
+            reviewSection.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+        } else {
+          reviewSection.classList.add("hidden");
+        }
+      }
+    </script>
+  </body>
+</html>
