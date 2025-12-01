@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Koding Class - Pra-Asesment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .option-card:hover {
+        transform: translateY(-2px);
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #c7c7c7;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a0a0a0;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden"
+  >
+    <!-- Header -->
+    <header class="bg-blue-700 text-white p-4 shadow-lg z-10">
+      <div class="max-w-4xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <i class="fa-solid fa-laptop-code text-3xl text-cyan-300"></i>
+          <div>
+            <h1 class="font-bold text-lg leading-tight">Koding Class</h1>
+            <p class="text-xs text-blue-200">LMS Evaluasi Siswa</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div
+            id="student-display"
+            class="hidden text-sm bg-blue-800 px-3 py-1 rounded-lg border border-blue-600"
+          >
+            <i class="fa-solid fa-user mr-2"></i
+            ><span id="display-name" class="font-semibold">Siswa</span>
+          </div>
+          <div
+            id="score-display"
+            class="hidden bg-blue-900 px-4 py-2 rounded-full font-mono font-bold text-sm"
+          >
+            Skor: <span id="current-score">0</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto p-4 relative" id="main-container">
+      <!-- Welcome / Login Screen -->
+      <div
+        id="start-screen"
+        class="max-w-xl mx-auto mt-10 bg-white p-8 rounded-2xl shadow-xl text-center fade-in border-t-4 border-blue-600"
+      >
+        <div class="mb-6 inline-block p-4 bg-blue-50 rounded-full">
+          <i class="fa-solid fa-school text-5xl text-blue-600"></i>
+        </div>
+        <h2 class="text-3xl font-bold mb-2 text-slate-900">Selamat Datang</h2>
+        <p class="text-slate-500 mb-8">
+          Silakan isi identitas Anda untuk memulai ujian.
+        </p>
+
+        <!-- Input Form -->
+        <div class="text-left mb-8 space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2"
+              >Nama Lengkap</label
+            >
+            <input
+              type="text"
+              id="input-nama"
+              class="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              placeholder="Contoh: Lulu Salsabila"
+            />
+            <p id="error-msg" class="text-red-500 text-sm mt-1 hidden">
+              <i class="fa-solid fa-circle-exclamation mr-1"></i> Nama wajib
+              diisi!
+            </p>
+          </div>
+
+          <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+            <h3 class="font-bold text-blue-800 text-sm mb-2">
+              <i class="fa-solid fa-circle-info mr-2"></i>Informasi Ujian
+            </h3>
+            <ul class="text-sm text-blue-700 space-y-1 list-disc list-inside">
+              <li>Materi: <strong>Dasar Python & Algoritma</strong></li>
+              <li>Jumlah Soal: <strong>50 Pilihan Ganda</strong></li>
+              <li>Passing Grade: <strong>80/100</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <button
+          onclick="validateAndStart()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-md hover:shadow-lg w-full"
+        >
+          Masuk & Mulai Ujian
+        </button>
+      </div>
+
+      <!-- Quiz Container (Hidden by default) -->
+      <div
+        id="quiz-container"
+        class="hidden max-w-3xl mx-auto mt-4 pb-20 fade-in"
+      >
+        <!-- Progress Bar -->
+        <div class="mb-6">
+          <div
+            class="flex justify-between text-sm font-semibold text-slate-500 mb-2"
+          >
+            <span
+              >Soal <span id="q-current">1</span> dari
+              <span id="q-total">50</span></span
+            >
+            <span id="progress-percent">0%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div
+              id="progress-bar"
+              class="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+              style="width: 0%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Question Card -->
+        <div
+          class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-100"
+        >
+          <div class="p-6 md:p-8">
+            <span
+              class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full mb-4"
+              >Soal Ujian</span
+            >
+            <h3
+              id="question-text"
+              class="text-xl md:text-2xl font-bold text-slate-800 mb-6 leading-relaxed"
+            >
+              <!-- Question goes here -->
+            </h3>
+
+            <div id="options-container" class="space-y-3">
+              <!-- Options go here -->
+            </div>
+          </div>
+
+          <!-- Feedback Area (Hidden initially) -->
+          <div
+            id="feedback-area"
+            class="hidden bg-slate-50 p-6 border-t border-slate-100"
+          >
+            <div id="feedback-content" class="mb-4"></div>
+            <button
+              onclick="nextQuestion()"
+              id="next-btn"
+              class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors float-right shadow-lg"
+            >
+              Lanjut <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+            <div class="clear-both"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Screen (Hidden by default) -->
+      <div
+        id="result-screen"
+        class="hidden max-w-2xl mx-auto mt-10 bg-white p-8 rounded-2xl shadow-xl text-center fade-in border-t-4 border-blue-600"
+      >
+        <div class="mb-6">
+          <i id="result-icon" class="fa-solid text-6xl mb-4"></i>
+          <h2 class="text-3xl font-bold mb-2">Hasil Ujian</h2>
+          <p class="text-slate-500">
+            Halo
+            <span id="final-name" class="font-bold text-slate-800">Siswa</span>,
+            berikut adalah hasil Anda:
+          </p>
+        </div>
+
+        <div class="bg-blue-50 rounded-xl p-8 mb-8 border border-blue-100">
+          <div
+            class="text-sm uppercase tracking-wide text-blue-500 font-bold mb-1"
+          >
+            Total Skor
+          </div>
+          <div class="text-6xl font-extrabold text-blue-700 mb-2">
+            <span id="final-score">0</span
+            ><span class="text-2xl text-blue-400">/50</span>
+          </div>
+          <p id="final-message" class="text-lg font-medium text-blue-800">
+            Luar Biasa!
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+          <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+            <div class="text-green-600 font-bold text-xl" id="correct-count">
+              0
+            </div>
+            <div class="text-sm text-green-700">Jawaban Benar</div>
+          </div>
+          <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+            <div class="text-red-600 font-bold text-xl" id="wrong-count">0</div>
+            <div class="text-sm text-red-700">Jawaban Salah</div>
+          </div>
+        </div>
+
+        <button
+          onclick="location.reload()"
+          class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-8 rounded-lg transition-all w-full shadow-lg"
+        >
+          <i class="fa-solid fa-right-from-bracket mr-2"></i> Kembali ke Halaman
+          Utama
+        </button>
+      </div>
+    </main>
+
+    <script>
+      // Data Soal (50 Soal)
+      const questions = [
+        {
+          q: "Manakah dari berikut ini yang merupakan tipe data untuk menyimpan bilangan bulat di Python?",
+          options: ["float", "int", "str", "bool"],
+          correct: 1,
+          rationale:
+            "<strong>int (Integer)</strong> adalah tipe data khusus untuk bilangan bulat. Float untuk desimal, Str untuk teks, dan Bool untuk logika.",
+        },
+        {
+          q: "Tipe data apa yang digunakan untuk menyimpan nilai kebenaran 'True' atau 'False'?",
+          options: ["string", "integer", "boolean", "list"],
+          correct: 2,
+          rationale:
+            "<strong>Boolean</strong> adalah tipe data logika yang hanya memiliki dua nilai: True atau False.",
+        },
+        {
+          q: "Manakah cara penulisan string yang benar di Python?",
+          options: [
+            "'Halo Dunia'",
+            "Halo Dunia",
+            "(Halo Dunia)",
+            "[Halo Dunia]",
+          ],
+          correct: 0,
+          rationale:
+            "String di Python harus diapit oleh tanda kutip tunggal ('...') atau ganda (\"...\").",
+        },
+        {
+          q: "Apa output dari kode: `type(3.14)`?",
+          options: [
+            "<class 'int'>",
+            "<class 'float'>",
+            "<class 'str'>",
+            "<class 'bool'>",
+          ],
+          correct: 1,
+          rationale:
+            "3.14 mengandung titik desimal, sehingga Python mengenalinya sebagai <strong>float</strong>.",
+        },
+        {
+          q: "Struktur data mana yang bersifat *immutable* (tidak dapat diubah setelah dibuat)?",
+          options: ["List", "Dictionary", "Tuple", "Set"],
+          correct: 2,
+          rationale:
+            "<strong>Tuple</strong> bersifat immutable. Sekali dibuat, elemen di dalamnya tidak bisa diubah, ditambah, atau dihapus.",
+        },
+        {
+          q: "Apa fungsi dari operator perbandingan `==`?",
+          options: [
+            "Menetapkan nilai",
+            "Membandingkan kesetaraan",
+            "Membandingkan lebih besar",
+            "Menyatakan ketidaksamaan",
+          ],
+          correct: 1,
+          rationale:
+            "Operator `==` digunakan untuk mengecek apakah nilai di sebelah kiri sama dengan nilai di sebelah kanan.",
+        },
+        {
+          q: "Manakah operator yang digunakan untuk menyatakan 'Tidak Sama Dengan'?",
+          options: ["==", "<>", "!=", "="],
+          correct: 2,
+          rationale:
+            "Tanda seru (`!`) dalam pemrograman sering berarti negasi. Jadi `!=` berarti 'tidak sama dengan'.",
+        },
+        {
+          q: "Apa hasil dari `10 != 10`?",
+          options: ["True", "False", "Error", "10"],
+          correct: 1,
+          rationale:
+            "Pernyataan '10 tidak sama dengan 10' adalah salah (False), karena 10 itu sama dengan 10.",
+        },
+        {
+          q: "Operator manakah yang menghasilkan `True` jika kedua operand bernilai `True`?",
+          options: ["or", "not", "and", "xor"],
+          correct: 2,
+          rationale:
+            "Operator <strong>and</strong> mewajibkan kedua kondisi harus benar agar hasilnya True.",
+        },
+        {
+          q: "Apa hasil dari `5 > 3 and 2 < 4`?",
+          options: ["True", "False", "Error", "None"],
+          correct: 0,
+          rationale:
+            "5 > 3 (True) DAN 2 < 4 (True). Karena keduanya True, maka hasilnya <strong>True</strong>.",
+        },
+        {
+          q: "Fungsi `input()` di Python secara default mengembalikan data bertipe apa?",
+          options: ["Integer", "String", "Boolean", "Float"],
+          correct: 1,
+          rationale:
+            "Apapun yang diketik pengguna melalui `input()`, Python akan menganggapnya sebagai teks (String).",
+        },
+        {
+          q: "Bagaimana cara mengubah input pengguna menjadi bilangan bulat?",
+          options: [
+            "str(input())",
+            "int(input())",
+            "float(input())",
+            "input(int())",
+          ],
+          correct: 1,
+          rationale:
+            "Kita membungkus `input()` dengan fungsi casting `int()` untuk mengonversi string menjadi integer.",
+        },
+        {
+          q: "Jika pengguna memasukkan '10' pada `x = input()`, apa hasil dari `x * 2`?",
+          options: ["20", "'1010'", "Error", "10"],
+          correct: 1,
+          rationale:
+            "Karena '10' adalah string, operator perkalian akan mengulang string tersebut. '10' * 2 = '1010'.",
+        },
+        {
+          q: "Apa yang terjadi jika pengguna memasukkan huruf 'A' pada kode `int(input('Angka: '))`?",
+          options: [
+            "Program berjalan lancar",
+            "ValueError",
+            "Output 0",
+            "Output NaN",
+          ],
+          correct: 1,
+          rationale:
+            "Python akan memberikan <strong>ValueError</strong> karena huruf 'A' tidak bisa diubah menjadi angka desimal.",
+        },
+        {
+          q: "Simbol apa yang digunakan untuk menulis komentar satu baris di Python?",
+          options: ["//", "/* */", "#", "--"],
+          correct: 2,
+          rationale:
+            "Python menggunakan tanda pagar (`#`) untuk memulai komentar satu baris.",
+        },
+        {
+          q: "Perhatikan logika: `if nilai > 85 or nilai <= 100`. Jika nilai adalah 50, apa hasilnya?",
+          options: ["True", "False", "Error", "Tidak tercetak"],
+          correct: 0,
+          rationale:
+            "50 <= 100 bernilai True. Karena menggunakan <strong>OR</strong>, jika satu saja benar, maka hasilnya True.",
+        },
+        {
+          q: "Pada kode: `if nilai > 85 or nilai <= 100`. Jika nilai 1000, apakah kondisi `if` bernilai True?",
+          options: ["Ya, True", "Tidak, False", "Error", "Masuk ke Else"],
+          correct: 0,
+          rationale:
+            "1000 > 85 adalah True. Maka seluruh pernyataan dianggap True.",
+        },
+        {
+          q: "Apa masalah logika utama pada kode: `if nilai > 85 or nilai <= 100`?",
+          options: [
+            "Sintaks salah",
+            "Kondisi selalu True untuk semua angka",
+            "Harusnya pakai float",
+            "Variabel belum dideklarasi",
+          ],
+          correct: 1,
+          rationale:
+            "Logika ini cacat karena mencakup seluruh angka. Angka berapapun pasti > 85 ATAU <= 100.",
+        },
+        {
+          q: "Manakah operator logika yang seharusnya digunakan untuk membatasi rentang nilai (misal: 85 sampai 100)?",
+          options: ["or", "and", "not", "xor"],
+          correct: 1,
+          rationale:
+            "Gunakan <strong>and</strong> untuk membuat irisan: nilai > 85 AND nilai <= 100.",
+        },
+        {
+          q: "Apa arti dari blok `elif`?",
+          options: ["Else If", "End If", "Element If", "Error If"],
+          correct: 0,
+          rationale:
+            "Elif adalah singkatan dari <strong>Else If</strong>, digunakan untuk mengecek kondisi lain jika kondisi sebelumnya salah.",
+        },
+        {
+          q: "Apa yang terjadi jika kondisi pada `if` dan semua `elif` bernilai False?",
+          options: [
+            "Program error",
+            "Blok `else` dieksekusi",
+            "Kembali ke if awal",
+            "Reset variabel",
+          ],
+          correct: 1,
+          rationale:
+            "Blok <strong>else</strong> akan dijalankan sebagai pilihan terakhir jika semua kondisi di atasnya tidak terpenuhi.",
+        },
+        {
+          q: "Simbol apa yang wajib ada di akhir baris pernyataan `if` atau `else`?",
+          options: [
+            "; (titik koma)",
+            ": (titik dua)",
+            "{} (kurung kurawal)",
+            ". (titik)",
+          ],
+          correct: 1,
+          rationale:
+            "Titik dua (`:`) menandakan awal dari blok kode baru (yang kemudian diikuti dengan indentasi).",
+        },
+        {
+          q: "Dalam Python, bagaimana cara menandai blok kode yang termasuk dalam sebuah `if`?",
+          options: [
+            "Tanda kurung",
+            "Indentasi (spasi/tab)",
+            "End",
+            "Satu baris saja",
+          ],
+          correct: 1,
+          rationale:
+            "Python menggunakan <strong>indentasi</strong> untuk menentukan struktur blok kode, bukan kurung kurawal.",
+        },
+        {
+          q: "Perhatikan kode: `if nilai > 80 or nilai < 89`. Jika nilai adalah 90, apakah kondisi ini True?",
+          options: ["True", "False", "Error", "Tidak tahu"],
+          correct: 0,
+          rationale:
+            "90 > 80 adalah True. Karena menggunakan OR, hasilnya True.",
+        },
+        {
+          q: "Manakah kode yang benar untuk mengecek apakah `x` ada di antara 10 dan 20?",
+          options: [
+            "if x > 10 or x < 20",
+            "if 10 < x < 20",
+            "if x between 10 and 20",
+            "if x > 10 & x < 20",
+          ],
+          correct: 1,
+          rationale:
+            "Python mendukung <strong>chained comparison</strong> seperti matematika: `10 < x < 20`.",
+        },
+        {
+          q: "Method/Fungsi apa yang digunakan untuk perulangan dengan jumlah iterasi yang sudah diketahui?",
+          options: ["while", "for", "repeat", "do-while"],
+          correct: 1,
+          rationale:
+            "<strong>For loop</strong> ideal digunakan ketika kita tahu berapa kali kita ingin mengulang (iterasi sequence).",
+        },
+        {
+          q: "Fungsi `range(5)` akan menghasilkan urutan angka berapa?",
+          options: [
+            "1, 2, 3, 4, 5",
+            "0, 1, 2, 3, 4",
+            "0, 1, 2, 3, 4, 5",
+            "5, 5, 5, 5, 5",
+          ],
+          correct: 1,
+          rationale:
+            "Python memulai indeks dari 0 dan berhenti sebelum angka batas. Jadi 0 sampai 4.",
+        },
+        {
+          q: "Perulangan `while` akan terus berjalan selama...",
+          options: [
+            "Kondisinya False",
+            "Kondisinya True",
+            "User menekan Enter",
+            "List belum habis",
+          ],
+          correct: 1,
+          rationale:
+            "While loop berjalan selama ekspresi boolean-nya bernilai <strong>True</strong>.",
+        },
+        {
+          q: "Perintah apa yang digunakan untuk menghentikan paksa sebuah perulangan?",
+          options: ["stop", "exit", "break", "continue"],
+          correct: 2,
+          rationale:
+            "<strong>break</strong> digunakan untuk keluar paksa dari loop terdekat.",
+        },
+        {
+          q: "Perintah `continue` dalam perulangan berfungsi untuk...",
+          options: [
+            "Stop loop",
+            "Lompati iterasi saat ini",
+            "Keluar program",
+            "Cetak nilai",
+          ],
+          correct: 1,
+          rationale:
+            "<strong>continue</strong> akan melewati sisa kode di iterasi saat ini dan langsung melompat ke iterasi berikutnya.",
+        },
+        {
+          q: "Apa output dari: `for i in range(1, 4): print(i)`?",
+          options: ["1 2 3 4", "1 2 3", "0 1 2 3", "1 2"],
+          correct: 1,
+          rationale:
+            "Start=1 (inklusif), Stop=4 (eksklusif). Maka yang dicetak adalah 1, 2, dan 3.",
+        },
+        {
+          q: "Manakah penulisan loop yang valid?",
+          options: [
+            "for x in 10:",
+            "for x in range(10):",
+            "loop x to 10:",
+            "while x < 10 do:",
+          ],
+          correct: 1,
+          rationale:
+            "`range(10)` menghasilkan iterable object yang valid untuk for loop.",
+        },
+        {
+          q: "Apa bahaya dari `while True:` tanpa `break`?",
+          options: [
+            "Syntax Error",
+            "Infinite Loop",
+            "Komputer meledak",
+            "Variable hilang",
+          ],
+          correct: 1,
+          rationale:
+            "Akan terjadi <strong>Infinite Loop</strong> (perulangan tak terbatas) karena kondisinya selalu True.",
+        },
+        {
+          q: "Tipe data `list` di Python didefinisikan dengan simbol?",
+          options: ["( )", "{ }", "[ ]", "< >"],
+          correct: 2,
+          rationale: "List menggunakan kurung siku `[ ]`.",
+        },
+        {
+          q: "Bisa untuk mengiterasi list, string, dan range adalah karakteristik dari loop...",
+          options: ["For", "While", "If", "Switch"],
+          correct: 0,
+          rationale:
+            "For loop didesain untuk mengiterasi setiap item dalam sebuah koleksi (sequence).",
+        },
+        {
+          q: "Software yang digunakan untuk menulis dan menjalankan kode program disebut?",
+          options: ["IDE", "DBMS", "Browser", "Excel"],
+          correct: 0,
+          rationale:
+            "<strong>IDE</strong> (Integrated Development Environment) seperti VS Code atau PyCharm.",
+        },
+        {
+          q: "Ekstensi file kode program Python adalah...",
+          options: [".txt", ".py", ".exe", ".java"],
+          correct: 1,
+          rationale:
+            "File Python selalu diakhiri dengan ekstensi <strong>.py</strong>.",
+        },
+        {
+          q: "Perangkat lunak utama yang menerjemahkan kode Python agar dimengerti komputer adalah...",
+          options: ["Compiler", "Interpreter", "Translator", "Operator"],
+          correct: 1,
+          rationale:
+            "Python menggunakan <strong>Interpreter</strong> untuk mengeksekusi kode baris per baris.",
+        },
+        {
+          q: "Untuk menjalankan Python di HP, kita bisa menggunakan aplikasi seperti...",
+          options: ["Pydroid 3", "Photoshop", "Word", "VLC"],
+          correct: 0,
+          rationale:
+            "Pydroid 3 adalah salah satu IDE Python populer untuk Android.",
+        },
+        {
+          q: "Langkah pertama instalasi Python di Windows biasanya adalah mengunduh installer dari...",
+          options: ["Play Store", "python.org", "facebook.com", "wikipedia"],
+          correct: 1,
+          rationale:
+            "Situs resmi Python Software Foundation adalah <strong>python.org</strong>.",
+        },
+        {
+          q: "Dalam flowchart, simbol belah ketupat (diamond) digunakan untuk...",
+          options: ["Proses", "Input/Output", "Decision", "Terminator"],
+          correct: 2,
+          rationale:
+            "Belah ketupat melambangkan <strong>Decision</strong> (keputusan) yang memecah alur (Ya/Tidak).",
+        },
+        {
+          q: "Simbol persegi panjang dalam flowchart merepresentasikan...",
+          options: ["Start/End", "Proses", "Input", "Konektor"],
+          correct: 1,
+          rationale:
+            "Persegi panjang melambangkan <strong>Proses</strong> atau perhitungan.",
+        },
+        {
+          q: "Simbol oval (elips) pada flowchart digunakan untuk...",
+          options: ["Proses", "Decision", "Terminator (Start/End)", "Data"],
+          correct: 2,
+          rationale:
+            "Oval digunakan untuk Terminator, yaitu tanda <strong>Start</strong> atau <strong>End</strong>.",
+        },
+        {
+          q: "Untuk menggambarkan input data (misal: `input()`) di flowchart, kita menggunakan simbol...",
+          options: ["Persegi Panjang", "Jajargenjang", "Segitiga", "Lingkaran"],
+          correct: 1,
+          rationale:
+            "Jajargenjang (Parallelogram) adalah simbol standar untuk operasi <strong>Input/Output</strong>.",
+        },
+        {
+          q: "Flowchart '1 alur' (linear) berarti...",
+          options: [
+            "Tidak ada percabangan",
+            "Banyak if",
+            "Hanya start end",
+            "Looping",
+          ],
+          correct: 0,
+          rationale:
+            "Linear berarti lurus dari atas ke bawah tanpa adanya percabangan keputusan (if).",
+        },
+        {
+          q: "Pada flowchart perulangan, panah alur (flow line) akan...",
+          options: ["Berhenti", "Kembali ke atas", "Langsung End", "Hilang"],
+          correct: 1,
+          rationale:
+            "Untuk membuat perulangan, alur harus <strong>kembali ke langkah sebelumnya</strong>.",
+        },
+        {
+          q: "Struktur kontrol yang memiliki 2 alur output (True/False) adalah...",
+          options: [
+            "Sequence",
+            "Selection (Percabangan)",
+            "Assignment",
+            "Declaration",
+          ],
+          correct: 1,
+          rationale:
+            "Selection (seperti If/Else) memecah alur menjadi dua kemungkinan berdasarkan kondisi.",
+        },
+        {
+          q: "Jika ingin membuat flowchart dari kode: `print('Halo')`, simbol apa yang dipakai?",
+          options: [
+            "Jajargenjang",
+            "Belah ketupat",
+            "Persegi panjang",
+            "Lingkaran",
+          ],
+          correct: 0,
+          rationale:
+            "`print()` adalah output, maka menggunakan simbol <strong>Jajargenjang</strong>.",
+        },
+        {
+          q: "Apa fungsi garis panah (flow line) dalam flowchart?",
+          options: [
+            "Hiasan",
+            "Arah aliran logika",
+            "Menghapus data",
+            "Membagi kertas",
+          ],
+          correct: 1,
+          rationale:
+            "Flow line menunjukkan urutan eksekusi dan arah aliran data/logika.",
+        },
+        {
+          q: "Manakah urutan flowchart yang logis untuk program tebak angka?",
+          options: [
+            "Start -> Input -> Cek -> End",
+            "Start -> End -> Input",
+            "Input -> Start -> End",
+            "End -> Start",
+          ],
+          correct: 0,
+          rationale:
+            "Logika selalu dimulai dari Start, lalu proses (Input/Cek), dan diakhiri End.",
+        },
+      ];
+
+      // State Aplikasi
+      let studentName = "";
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let correctAnswersCount = 0;
+      let wrongAnswersCount = 0;
+      let hasAnswered = false;
+
+      // DOM Elements
+      const startScreen = document.getElementById("start-screen");
+      const inputNama = document.getElementById("input-nama");
+      const errorMsg = document.getElementById("error-msg");
+
+      const quizContainer = document.getElementById("quiz-container");
+      const resultScreen = document.getElementById("result-screen");
+
+      const scoreDisplay = document.getElementById("score-display");
+      const currentScoreEl = document.getElementById("current-score");
+      const studentDisplay = document.getElementById("student-display");
+      const displayName = document.getElementById("display-name");
+
+      const qText = document.getElementById("question-text");
+      const optionsContainer = document.getElementById("options-container");
+      const qCurrent = document.getElementById("q-current");
+      const qTotal = document.getElementById("q-total");
+      const progressBar = document.getElementById("progress-bar");
+      const progressPercent = document.getElementById("progress-percent");
+      const feedbackArea = document.getElementById("feedback-area");
+      const feedbackContent = document.getElementById("feedback-content");
+
+      // Fungsi Validasi & Mulai
+      function validateAndStart() {
+        const name = inputNama.value.trim();
+        if (name === "") {
+          errorMsg.classList.remove("hidden");
+          inputNama.classList.add("border-red-500", "ring-1", "ring-red-500");
+        } else {
+          studentName = name;
+          errorMsg.classList.add("hidden");
+          displayName.textContent = studentName;
+          startQuiz();
+        }
+      }
+
+      // Event Listener untuk Enter Key
+      inputNama.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          validateAndStart();
+        }
+      });
+
+      inputNama.addEventListener("input", function () {
+        if (this.value.trim() !== "") {
+          errorMsg.classList.add("hidden");
+          this.classList.remove("border-red-500", "ring-1", "ring-red-500");
+        }
+      });
+
+      // Fungsi Memulai Kuis
+      function startQuiz() {
+        startScreen.classList.add("hidden");
+        quizContainer.classList.remove("hidden");
+        scoreDisplay.classList.remove("hidden");
+        studentDisplay.classList.remove("hidden");
+        qTotal.textContent = questions.length;
+        loadQuestion();
+      }
+
+      // Fungsi Memuat Pertanyaan
+      function loadQuestion() {
+        hasAnswered = false;
+        const currentQ = questions[currentQuestionIndex];
+
+        // Update UI
+        qText.innerHTML = currentQ.q;
+        qCurrent.textContent = currentQuestionIndex + 1;
+
+        // Update Progress Bar
+        const percent = (currentQuestionIndex / questions.length) * 100;
+        progressBar.style.width = `${percent}%`;
+        progressPercent.textContent = `${Math.round(percent)}%`;
+
+        // Reset State
+        feedbackArea.classList.add("hidden");
+        optionsContainer.innerHTML = "";
+
+        // Generate Options
+        currentQ.options.forEach((opt, index) => {
+          const btn = document.createElement("button");
+          btn.className = `option-card w-full text-left p-4 rounded-lg border border-slate-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 flex items-center group`;
+          btn.onclick = () => checkAnswer(index, btn);
+
+          btn.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center mr-4 group-hover:bg-blue-200 group-hover:text-blue-700 font-bold text-sm transition-colors">
+                        ${String.fromCharCode(65 + index)}
+                    </div>
+                    <span class="text-slate-700 font-medium group-hover:text-blue-900 text-lg">${opt}</span>
+                `;
+          optionsContainer.appendChild(btn);
+        });
+      }
+
+      // Fungsi Cek Jawaban
+      function checkAnswer(selectedIndex, selectedBtn) {
+        if (hasAnswered) return;
+        hasAnswered = true;
+
+        const currentQ = questions[currentQuestionIndex];
+        const isCorrect = selectedIndex === currentQ.correct;
+        const buttons = optionsContainer.children;
+
+        // Update Score Logic
+        if (isCorrect) {
+          score++;
+          correctAnswersCount++;
+          selectedBtn.classList.remove(
+            "border-slate-200",
+            "hover:border-blue-500",
+            "hover:bg-blue-50"
+          );
+          selectedBtn.classList.add(
+            "bg-green-100",
+            "border-green-500",
+            "text-green-800"
+          );
+          selectedBtn
+            .querySelector("div")
+            .classList.add("bg-green-200", "text-green-700");
+
+          feedbackContent.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-circle-check text-green-500 text-2xl mt-1"></i>
+                        <div>
+                            <h4 class="font-bold text-green-700 text-lg">Jawaban Benar!</h4>
+                            <p class="text-slate-600 mt-1">${currentQ.rationale}</p>
+                        </div>
+                    </div>
+                `;
+        } else {
+          wrongAnswersCount++;
+          selectedBtn.classList.remove(
+            "border-slate-200",
+            "hover:border-blue-500",
+            "hover:bg-blue-50"
+          );
+          selectedBtn.classList.add(
+            "bg-red-100",
+            "border-red-500",
+            "text-red-800"
+          );
+          selectedBtn
+            .querySelector("div")
+            .classList.add("bg-red-200", "text-red-700");
+
+          // Highlight correct answer
+          const correctBtn = buttons[currentQ.correct];
+          correctBtn.classList.add("bg-green-50", "border-green-300");
+          correctBtn
+            .querySelector("div")
+            .classList.add("bg-green-200", "text-green-700");
+
+          feedbackContent.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-circle-xmark text-red-500 text-2xl mt-1"></i>
+                        <div>
+                            <h4 class="font-bold text-red-700 text-lg">Jawaban Kurang Tepat</h4>
+                            <p class="text-slate-600 mt-1">${currentQ.rationale}</p>
+                        </div>
+                    </div>
+                `;
+        }
+
+        // Update displayed score
+        currentScoreEl.textContent = score;
+        currentScoreEl.parentElement.classList.add("scale-110"); // animation pop
+        setTimeout(
+          () => currentScoreEl.parentElement.classList.remove("scale-110"),
+          200
+        );
+
+        // Disable all buttons
+        for (let btn of buttons) {
+          btn.disabled = true;
+          btn.classList.add("cursor-default");
+          btn.classList.remove("hover:transform");
+        }
+
+        // Show Feedback
+        feedbackArea.classList.remove("hidden");
+        feedbackArea.classList.add("fade-in");
+
+        // Auto scroll to feedback
+        feedbackArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      // Fungsi Soal Berikutnya
+      function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+          loadQuestion();
+        } else {
+          showResults();
+        }
+      }
+
+      // Fungsi Tampilkan Hasil
+      function showResults() {
+        quizContainer.classList.add("hidden");
+        resultScreen.classList.remove("hidden");
+        scoreDisplay.classList.add("hidden");
+        studentDisplay.classList.add("hidden"); // Hide student badge in results page (optional, cleaner look)
+
+        document.getElementById("final-name").textContent = studentName; // Masukkan nama siswa
+        document.getElementById("final-score").textContent = score;
+        document.getElementById("correct-count").textContent =
+          correctAnswersCount;
+        document.getElementById("wrong-count").textContent = wrongAnswersCount;
+
+        const icon = document.getElementById("result-icon");
+        const msg = document.getElementById("final-message");
+        const percentage = (score / questions.length) * 100;
+
+        if (percentage >= 80) {
+          icon.className =
+            "fa-solid fa-trophy text-yellow-500 text-6xl mb-4 animate-bounce";
+          msg.textContent = "Luar Biasa! Kompetensi Sangat Baik.";
+          msg.className = "text-lg font-medium text-green-600";
+        } else if (percentage >= 60) {
+          icon.className = "fa-solid fa-thumbs-up text-blue-500 text-6xl mb-4";
+          msg.textContent = "Bagus! Anda Memahami Dasar.";
+          msg.className = "text-lg font-medium text-blue-600";
+        } else {
+          icon.className = "fa-solid fa-book-open text-slate-400 text-6xl mb-4";
+          msg.textContent = "Jangan Menyerah, Pelajari Materi Lagi.";
+          msg.className = "text-lg font-medium text-slate-600";
+        }
+      }
+    </script>
+  </body>
+</html>
