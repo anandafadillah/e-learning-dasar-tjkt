@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ujian Online - SMK Cyber Media</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3f4f6;
+      }
+
+      .option-card {
+        transition: all 0.2s ease;
+      }
+
+      .option-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+
+      .selected-option {
+        background-color: #eff6ff;
+        border-color: #3b82f6;
+        color: #1e40af;
+      }
+
+      /* Custom Scrollbar for question list */
+      .question-nav::-webkit-scrollbar {
+        width: 6px;
+      }
+      .question-nav::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      .question-nav::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+      .question-nav::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* Custom Scrollbar for review container */
+      #review-container::-webkit-scrollbar {
+        width: 8px;
+      }
+      #review-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      #review-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="flex flex-col min-h-screen text-gray-800">
+    <!-- Navbar -->
+    <nav class="bg-blue-900 text-white shadow-lg sticky top-0 z-50">
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div class="flex items-center space-x-3">
+          <div
+            class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-blue-900 font-bold text-xl"
+          >
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg leading-tight">E-Learning</h1>
+            <p class="text-xs text-blue-200">SMK Cyber Media Jakarta</p>
+          </div>
+        </div>
+        <div class="hidden md:block">
+          <span class="bg-blue-800 py-1 px-3 rounded-full text-sm">
+            <i class="far fa-user mr-2"></i>Siswa
+          </span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+      <!-- Welcome Screen -->
+      <div
+        id="start-screen"
+        class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden fade-in"
+      >
+        <div class="p-8 text-center">
+          <div
+            class="w-24 h-24 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl"
+          >
+            <i class="fas fa-laptop-code"></i>
+          </div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-2">
+            Asesment Informatika kelas X
+          </h2>
+          <p class="text-gray-500 mb-8">Mata Pelajaran: INFORMATIKA ❤️</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 text-center">
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <i class="fas fa-list-ol text-blue-500 mb-2"></i>
+              <h3 class="font-semibold">Jumlah Soal</h3>
+              <p class="text-sm text-gray-600">50 Soal Pilihan Ganda</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <i class="fas fa-clock text-blue-500 mb-2"></i>
+              <h3 class="font-semibold">Waktu</h3>
+              <p class="text-sm text-gray-600">Tidak Terbatas</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <i class="fas fa-check-circle text-blue-500 mb-2"></i>
+              <h3 class="font-semibold">KKM</h3>
+              <p class="text-sm text-gray-600">Minimal Skor 75</p>
+            </div>
+          </div>
+
+          <button
+            onclick="startQuiz()"
+            class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg"
+          >
+            Mulai Ujian Sekarang
+          </button>
+        </div>
+      </div>
+
+      <!-- Quiz Interface (Hidden by default) -->
+      <div
+        id="quiz-interface"
+        class="hidden flex flex-col md:flex-row gap-6 fade-in"
+      >
+        <!-- Left: Question Area -->
+        <div class="flex-grow w-full md:w-3/4">
+          <div
+            class="bg-white rounded-xl shadow-md p-6 md:p-8 min-h-[400px] flex flex-col relative"
+          >
+            <!-- Progress Header -->
+            <div
+              class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100"
+            >
+              <span class="text-sm font-semibold text-gray-500"
+                >Soal <span id="current-q-num">1</span> dari
+                <span id="total-q-num">50</span></span
+              >
+              <div
+                class="flex items-center text-blue-600 font-mono font-bold bg-blue-50 px-3 py-1 rounded"
+              >
+                <i class="far fa-clock mr-2"></i>
+                <span id="timer">Bebas</span>
+              </div>
+            </div>
+
+            <!-- Question Text -->
+            <h3
+              id="question-text"
+              class="text-xl md:text-2xl font-semibold text-gray-800 mb-8 leading-relaxed"
+            >
+              Loading question...
+            </h3>
+
+            <!-- Options -->
+            <div id="options-container" class="space-y-3 mb-8">
+              <!-- Options injected by JS -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div
+              class="mt-auto flex justify-between pt-6 border-t border-gray-100"
+            >
+              <button
+                onclick="prevQuestion()"
+                id="btn-prev"
+                class="px-6 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              >
+                <i class="fas fa-arrow-left mr-2"></i> Sebelumnya
+              </button>
+              <button
+                onclick="nextQuestion()"
+                id="btn-next"
+                class="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition shadow-md"
+              >
+                Selanjutnya <i class="fas fa-arrow-right ml-2"></i>
+              </button>
+              <button
+                onclick="finishQuiz()"
+                id="btn-finish"
+                class="hidden px-6 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition shadow-md"
+              >
+                Selesai <i class="fas fa-check ml-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Navigation Panel -->
+        <div class="w-full md:w-1/4">
+          <div class="bg-white rounded-xl shadow-md p-4 sticky top-24">
+            <h4 class="font-bold text-gray-700 mb-4 text-center">
+              Navigasi Soal
+            </h4>
+            <div
+              id="question-nav"
+              class="grid grid-cols-5 gap-2 max-h-[400px] overflow-y-auto p-1"
+            >
+              <!-- Navigation dots injected by JS -->
+            </div>
+
+            <div class="mt-6 space-y-2 text-xs text-gray-500">
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-blue-600 rounded mr-2"></div>
+                Sedang dikerjakan
+              </div>
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-green-500 rounded mr-2"></div>
+                Sudah dijawab
+              </div>
+              <div class="flex items-center">
+                <div class="w-3 h-3 bg-gray-200 rounded mr-2"></div>
+                Belum dijawab
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Screen (Hidden by default) -->
+      <div
+        id="result-screen"
+        class="hidden max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden fade-in text-center p-8"
+      >
+        <div class="mb-6">
+          <div
+            id="score-icon"
+            class="w-24 h-24 rounded-full flex items-center justify-center mx-auto text-5xl mb-4"
+          >
+            <!-- Icon injected JS -->
+          </div>
+          <h2 class="text-3xl font-bold text-gray-800">Hasil Ujian Anda</h2>
+          <p id="score-message" class="text-gray-600 mt-2">Pesan hasil...</p>
+        </div>
+
+        <div
+          class="bg-gray-50 rounded-xl p-6 mb-8 inline-block w-full max-w-sm"
+        >
+          <span class="text-sm text-gray-500 uppercase tracking-wide"
+            >Nilai Akhir</span
+          >
+          <div id="final-score" class="text-6xl font-bold text-blue-600 my-2">
+            0
+          </div>
+          <div class="text-sm text-gray-400">dari 100</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-8 text-sm max-w-md mx-auto">
+          <div class="p-3 bg-green-50 text-green-700 rounded-lg">
+            <span class="block font-bold text-lg" id="correct-count">0</span>
+            Benar
+          </div>
+          <div class="p-3 bg-red-50 text-red-700 rounded-lg">
+            <span class="block font-bold text-lg" id="wrong-count">0</span>
+            Salah
+          </div>
+        </div>
+
+        <!-- Pembahasan / Review Section -->
+        <div class="text-left mt-8 pt-8 border-t border-gray-200">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-list-check mr-2 text-blue-600"></i> Detail
+            Pembahasan
+          </h3>
+          <div
+            id="review-container"
+            class="space-y-4 max-h-[500px] overflow-y-auto pr-2"
+          >
+            <!-- Review items injected by JS -->
+          </div>
+        </div>
+
+        <div
+          class="flex justify-center space-x-4 mt-8 pt-4 border-t border-gray-100"
+        >
+          <button
+            onclick="location.reload()"
+            class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+          >
+            <i class="fas fa-redo mr-2"></i> Ulangi Ujian
+          </button>
+          <button
+            onclick="alert('Hasil tersimpan!')"
+            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            <i class="fas fa-save mr-2"></i> Simpan Hasil
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-8">
+      <div class="container mx-auto px-4 py-6 text-center">
+        <p class="font-semibold text-gray-700">
+          2025 E-Learning SMK Cyber Media Jakarta-FadillahSKuy
+        </p>
+        <p class="text-xs text-gray-400 mt-1">
+          Platform Pembelajaran Digital Terintegrasi
+        </p>
+      </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+      // --- DATA SOAL 50 SOAL UNIK (DATABASE) ---
+      const questionsDB = [
+        // --- TOPIK 1: TEKNIK MENGETIK ---
+        {
+          q: "Apa keuntungan utama menggunakan teknik mengetik 10 jari dibandingkan dengan 2 jari (hunt and peck)?",
+          options: [
+            "Mengurangi penggunaan keyboard",
+            "Meningkatkan kecepatan dan mengurangi kelelahan otot",
+            "Membuat jari lebih cepat lelah",
+            "Hanya terlihat lebih profesional",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Dalam mengetik 10 jari, posisi jari telunjuk kiri dan kanan seharusnya berada pada tombol mana di keyboard QWERTY?",
+          options: ["A dan L", "F dan J", "S dan K", "D dan H"],
+          answer: 1,
+        },
+        {
+          q: "Dampak jangka panjang dari mengetik dengan postur yang salah dan teknik 2 jari adalah...",
+          options: [
+            "Peningkatan akurasi data",
+            "Efisiensi waktu kerja",
+            "Risiko Repetitive Strain Injury (RSI)",
+            "Komputer menjadi lebih awet",
+          ],
+          answer: 2,
+        },
+        {
+          q: "Tombol manakah yang ditekan menggunakan ibu jari dalam teknik mengetik 10 jari?",
+          options: ["Shift", "Space bar (Spasi)", "Enter", "Caps Lock"],
+          answer: 1,
+        },
+        {
+          q: "Posisi duduk yang benar saat mengetik di depan komputer adalah...",
+          options: [
+            "Membungkuk ke depan mendekati layar",
+            "Punggung tegak dan pandangan sejajar monitor",
+            "Kaki diangkat ke kursi",
+            "Layar berada di atas kepala",
+          ],
+          answer: 1,
+        },
+
+        // --- TOPIK 2: SISTEM OPERASI & RAM ---
+        {
+          q: "Apa fungsi utama Sistem Operasi saat Anda membuka aplikasi seperti Microsoft Excel?",
+          options: [
+            "Memperbaiki hardware yang rusak",
+            "Mengalokasikan ruang memori (RAM) untuk aplikasi",
+            "Mendesain tabel otomatis",
+            "Menghapus virus secara otomatis",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Jika Sistem Operasi gagal mengatur manajemen memori dengan baik, apa yang kemungkinan besar akan terjadi?",
+          options: [
+            "Komputer akan berjalan lebih cepat",
+            "Aplikasi akan 'crash' atau komputer menjadi 'hang'",
+            "Kapasitas Harddisk akan bertambah",
+            "Resolusi layar akan meningkat",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Komponen Sistem Operasi yang menjadi jembatan antara aplikasi dan pemrosesan data di hardware disebut...",
+          options: ["Kernel", "Shell", "Browser", "Compiler"],
+          answer: 0,
+        },
+        {
+          q: "Apa istilah untuk kemampuan Sistem Operasi menjalankan beberapa aplikasi secara bersamaan?",
+          options: ["Single-tasking", "Multitasking", "Booting", "Coding"],
+          answer: 1,
+        },
+        {
+          q: "Jika RAM fisik penuh, Sistem Operasi akan menggunakan sebagian ruang Harddisk sebagai memori sementara. Apa nama fitur ini?",
+          options: ["Cache Memory", "Virtual Memory", "ROM", "Flash Memory"],
+          answer: 1,
+        },
+
+        // --- TOPIK 3: LOGIKA MATEMATIKA (BIIMPLIKASI) ---
+        {
+          q: "Diketahui pernyataan p: '7 adalah bilangan prima' (Benar) dan q: '8 adalah bilangan genap' (Benar). Apa nilai kebenaran dari p ↔ q?",
+          options: ["Salah", "Benar", "Tidak dapat ditentukan", "Ragu-ragu"],
+          answer: 1,
+        },
+        {
+          q: "Dalam logika matematika, biimplikasi (p ↔ q) bernilai Benar jika...",
+          options: [
+            "Salah satu pernyataan salah",
+            "p bernilai benar dan q bernilai salah",
+            "Kedua pernyataan memiliki nilai kebenaran yang sama",
+            "Kedua pernyataan memiliki nilai kebenaran yang berbeda",
+          ],
+          answer: 2,
+        },
+        {
+          q: "Simbol matematika untuk Biimplikasi ('jika dan hanya jika') adalah...",
+          options: ["→", "↔", "∧", "∨"],
+          answer: 1,
+        },
+        {
+          q: "Jika p salah dan q benar, maka nilai p ↔ q adalah...",
+          options: ["Benar", "Salah", "Netral", "Tidak Valid"],
+          answer: 1,
+        },
+        {
+          q: "Pernyataan 'Saya lulus jika dan hanya jika nilai saya diatas 75' merupakan contoh dari...",
+          options: ["Konjungsi", "Disjungsi", "Implikasi", "Biimplikasi"],
+          answer: 3,
+        },
+
+        // --- TOPIK 4: KONJUNGSI & DISJUNGSI ---
+        {
+          q: "Manakah kalimat berikut yang merupakan contoh Disjungsi?",
+          options: [
+            "Saya makan nasi DAN minum air.",
+            "Saya belajar matematika ATAU fisika.",
+            "Jika hujan MAKA saya bawa payung.",
+            "Bumi itu bulat.",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Pernyataan Konjungsi (p ∧ q) hanya akan bernilai BENAR jika...",
+          options: [
+            "p benar dan q benar",
+            "p benar dan q salah",
+            "p salah dan q benar",
+            "p salah dan q salah",
+          ],
+          answer: 0,
+        },
+        {
+          q: "Simbol logika untuk 'ATAU' (Disjungsi) adalah...",
+          options: ["∧", "∨", "↔", "→"],
+          answer: 1,
+        },
+        {
+          q: "Negasi dari pernyataan 'Semua siswa hadir' adalah...",
+          options: [
+            "Semua siswa tidak hadir",
+            "Beberapa siswa tidak hadir",
+            "Tidak ada siswa yang hadir",
+            "Siswa rajin",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Jika p = Benar dan q = Salah, tentukan nilai p ∨ q (Disjungsi)!",
+          options: ["Benar", "Salah", "Ragu-ragu", "Netral"],
+          answer: 0,
+        },
+
+        // --- TOPIK 5: MANAJEMEN FILE ---
+        {
+          q: "Dalam struktur folder (Tree), folder paling atas yang menampung semua subfolder disebut...",
+          options: [
+            "Leaf Folder",
+            "Branch Folder",
+            "Root Folder (Folder Akar)",
+            "File Folder",
+          ],
+          answer: 2,
+        },
+        {
+          q: "Manakah struktur manajemen file yang paling rapi untuk siswa sekolah?",
+          options: [
+            "Menyimpan semua file di Desktop",
+            "Satu folder utama > Subfolder Mapel > Subfolder Tugas/Materi",
+            "Membuat folder baru setiap hari tanpa nama jelas",
+            "Menyimpan di folder Download selamanya",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Ekstensi file mana yang biasanya menunjukkan sebuah file gambar?",
+          options: [".docx", ".xlsx", ".jpg", ".mp3"],
+          answer: 2,
+        },
+        {
+          q: "Apa fungsi dari tombol shortcut Ctrl + C pada manajemen file?",
+          options: [
+            "Menempel (Paste)",
+            "Menyalin (Copy)",
+            "Memotong (Cut)",
+            "Menghapus (Delete)",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Folder khusus di Windows yang berfungsi menampung file yang dihapus sementara disebut...",
+          options: [
+            "Control Panel",
+            "Recycle Bin",
+            "My Documents",
+            "Task Manager",
+          ],
+          answer: 1,
+        },
+
+        // --- TOPIK 6: FUNGSI SISTEM OPERASI ---
+        {
+          q: "Berikut ini adalah fungsi utama Sistem Operasi, KECUALI...",
+          options: [
+            "Manajemen Sumber Daya (Resource Management)",
+            "Antarmuka Pengguna (User Interface)",
+            "Manajemen File",
+            "Membuat presentasi slide",
+          ],
+          answer: 3,
+        },
+        {
+          q: "Sistem operasi menyediakan antarmuka agar pengguna mudah berinteraksi, yang dikenal dengan istilah...",
+          options: [
+            "GUI (Graphical User Interface)",
+            "CPU (Central Processing Unit)",
+            "RAM (Random Access Memory)",
+            "HDD (Hard Disk Drive)",
+          ],
+          answer: 0,
+        },
+        {
+          q: "Proses awal saat komputer dinyalakan hingga masuk ke Sistem Operasi disebut...",
+          options: ["Loading", "Booting", "Install", "Browsing"],
+          answer: 1,
+        },
+        {
+          q: "Software kecil yang membantu Sistem Operasi mengenali hardware baru (seperti Printer) disebut...",
+          options: ["Driver", "Browser", "Antivirus", "Codec"],
+          answer: 0,
+        },
+        {
+          q: "Antarmuka berbasis teks dimana pengguna mengetikkan perintah disebut...",
+          options: ["GUI", "CLI (Command Line Interface)", "Icon", "Window"],
+          answer: 1,
+        },
+
+        // --- TOPIK 7: WINDOWS ---
+        {
+          q: "Mengapa Windows menjadi sistem operasi yang sangat populer di dunia?",
+          options: [
+            "Karena gratis dan open source",
+            "Dukungan kompatibilitas software/hardware yang luas dan user-friendly",
+            "Karena hanya bisa digunakan oleh programmer",
+            "Karena tidak memiliki virus",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Salah satu kelemahan Windows dibandingkan Linux adalah...",
+          options: [
+            "Terlalu sedikit aplikasi",
+            "Rawan terhadap virus/malware jika tidak diamankan",
+            "Tidak memiliki tampilan grafis",
+            "Sulit diinstal",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Aplikasi bawaan Windows untuk mengelola file dan folder adalah...",
+          options: [
+            "Internet Explorer",
+            "File Explorer (Windows Explorer)",
+            "Notepad",
+            "Task Manager",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Kombinasi tombol keyboard untuk berpindah antar aplikasi yang sedang terbuka di Windows adalah...",
+          options: ["Alt + F4", "Alt + Tab", "Ctrl + C", "Ctrl + Alt + Del"],
+          answer: 1,
+        },
+        {
+          q: "Versi Windows terbaru yang umum digunakan saat ini (Tahun 2024/2025) adalah...",
+          options: ["Windows XP", "Windows 7", "Windows 11", "Windows 98"],
+          answer: 2,
+        },
+
+        // --- TOPIK 8: LINUX & MACOS ---
+        {
+          q: "Perbedaan utama antara Linux Mint dan MacOS dari segi biaya adalah...",
+          options: [
+            "Linux Mint berbayar mahal, MacOS gratis",
+            "Keduanya berbayar mahal",
+            "Linux Mint Gratis (Open Source), MacOS berbayar (eksklusif)",
+            "MacOS bisa diunduh bebas di semua laptop",
+          ],
+          answer: 2,
+        },
+        {
+          q: "Fitur 'Open Source' pada Linux Mint berarti...",
+          options: [
+            "Kode sumbernya terbuka dan bisa dimodifikasi siapa saja",
+            "Aplikasinya selalu terbuka",
+            "Hanya bisa dibuka di ruangan terbuka",
+            "Sistemnya tidak memiliki password",
+          ],
+          answer: 0,
+        },
+        {
+          q: "Sistem Operasi MacOS hanya dapat berjalan secara legal pada perangkat buatan...",
+          options: ["Dell", "HP", "Apple", "Samsung"],
+          answer: 2,
+        },
+        {
+          q: "Browser web bawaan (default) pada sistem operasi MacOS adalah...",
+          options: ["Edge", "Chrome", "Safari", "Firefox"],
+          answer: 2,
+        },
+        {
+          q: "Istilah untuk berbagai varian sistem operasi Linux (seperti Mint, Ubuntu, Debian) adalah...",
+          options: ["Version", "Edition", "Distro (Distribusi)", "Brand"],
+          answer: 2,
+        },
+
+        // --- TOPIK 9: APLIKASI KERJA ---
+        {
+          q: "Aplikasi apa yang paling tepat digunakan untuk mengolah data keuangan dan membuat grafik laporan?",
+          options: [
+            "Microsoft Word",
+            "Adobe Photoshop",
+            "Microsoft Excel",
+            "VLC Media Player",
+          ],
+          answer: 2,
+        },
+        {
+          q: "Untuk menyusun surat lamaran kerja atau makalah, aplikasi jenis apa yang digunakan?",
+          options: [
+            "Spreadsheet",
+            "Microsoft Word",
+            "Presentation",
+            "Database",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Aplikasi yang digunakan untuk membuka halaman website di internet disebut...",
+          options: ["File Manager", "Web Browser", "Media Player", "Antivirus"],
+          answer: 1,
+        },
+        {
+          q: "Format file standar untuk dokumen portabel yang sulit diedit secara tidak sengaja adalah...",
+          options: [".doc", ".txt", ".pdf", ".xls"],
+          answer: 2,
+        },
+        {
+          q: "Layanan Google yang berfungsi sebagai penyimpanan file secara online (Cloud) adalah...",
+          options: [
+            "Google Meet",
+            "Google Drive",
+            "Google Maps",
+            "Google Chrome",
+          ],
+          answer: 1,
+        },
+
+        // --- TOPIK 10: MICROSOFT EXCEL ---
+        {
+          q: "Tanda apa yang WAJIB ditulis pertama kali saat menulis rumus (formula) di Excel?",
+          options: [": (Titik dua)", "= (Sama dengan)", "# (Pagar)", "@ (At)"],
+          answer: 1,
+        },
+        {
+          q: "Rumus Excel untuk menjumlahkan sekumpulan data angka adalah...",
+          options: ["=AVERAGE()", "=COUNT()", "=SUM()", "=MAX()"],
+          answer: 2,
+        },
+        {
+          q: "Jika Anda ingin mencari nilai rata-rata dari sel A1 sampai A10, rumusnya adalah...",
+          options: [
+            "=SUM(A1:A10)",
+            "=AVERAGE(A1:A10)",
+            "=MIN(A1:A10)",
+            "=IF(A1:A10)",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Fungsi logika di Excel yang digunakan untuk menguji suatu kondisi (Benar/Salah) adalah...",
+          options: ["=IF()", "=LOOKUP()", "=Date()", "=Math()"],
+          answer: 0,
+        },
+        {
+          q: "Simbol operator matematika untuk perkalian di Excel adalah...",
+          options: ["x", "*", "/", "+"],
+          answer: 1,
+        },
+      ];
+
+      // Memastikan hanya menggunakan 50 soal unik dari database di atas
+      const fullQuestions = questionsDB;
+
+      // --- VARIABEL GLOBAL ---
+      let currentQuestion = 0;
+      let score = 0;
+      let userAnswers = new Array(fullQuestions.length).fill(null); // Menyimpan jawaban user
+      let timerInterval;
+
+      // --- FUNGSI UTAMA ---
+
+      function startQuiz() {
+        document.getElementById("start-screen").classList.add("hidden");
+        document.getElementById("quiz-interface").classList.remove("hidden");
+        document.getElementById("quiz-interface").classList.add("flex");
+
+        // Render Navigasi
+        renderNavigation();
+
+        // Load Soal Pertama
+        loadQuestion(0);
+
+        // Mulai Timer (Sekarang hanya menampilkan label Bebas)
+        startTimer();
+      }
+
+      function loadQuestion(index) {
+        currentQuestion = index;
+        const q = fullQuestions[index];
+
+        // Update UI Nomor Soal
+        document.getElementById("current-q-num").innerText = index + 1;
+        document.getElementById("total-q-num").innerText = fullQuestions.length;
+
+        // Update Teks Soal
+        document.getElementById("question-text").innerText = q.q;
+
+        // Render Opsi
+        const optionsContainer = document.getElementById("options-container");
+        optionsContainer.innerHTML = "";
+
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement("button");
+          btn.className = `option-card w-full text-left p-4 rounded-lg border border-gray-200 hover:bg-gray-50 flex items-center group ${
+            userAnswers[index] === i
+              ? "selected-option ring-2 ring-blue-500"
+              : ""
+          }`;
+          btn.onclick = () => selectOption(i);
+
+          // Huruf Opsi (A, B, C, D)
+          const letter = String.fromCharCode(65 + i);
+
+          btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 font-bold flex items-center justify-center mr-4 group-hover:bg-blue-200 transition">
+                        ${letter}
+                    </span>
+                    <span class="font-medium text-gray-700">${opt}</span>
+                `;
+          optionsContainer.appendChild(btn);
+        });
+
+        // Update Navigasi Buttons
+        document.getElementById("btn-prev").disabled = index === 0;
+
+        if (index === fullQuestions.length - 1) {
+          document.getElementById("btn-next").classList.add("hidden");
+          document.getElementById("btn-finish").classList.remove("hidden");
+          document.getElementById("btn-finish").classList.add("inline-flex");
+        } else {
+          document.getElementById("btn-next").classList.remove("hidden");
+          document.getElementById("btn-finish").classList.add("hidden");
+          document.getElementById("btn-finish").classList.remove("inline-flex");
+        }
+
+        // Update Navigasi Panel Highlight
+        updateNavHighlight();
+      }
+
+      function selectOption(optionIndex) {
+        userAnswers[currentQuestion] = optionIndex;
+        loadQuestion(currentQuestion); // Re-render untuk update styling
+        renderNavigation(); // Update warna di panel navigasi
+      }
+
+      function nextQuestion() {
+        if (currentQuestion < fullQuestions.length - 1) {
+          loadQuestion(currentQuestion + 1);
+        }
+      }
+
+      function prevQuestion() {
+        if (currentQuestion > 0) {
+          loadQuestion(currentQuestion - 1);
+        }
+      }
+
+      function renderNavigation() {
+        const navContainer = document.getElementById("question-nav");
+        navContainer.innerHTML = "";
+
+        fullQuestions.forEach((_, i) => {
+          const dot = document.createElement("div");
+          let colorClass = "bg-gray-200 text-gray-500"; // Default: belum dijawab
+
+          if (userAnswers[i] !== null) {
+            colorClass = "bg-green-500 text-white"; // Sudah dijawab
+          }
+
+          if (i === currentQuestion) {
+            colorClass = "bg-blue-600 text-white ring-2 ring-blue-300"; // Sedang aktif
+          }
+
+          dot.className = `h-8 w-full rounded flex items-center justify-center text-xs font-bold cursor-pointer transition ${colorClass}`;
+          dot.innerText = i + 1;
+          dot.onclick = () => loadQuestion(i);
+          navContainer.appendChild(dot);
+        });
+      }
+
+      function updateNavHighlight() {
+        renderNavigation();
+      }
+
+      function startTimer() {
+        const timerDisplay = document.getElementById("timer");
+        timerDisplay.innerText = "Bebas";
+      }
+
+      function finishQuiz() {
+        clearInterval(timerInterval);
+
+        // Hitung Skor
+        let correctCount = 0;
+        fullQuestions.forEach((q, index) => {
+          if (userAnswers[index] === q.answer) {
+            correctCount++;
+          }
+        });
+
+        const finalScore = Math.round(
+          (correctCount / fullQuestions.length) * 100
+        );
+        const wrongCount = fullQuestions.length - correctCount;
+
+        // Update UI Hasil
+        document.getElementById("quiz-interface").classList.add("hidden");
+        document.getElementById("quiz-interface").classList.remove("flex");
+        document.getElementById("result-screen").classList.remove("hidden");
+
+        document.getElementById("final-score").innerText = finalScore;
+        document.getElementById("correct-count").innerText = correctCount;
+        document.getElementById("wrong-count").innerText = wrongCount;
+
+        // Generate Review Pembahasan
+        const reviewContainer = document.getElementById("review-container");
+        reviewContainer.innerHTML = ""; // Reset isi
+
+        fullQuestions.forEach((q, index) => {
+          const userAnswerIdx = userAnswers[index];
+          const isCorrect = userAnswerIdx === q.answer;
+
+          const userAnswerText =
+            userAnswerIdx !== null ? q.options[userAnswerIdx] : "Tidak Dijawab";
+          const correctAnswerText = q.options[q.answer];
+
+          const reviewItem = document.createElement("div");
+          reviewItem.className = `p-4 rounded-lg border text-left ${
+            isCorrect
+              ? "bg-green-50 border-green-200"
+              : "bg-red-50 border-red-200"
+          }`;
+
+          reviewItem.innerHTML = `
+                    <p class="font-semibold text-gray-800 mb-2"><span class="text-sm text-gray-500 mr-2">No. ${
+                      index + 1
+                    }</span> ${q.q}</p>
+                    <div class="text-sm space-y-1">
+                        <p class="${
+                          isCorrect
+                            ? "text-green-700 font-medium"
+                            : "text-red-600"
+                        }">
+                            <i class="fas ${
+                              isCorrect ? "fa-check-circle" : "fa-times-circle"
+                            } w-5"></i>
+                            Jawaban Anda: ${userAnswerText}
+                        </p>
+                        ${
+                          !isCorrect
+                            ? `
+                        <p class="text-gray-600 ml-5">
+                            <i class="fas fa-key w-4 text-gray-400"></i>
+                            Jawaban Benar: <span class="font-medium text-gray-800">${correctAnswerText}</span>
+                        </p>`
+                            : ""
+                        }
+                    </div>
+                `;
+          reviewContainer.appendChild(reviewItem);
+        });
+
+        // Pesan & Ikon Berdasarkan Nilai
+        const scoreIcon = document.getElementById("score-icon");
+        const scoreMessage = document.getElementById("score-message");
+
+        if (finalScore >= 75) {
+          scoreIcon.className += " bg-green-100 text-green-600";
+          scoreIcon.innerHTML = '<i class="fas fa-trophy"></i>';
+          scoreMessage.innerText =
+            "Selamat! Anda lulus dengan nilai yang memuaskan.";
+        } else {
+          scoreIcon.className += " bg-red-100 text-red-600";
+          scoreIcon.innerHTML = '<i class="fas fa-times-circle"></i>';
+          scoreMessage.innerText =
+            "Maaf, nilai Anda belum memenuhi KKM. Tetap semangat belajar!";
+        }
+      }
+    </script>
+  </body>
+</html>
