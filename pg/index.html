@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Latihan soal - Informatika PG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .option-card {
+        transition: all 0.2s;
+      }
+      .option-card:hover {
+        background-color: #f3f4f6;
+      }
+      .option-card.selected {
+        background-color: #dbeafe;
+        border-color: #3b82f6;
+        color: #1e40af;
+      }
+      /* Hide scrollbar for question navigation */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .review-card.correct {
+        border-left: 4px solid #10b981;
+        background-color: #f0fdf4;
+      }
+      .review-card.wrong {
+        border-left: 4px solid #ef4444;
+        background-color: #fef2f2;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <!-- Container Utama -->
+    <div
+      class="bg-white w-full max-w-4xl rounded-xl shadow-lg overflow-hidden min-h-[500px] flex flex-col relative my-4"
+    >
+      <!-- HEADER -->
+      <div
+        class="bg-blue-600 p-6 text-white flex justify-between items-center sticky top-0 z-10 shadow-md"
+      >
+        <div class="">
+          <h1 class="text-xl font-bold">Latihan Informatika PG</h1>
+          <p class="text-sm opacity-90" id="header-subtitle">
+            Dari 50 soal ini 10 diantaranya merupakan soal yang akan keluar di
+            ASAS nanti 🫡
+          </p>
+        </div>
+        <div id="user-display" class="hidden text-right">
+          <p class="text-xs opacity-75">Siswa</p>
+          <p class="font-semibold" id="display-name">-</p>
+        </div>
+      </div>
+
+      <!-- HALAMAN 1: LOGIN -->
+      <div
+        id="login-screen"
+        class="flex-1 flex flex-col justify-center items-center p-8 text-center"
+      >
+        <div class="mb-6 bg-blue-100 p-4 rounded-full">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-12 w-12 text-blue-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Selamat Datang</h2>
+        <p class="text-gray-500 mb-6">
+          Silakan masukkan nama lengkap Anda untuk memulai ujian.
+        </p>
+
+        <input
+          type="text"
+          id="username-input"
+          placeholder="Nama Lengkap Siswa"
+          class="w-full max-w-xs px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 text-center"
+        />
+
+        <button
+          onclick="startQuiz()"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105 shadow-md w-full max-w-xs"
+        >
+          Mulai Ujian
+        </button>
+        <p class="mt-4 text-xs text-gray-400">Total 50 Soal Pilihan Ganda</p>
+      </div>
+
+      <!-- HALAMAN 2: QUIZ -->
+      <div id="quiz-screen" class="hidden flex-1 flex flex-col">
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 h-2">
+          <div
+            id="progress-bar"
+            class="bg-blue-500 h-2 transition-all duration-300"
+            style="width: 0%"
+          ></div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 p-6 overflow-y-auto">
+          <div class="flex justify-between items-center mb-4">
+            <span
+              class="text-sm font-semibold text-blue-600 bg-blue-100 px-3 py-1 rounded-full"
+              >Soal <span id="current-question-num">1</span>/50</span
+            >
+          </div>
+
+          <h3
+            class="text-lg md:text-xl font-bold text-gray-800 mb-6 leading-relaxed"
+            id="question-text"
+          >
+            Loading question...
+          </h3>
+
+          <div class="space-y-3" id="options-container">
+            <!-- Options will be injected here via JS -->
+          </div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <div
+          class="p-6 border-t bg-gray-50 flex justify-between items-center bg-white sticky bottom-0"
+        >
+          <button
+            onclick="prevQuestion()"
+            id="btn-prev"
+            class="px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            &larr; Sebelumnya
+          </button>
+
+          <button
+            onclick="nextQuestion()"
+            id="btn-next"
+            class="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium shadow-md"
+          >
+            Selanjutnya &rarr;
+          </button>
+          <button
+            onclick="finishQuiz()"
+            id="btn-finish"
+            class="hidden px-6 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 font-medium shadow-md"
+          >
+            Selesai & Submit
+          </button>
+        </div>
+      </div>
+
+      <!-- HALAMAN 3: HASIL & REVIEW -->
+      <div
+        id="result-screen"
+        class="hidden flex-1 flex flex-col items-center p-8 animate-fade-in overflow-y-auto"
+      >
+        <div class="text-center w-full max-w-2xl">
+          <div class="mb-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-20 w-20 text-yellow-400 mx-auto"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.699-3.181a1 1 0 011.827.954L17.487 6l1.011 1.896a1 1 0 01-.617 1.362l-4.437 1.341 2.375 6.335a1 1 0 01-1.78.892L10 12.607l-4.039 5.219a1 1 0 01-1.78-.892l2.375-6.335-4.437-1.341a1 1 0 01-.617-1.362L2.513 6l-1.002-2.322a1 1 0 011.827-.954l1.699 3.181L9 4.323V3a1 1 0 011-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <h2 class="text-3xl font-bold text-gray-800 mb-2">Hasil Ujian</h2>
+          <p class="text-gray-600 mb-6">
+            Terima kasih telah mengerjakan,
+            <span id="result-name" class="font-bold text-blue-600"></span>.
+          </p>
+
+          <div class="grid grid-cols-2 gap-4 w-full mb-8">
+            <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+              <p class="text-sm text-gray-500">Skor Akhir</p>
+              <p class="text-3xl font-bold text-blue-700" id="final-score">0</p>
+            </div>
+            <div class="bg-green-50 p-4 rounded-xl border border-green-100">
+              <p class="text-sm text-gray-500">Benar</p>
+              <p class="text-3xl font-bold text-green-700">
+                <span id="correct-count">0</span
+                ><span class="text-base text-gray-400 font-normal">/50</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex justify-center gap-4 mb-8">
+            <button
+              onclick="location.reload()"
+              class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-6 rounded-lg transition shadow-md text-sm"
+            >
+              Kerjakan Ulang
+            </button>
+          </div>
+        </div>
+
+        <!-- BAGIAN REVIEW / PEMBAHASAN -->
+        <div class="w-full max-w-3xl border-t pt-6">
+          <h3
+            class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-blue-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+              />
+            </svg>
+            Pembahasan Jawaban
+          </h3>
+          <div id="review-container" class="space-y-4 text-left">
+            <!-- Review items generated via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+      // --- DATA SOAL + PENJELASAN (50 Soal) ---
+      const questions = [
+        // Materi 1: Teknik Mengetik (1-5)
+        {
+          q: "Apa keuntungan utama menggunakan teknik mengetik 10 jari dibandingkan 2 jari?",
+          options: [
+            "Lebih cepat lelah",
+            "Akurasi data lebih rendah",
+            "Efisiensi waktu dan distribusi beban jari",
+            "Hanya terlihat lebih profesional",
+          ],
+          a: 2,
+          explanation:
+            "Mengetik 10 jari membagi beban kerja ke seluruh jari sehingga lebih cepat dan mengurangi kelelahan dibandingkan hanya menggunakan 2 jari.",
+        },
+        {
+          q: "Dalam teknik mengetik 10 jari, jari mana yang bertugas menekan tombol 'Spasi'?",
+          options: [
+            "Jari Telunjuk",
+            "Jari Kelingking",
+            "Jari Manis",
+            "Ibu Jari",
+          ],
+          a: 3,
+          explanation:
+            "Ibu jari (jempol) kanan dan kiri bertugas menekan tombol Spasi karena posisinya yang paling alami berada di bagian bawah keyboard.",
+        },
+        {
+          q: "Mengapa mengetik 2 jari (hunt and peck) cenderung menyebabkan kelelahan mata?",
+          options: [
+            "Karena harus melihat layar terus menerus",
+            "Karena harus bolak-balik melihat keyboard dan layar",
+            "Karena jari bergerak lebih lambat",
+            "Karena monitor terlalu terang",
+          ],
+          a: 1,
+          explanation:
+            "Metode 2 jari mengharuskan mata sering berpindah fokus antara keyboard (mencari tombol) dan layar (cek hasil), yang menyebabkan mata cepat lelah.",
+        },
+        {
+          q: "Posisi duduk yang benar saat mengetik untuk mengurangi kelelahan adalah...",
+          options: [
+            "Membungkuk ke depan",
+            "Punggung tegak dan pandangan lurus ke monitor",
+            "Bersandar miring ke kiri",
+            "Kaki diangkat ke kursi",
+          ],
+          a: 1,
+          explanation:
+            "Posisi ergonomis adalah punggung tegak, siku membentuk sudut 90 derajat, dan pandangan lurus ke monitor untuk menjaga kesehatan tulang belakang.",
+        },
+        {
+          q: "Tombol 'F' dan 'J' pada keyboard biasanya memiliki tonjolan kecil. Apa fungsinya?",
+          options: [
+            "Hiasan keyboard",
+            "Cacat produksi",
+            "Penanda posisi awal jari telunjuk",
+            "Tombol khusus gaming",
+          ],
+          a: 2,
+          explanation:
+            "Tonjolan pada F dan J adalah panduan rabaan (tactile) agar pengguna tahu posisi awal jari telunjuk tanpa perlu melihat keyboard.",
+        },
+
+        // Materi 2 & 6: Sistem Operasi & Fungsi Utama (6-15)
+        {
+          q: "Sistem Operasi sering disebut sebagai 'otak' komputer dalam hal manajemen. Apa fungsi OS terhadap RAM?",
+          options: [
+            "Membersihkan debu fisik",
+            "Mengalokasikan ruang memori untuk aplikasi yang berjalan",
+            "Menambah kapasitas RAM secara ajaib",
+            "Mengubah RAM menjadi Harddisk",
+          ],
+          a: 1,
+          explanation:
+            "OS bertugas mengatur (manajemen) memori, menentukan program mana yang boleh menggunakan RAM dan seberapa besar.",
+        },
+        {
+          q: "Apa yang terjadi jika Sistem Operasi gagal mengatur manajemen memori (Memory Leak)?",
+          options: [
+            "Komputer menjadi sangat cepat",
+            "Aplikasi atau komputer bisa hang/crash",
+            "Kapasitas harddisk bertambah",
+            "Monitor menjadi lebih terang",
+          ],
+          a: 1,
+          explanation:
+            "Kegagalan manajemen memori membuat RAM penuh sesak oleh data sampah, menyebabkan komputer lambat, not responding, atau crash.",
+        },
+        {
+          q: "Berikut ini adalah fungsi utama Sistem Operasi, KECUALI...",
+          options: [
+            "Manajemen Hardware",
+            "Manajemen File",
+            "Membuat dokumen Word",
+            "Antarmuka Pengguna (User Interface)",
+          ],
+          a: 2,
+          explanation:
+            "Membuat dokumen adalah fungsi dari Aplikasi (Software Aplikasi), bukan fungsi inti dari Sistem Operasi itu sendiri.",
+        },
+        {
+          q: "Bagian Sistem Operasi yang berinteraksi langsung dengan pengguna disebut...",
+          options: ["Kernel", "User Interface (UI)", "BIOS", "Processor"],
+          a: 1,
+          explanation:
+            "User Interface (seperti GUI Windows) adalah lapisan terluar yang dilihat dan digunakan manusia untuk berinteraksi dengan komputer.",
+        },
+        {
+          q: "Contoh Sistem Operasi untuk perangkat mobile adalah...",
+          options: ["Windows 11", "Android", "Linux Ubuntu", "MacOS"],
+          a: 1,
+          explanation:
+            "Android (dan iOS) adalah sistem operasi yang dirancang khusus untuk arsitektur perangkat mobile (HP/Tablet).",
+        },
+        {
+          q: "Kernel dalam sistem operasi berfungsi sebagai...",
+          options: [
+            "Aplikasi pengolah kata",
+            "Inti OS yang menghubungkan software dan hardware",
+            "Program antivirus",
+            "Web browser",
+          ],
+          a: 1,
+          explanation:
+            "Kernel adalah inti (core) dari OS yang memiliki akses penuh ke sistem dan menjembatani komunikasi antara software dan hardware.",
+        },
+        {
+          q: "Jika Anda membuka terlalu banyak aplikasi sekaligus, komputer menjadi lambat. Komponen apa yang paling terbebani?",
+          options: [
+            "Harddisk Penyimpanan",
+            "RAM (Random Access Memory)",
+            "Keyboard",
+            "Sound Card",
+          ],
+          a: 1,
+          explanation:
+            "Setiap aplikasi yang berjalan membutuhkan ruang di RAM. Jika RAM penuh, komputer akan melambat drastis.",
+        },
+        {
+          q: "Istilah 'Multitasking' dalam Sistem Operasi berarti...",
+          options: [
+            "Hanya bisa menjalankan satu aplikasi",
+            "Menjalankan banyak aplikasi secara bersamaan",
+            "Komputer memiliki banyak monitor",
+            "Menggunakan banyak mouse",
+          ],
+          a: 1,
+          explanation:
+            "Multitasking adalah kemampuan OS untuk menjalankan lebih dari satu proses atau aplikasi dalam waktu yang bersamaan.",
+        },
+        {
+          q: "Aplikasi bawaan Windows untuk mengatur file disebut...",
+          options: [
+            "Internet Explorer",
+            "File Explorer",
+            "Task Manager",
+            "Control Panel",
+          ],
+          a: 1,
+          explanation:
+            "File Explorer (dulu Windows Explorer) adalah tool manajemen file standar di Windows.",
+        },
+        {
+          q: "Untuk melihat aplikasi apa saja yang sedang berjalan dan memakan memori di Windows, kita menggunakan...",
+          options: ["Paint", "Task Manager", "Notepad", "Calculator"],
+          a: 1,
+          explanation:
+            "Task Manager menampilkan daftar proses, penggunaan CPU, dan penggunaan Memori secara real-time.",
+        },
+
+        // Materi 3: GPU (16-20)
+        {
+          q: "GPU adalah singkatan dari...",
+          options: [
+            "General Processing Unit",
+            "Graphics Processing Unit",
+            "Gaming Power Unit",
+            "Global Positioning Unit",
+          ],
+          a: 1,
+          explanation:
+            "GPU singkatan dari Graphics Processing Unit, unit khusus untuk mengolah grafis.",
+        },
+        {
+          q: "Fungsi utama GPU adalah...",
+          options: [
+            "Menyimpan data permanen",
+            "Mengolah data grafis dan rendering gambar/video",
+            "Mengetik dokumen",
+            "Menghubungkan ke internet",
+          ],
+          a: 1,
+          explanation:
+            "GPU dirancang untuk melakukan perhitungan paralel yang berat untuk merender gambar, video, dan animasi 3D.",
+        },
+        {
+          q: "Aplikasi manakah yang SANGAT bergantung pada kinerja GPU?",
+          options: [
+            "Notepad",
+            "Adobe Premiere Pro",
+            "Calculator",
+            "File Explorer",
+          ],
+          a: 1,
+          explanation:
+            "Adobe Premiere Pro (editing video) membutuhkan GPU untuk rendering efek, transisi, dan export video dengan cepat.",
+        },
+        {
+          q: "Dalam bermain game berat, jika GPU lemah maka yang terjadi adalah...",
+          options: [
+            "Suara game hilang",
+            "FPS (Frame per Second) rendah / patah-patah",
+            "Internet putus",
+            "Mouse tidak berfungsi",
+          ],
+          a: 1,
+          explanation:
+            "GPU yang lemah tidak sanggup merender gambar dengan cepat, menyebabkan FPS rendah sehingga gerakan terlihat patah-patah (lag).",
+        },
+        {
+          q: "Selain untuk game, GPU juga digunakan untuk...",
+          options: [
+            "Menulis email",
+            "Rendering 3D Arsitektur",
+            "Membuka file ZIP",
+            "Mencetak dokumen",
+          ],
+          a: 1,
+          explanation:
+            "Aplikasi arsitektur seperti AutoCAD atau Blender sangat membutuhkan GPU untuk merender model 3D bangunan secara realistis.",
+        },
+
+        // Materi 4: Game Development & Specs (21-25)
+        {
+          q: "Mengapa Game Developer membutuhkan spesifikasi komputer yang tinggi?",
+          options: [
+            "Agar terlihat keren",
+            "Untuk proses rendering dan kompilasi kode yang berat",
+            "Hanya untuk bermain game",
+            "Agar listrik lebih hemat",
+          ],
+          a: 1,
+          explanation:
+            "Membuat game melibatkan proses berat seperti rendering 3D real-time, kompilasi kode program, dan menjalankan simulasi fisika.",
+        },
+        {
+          q: "Software engine pembuat game seperti Unity atau Unreal Engine membutuhkan...",
+          options: [
+            "RAM kecil",
+            "Processor dan GPU kinerja tinggi",
+            "Koneksi internet lambat",
+            "Monitor hitam putih",
+          ],
+          a: 1,
+          explanation:
+            "Game Engine adalah software kompleks yang memakan banyak resource CPU dan GPU untuk editor visualnya.",
+        },
+        {
+          q: "Proses mengubah model 3D menjadi gambar jadi dalam game development disebut...",
+          options: ["Coding", "Rendering", "Debugging", "Typing"],
+          a: 1,
+          explanation:
+            "Rendering adalah proses komputasi untuk menghasilkan citra 2D atau 3D dari model yang telah dibuat.",
+        },
+        {
+          q: "Jika RAM tidak mencukupi saat membuat game, kemungkinan besar software akan...",
+          options: [
+            "Berjalan lebih cepat",
+            "Force Close (Keluar sendiri) atau Not Responding",
+            "Menghapus Windows",
+            "Mengubah warna layar",
+          ],
+          a: 1,
+          explanation:
+            "Kekurangan RAM saat bekerja dengan aset game yang besar akan menyebabkan sistem kehabisan memori dan menutup aplikasi paksa.",
+        },
+        {
+          q: "Komponen penyimpanan yang disarankan untuk development agar loading aset cepat adalah...",
+          options: [
+            "Floppy Disk",
+            "HDD Lawas",
+            "SSD (Solid State Drive)",
+            "CD-ROM",
+          ],
+          a: 2,
+          explanation:
+            "SSD memiliki kecepatan baca/tulis jauh lebih tinggi daripada HDD, sangat penting untuk me-load ribuan aset game kecil dengan cepat.",
+        },
+
+        // Materi 5: Struktur Folder (26-30)
+        {
+          q: "Struktur penyimpanan file yang bertingkat-tingkat menyerupai pohon disebut...",
+          options: [
+            "River Structure",
+            "Tree Structure (Struktur Pohon)",
+            "Cloud Structure",
+            "Flat Structure",
+          ],
+          a: 1,
+          explanation:
+            "Tree structure menggambarkan bagaimana folder bercabang menjadi subfolder, mirip dahan pohon.",
+        },
+        {
+          q: "Folder yang berada di dalam folder lain disebut...",
+          options: ["Superfolder", "Master Folder", "Subfolder", "Zip file"],
+          a: 2,
+          explanation:
+            "Subfolder adalah istilah untuk direktori (folder) yang berada di dalam direktori lain (parent folder).",
+        },
+        {
+          q: "Mengapa kita perlu mengorganisir file tugas sekolah ke dalam folder?",
+          options: [
+            "Agar harddisk cepat penuh",
+            "Agar file sulit ditemukan",
+            "Agar memudahkan pencarian dan rapi",
+            "Agar file otomatis terhapus",
+          ],
+          a: 2,
+          explanation:
+            "Manajemen file yang baik (pengelompokan) bertujuan untuk efisiensi saat mencari kembali data di masa depan.",
+        },
+        {
+          q: "Folder utama yang menampung seluruh drive biasanya disebut...",
+          options: ["Root Directory", "Leaf Directory", "Branch", "Trunk"],
+          a: 0,
+          explanation:
+            "Root Directory (Akar) adalah tingkatan paling atas dalam sistem file (misalnya C:\ pada Windows).",
+        },
+        {
+          q: "Manakah nama folder yang paling baik untuk tugas matematika semester 1?",
+          options: ["Folder Baru", "Tugas123", "Matematika_Sem1", "Data"],
+          a: 2,
+          explanation:
+            "Nama folder harus deskriptif. 'Matematika_Sem1' jelas menggambarkan isi dan konteks waktunya.",
+        },
+
+        // Materi 7 & 8: Windows, Linux, MacOS (31-40)
+        {
+          q: "Salah satu alasan utama Windows sangat populer adalah...",
+          options: [
+            "Gratis / Open Source",
+            "Kompatibilitas software dan game yang sangat luas",
+            "Hanya berjalan di hardware Apple",
+            "Sulit digunakan",
+          ],
+          a: 1,
+          explanation:
+            "Windows mendominasi pasar karena hampir semua developer software dan game membuat versi untuk Windows.",
+        },
+        {
+          q: "Apa kelebihan utama Linux Mint dibandingkan Windows?",
+          options: [
+            "Lebih mahal",
+            "Banyak virus",
+            "Gratis (Open Source) dan ringan",
+            "Tidak bisa connect internet",
+          ],
+          a: 2,
+          explanation:
+            "Linux Mint bersifat Open Source (gratis total) dan cenderung lebih ringan serta aman dari virus Windows.",
+        },
+        {
+          q: "Sistem Operasi MacOS hanya bisa berjalan secara resmi di perangkat...",
+          options: ["Semua Laptop", "Apple (Macbook/iMac)", "Samsung", "Asus"],
+          a: 1,
+          explanation:
+            "MacOS adalah sistem tertutup (proprietary) yang dibuat eksklusif oleh Apple hanya untuk hardware mereka sendiri.",
+        },
+        {
+          q: "Dilihat dari segi BIAYA, perbedaan Linux Mint dan MacOS adalah...",
+          options: [
+            "Keduanya berbayar mahal",
+            "Linux Gratis, MacOS berbayar (terikat hardware)",
+            "Linux Mahal, MacOS Gratis",
+            "Keduanya gratis",
+          ],
+          a: 1,
+          explanation:
+            "Linux gratis diunduh. MacOS 'berbayar' karena harga OS sudah termasuk dalam harga perangkat Apple yang mahal.",
+        },
+        {
+          q: "Fitur 'Ecosystem' (keterhubungan antar perangkat) adalah keunggulan utama dari...",
+          options: ["Windows 98", "Linux Mint", "Apple MacOS", "MS-DOS"],
+          a: 2,
+          explanation:
+            "Apple terkenal dengan ekosistemnya (iPhone, iPad, Mac) yang terintegrasi sangat mulus (Airdrop, Handoff, dll).",
+        },
+        {
+          q: "Sistem operasi yang kodenya boleh dimodifikasi oleh siapa saja disebut...",
+          options: [
+            "Closed Source",
+            "Open Source",
+            "Paid Software",
+            "Shareware",
+          ],
+          a: 1,
+          explanation:
+            "Open Source berarti kode sumbernya terbuka untuk publik, boleh dipelajari, diubah, dan disebarluaskan.",
+        },
+        {
+          q: "Windows dikembangkan oleh perusahaan...",
+          options: ["Apple", "Google", "Microsoft", "Facebook"],
+          a: 2,
+          explanation: "Microsoft adalah pengembang OS Windows.",
+        },
+        {
+          q: "Kelemahan umum Windows dibandingkan Linux adalah...",
+          options: [
+            "Lebih rentan terhadap virus/malware",
+            "Tidak mendukung game",
+            "Susah diinstall",
+            "Tampilan membosankan",
+          ],
+          a: 0,
+          explanation:
+            "Karena penggunanya paling banyak, Windows menjadi target utama pembuat virus dan malware.",
+        },
+        {
+          q: "Distro Linux yang tampilannya dibuat mirip Windows agar user mudah beradaptasi adalah...",
+          options: ["Kali Linux", "Linux Mint", "Arch Linux", "Red Hat"],
+          a: 1,
+          explanation:
+            "Linux Mint (edisi Cinnamon) didesain dengan taskbar dan start menu yang familiar bagi pengguna Windows.",
+        },
+        {
+          q: "MacOS dikenal sangat baik digunakan untuk bidang...",
+          options: [
+            "Server Database",
+            "Desain Grafis dan Multimedia",
+            "Gaming Hardcore",
+            "Hacking",
+          ],
+          a: 1,
+          explanation:
+            "MacOS memiliki manajemen warna dan audio yang sangat baik, menjadikannya standar industri bagi desainer dan musisi.",
+        },
+
+        // Materi 9: Aplikasi Kerja (41-45)
+        {
+          q: "Aplikasi yang paling tepat untuk membuat laporan makalah adalah...",
+          options: [
+            "Microsoft Excel",
+            "Microsoft Word",
+            "Adobe Photoshop",
+            "Microsoft PowerPoint",
+          ],
+          a: 1,
+          explanation:
+            "Microsoft Word adalah aplikasi Word Processing (pengolah kata) yang fungsi utamanya membuat dokumen teks.",
+        },
+        {
+          q: "Untuk presentasi di depan kelas, aplikasi yang digunakan adalah...",
+          options: [
+            "Microsoft PowerPoint",
+            "Microsoft Word",
+            "Notepad",
+            "VLC Player",
+          ],
+          a: 0,
+          explanation:
+            "PowerPoint didesain khusus untuk membuat slide presentasi visual.",
+        },
+        {
+          q: "Browser yang digunakan untuk mencari materi di internet contohnya...",
+          options: ["File Explorer", "Google Chrome", "Adobe Reader", "Winamp"],
+          a: 1,
+          explanation:
+            "Google Chrome adalah web browser untuk menjelajahi internet.",
+        },
+        {
+          q: "Aplikasi Spreadsheet (pengolah angka) buatan Google yang bisa diakses online adalah...",
+          options: [
+            "Google Docs",
+            "Google Sheets",
+            "Google Slides",
+            "Google Drive",
+          ],
+          a: 1,
+          explanation:
+            "Google Sheets adalah alternatif Excel berbasis web (cloud) buatan Google.",
+        },
+        {
+          q: "Format file standar untuk dokumen Microsoft Word adalah...",
+          options: [".xlsx", ".pptx", ".docx", ".mp3"],
+          a: 2,
+          explanation:
+            ".docx adalah ekstensi file default untuk dokumen Word modern (sejak 2007).",
+        },
+
+        // Materi 10: Excel & Formula (46-50)
+        {
+          q: "Fitur di Excel untuk melakukan perhitungan otomatis disebut...",
+          options: ["Layout", "Formula / Rumus", "Design", "Animation"],
+          a: 1,
+          explanation:
+            "Formula adalah persamaan matematika yang digunakan Excel untuk menghitung nilai.",
+        },
+        {
+          q: "Rumus Excel untuk menjumlahkan sekumpulan data angka adalah...",
+          options: ["=COUNT()", "=AVERAGE()", "=SUM()", "=MAX()"],
+          a: 2,
+          explanation:
+            "=SUM() berasal dari kata Summary/Summation yang berarti penjumlahan.",
+        },
+        {
+          q: "Rumus Excel untuk mencari nilai rata-rata adalah...",
+          options: ["=SUM()", "=MIN()", "=AVERAGE()", "=IF()"],
+          a: 2,
+          explanation:
+            "=AVERAGE() digunakan untuk menghitung nilai rata-rata aritmatika dari range sel yang dipilih.",
+        },
+        {
+          q: 'Rumus \'=IF(A1>75, "Lulus", "Remidi")\' artinya...',
+          options: [
+            "Jika A1 lebih dari 75 maka Lulus",
+            "Jika A1 kurang dari 75 maka Lulus",
+            "Menjumlahkan nilai 75",
+            "Mencari rata-rata 75",
+          ],
+          a: 0,
+          explanation:
+            "Fungsi IF mengecek kondisi logic. Jika A1 > 75 (Benar) tampilkan 'Lulus', jika Salah tampilkan 'Remidi'.",
+        },
+        {
+          q: "Setiap penulisan rumus di Excel HARUS diawali dengan tanda...",
+          options: ["@", "#", "=", "$"],
+          a: 2,
+          explanation:
+            "Tanda sama dengan (=) memberi tahu Excel bahwa karakter setelahnya adalah rumus, bukan teks biasa.",
+        },
+      ];
+
+      // --- VARIABEL STATE ---
+      let currentQuestionIndex = 0;
+      let userAnswers = new Array(questions.length).fill(null); // Menyimpan index jawaban user (0-3) atau null
+      let studentName = "";
+
+      // --- DOM ELEMENTS ---
+      const loginScreen = document.getElementById("login-screen");
+      const quizScreen = document.getElementById("quiz-screen");
+      const resultScreen = document.getElementById("result-screen");
+
+      const usernameInput = document.getElementById("username-input");
+      const displayName = document.getElementById("display-name");
+      const userDisplay = document.getElementById("user-display");
+
+      const questionText = document.getElementById("question-text");
+      const optionsContainer = document.getElementById("options-container");
+      const currentQuestionNum = document.getElementById(
+        "current-question-num"
+      );
+      const progressBar = document.getElementById("progress-bar");
+
+      const btnPrev = document.getElementById("btn-prev");
+      const btnNext = document.getElementById("btn-next");
+      const btnFinish = document.getElementById("btn-finish");
+      const reviewContainer = document.getElementById("review-container");
+
+      // --- FUNGSI UTAMA ---
+
+      function startQuiz() {
+        const name = usernameInput.value.trim();
+        if (name === "") {
+          alert("Harap masukkan nama Anda terlebih dahulu!");
+          return;
+        }
+        studentName = name;
+        displayName.innerText = studentName;
+
+        // Switch Screen
+        loginScreen.classList.add("hidden");
+        quizScreen.classList.remove("hidden");
+        userDisplay.classList.remove("hidden");
+
+        loadQuestion();
+      }
+
+      function loadQuestion() {
+        const q = questions[currentQuestionIndex];
+
+        // Update UI Teks
+        currentQuestionNum.innerText = currentQuestionIndex + 1;
+        questionText.innerText = q.q;
+
+        // Update Progress Bar
+        const percent = ((currentQuestionIndex + 1) / questions.length) * 100;
+        progressBar.style.width = `${percent}%`;
+
+        // Render Options
+        optionsContainer.innerHTML = "";
+        q.options.forEach((opt, index) => {
+          const isSelected = userAnswers[currentQuestionIndex] === index;
+
+          const btn = document.createElement("div");
+          btn.className = `option-card border rounded-lg p-4 cursor-pointer flex items-center gap-3 ${
+            isSelected ? "selected" : "border-gray-200 bg-white text-gray-700"
+          }`;
+          btn.onclick = () => selectOption(index);
+
+          // Radio Circle Indicator
+          const circle = document.createElement("div");
+          circle.className = `w-5 h-5 rounded-full border flex items-center justify-center ${
+            isSelected ? "border-blue-500" : "border-gray-400"
+          }`;
+          const dot = document.createElement("div");
+          dot.className = `w-2.5 h-2.5 rounded-full bg-blue-500 ${
+            isSelected ? "block" : "hidden"
+          }`;
+          circle.appendChild(dot);
+
+          const text = document.createElement("span");
+          text.innerText = opt;
+
+          btn.appendChild(circle);
+          btn.appendChild(text);
+          optionsContainer.appendChild(btn);
+        });
+
+        // Update Navigation Buttons
+        btnPrev.disabled = currentQuestionIndex === 0;
+
+        if (currentQuestionIndex === questions.length - 1) {
+          btnNext.classList.add("hidden");
+          btnFinish.classList.remove("hidden");
+        } else {
+          btnNext.classList.remove("hidden");
+          btnFinish.classList.add("hidden");
+        }
+      }
+
+      function selectOption(index) {
+        userAnswers[currentQuestionIndex] = index;
+        loadQuestion(); // Re-render to show selection styling
+      }
+
+      function nextQuestion() {
+        if (userAnswers[currentQuestionIndex] === null) {
+          alert("Silakan pilih jawaban terlebih dahulu sebelum lanjut!");
+          return;
+        }
+        if (currentQuestionIndex < questions.length - 1) {
+          currentQuestionIndex++;
+          loadQuestion();
+        }
+      }
+
+      function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+          currentQuestionIndex--;
+          loadQuestion();
+        }
+      }
+
+      function finishQuiz() {
+        if (userAnswers[currentQuestionIndex] === null) {
+          alert("Silakan pilih jawaban untuk soal terakhir!");
+          return;
+        }
+
+        if (
+          !confirm(
+            "Apakah Anda yakin ingin menyelesaikan ujian? Anda tidak bisa mengubah jawaban setelah ini."
+          )
+        ) {
+          return;
+        }
+
+        calculateResult();
+      }
+
+      function calculateResult() {
+        let correctCount = 0;
+        reviewContainer.innerHTML = ""; // Clear previous review
+
+        questions.forEach((q, index) => {
+          const userAnswerIndex = userAnswers[index];
+          const isCorrect = userAnswerIndex === q.a;
+
+          if (isCorrect) correctCount++;
+
+          // CREATE REVIEW CARD
+          const card = document.createElement("div");
+          card.className = `review-card p-4 rounded-lg border ${
+            isCorrect ? "correct" : "wrong"
+          } shadow-sm`;
+
+          // Status Badge
+          const statusBadge = isCorrect
+            ? `<span class="inline-block bg-green-200 text-green-800 text-xs px-2 py-1 rounded-full font-bold mb-2">Benar</span>`
+            : `<span class="inline-block bg-red-200 text-red-800 text-xs px-2 py-1 rounded-full font-bold mb-2">Salah</span>`;
+
+          // Jawaban User & Kunci
+          const userAnswerText = q.options[userAnswerIndex];
+          const correctAnswerText = q.options[q.a];
+
+          let answerDetailHTML = "";
+          if (isCorrect) {
+            answerDetailHTML = `<p class="text-sm text-gray-700 mt-2"><strong>Jawaban Anda:</strong> ${userAnswerText}</p>`;
+          } else {
+            answerDetailHTML = `
+                        <p class="text-sm text-red-600 mt-2"><strong>Jawaban Anda:</strong> ${userAnswerText}</p>
+                        <p class="text-sm text-green-600"><strong>Jawaban Benar:</strong> ${correctAnswerText}</p>
+                    `;
+          }
+
+          card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold text-gray-400">Soal ${
+                          index + 1
+                        }</span>
+                        ${statusBadge}
+                    </div>
+                    <p class="font-semibold text-gray-800 text-sm md:text-base">${
+                      q.q
+                    }</p>
+                    ${answerDetailHTML}
+                    <div class="mt-3 pt-3 border-t border-gray-200 text-xs md:text-sm text-gray-600 italic bg-white/50 p-2 rounded">
+                        <span class="font-bold not-italic">Pembahasan:</span> ${
+                          q.explanation
+                        }
+                    </div>
+                `;
+
+          reviewContainer.appendChild(card);
+        });
+
+        const score = (correctCount / questions.length) * 100;
+
+        // Update Result Screen
+        document.getElementById("result-name").innerText = studentName;
+        document.getElementById("final-score").innerText = score.toFixed(1);
+        document.getElementById("correct-count").innerText = correctCount;
+
+        // Switch Screen
+        quizScreen.classList.add("hidden");
+        resultScreen.classList.remove("hidden");
+        userDisplay.classList.add("hidden");
+        document.getElementById("header-subtitle").innerText = "Selesai";
+
+        // Scroll to top of result screen
+        resultScreen.scrollTop = 0;
+      }
+    </script>
+  </body>
+</html>
