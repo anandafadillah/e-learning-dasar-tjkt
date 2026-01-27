@@ -3,133 +3,175 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LATIHAN PRA LSP - INTERAKTIF</title>
+    <title>LATIHAN PRA LSP - 90 SOAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap");
 
       body {
-        font-family: "Inter", sans-serif;
-        background: #f0f4f8;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background: #0f172a;
+        color: #f1f5f9;
       }
 
       .glass-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       .option-label {
-        transition: all 0.2s ease;
-        border: 2px solid #e2e8f0;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.03);
       }
 
       .option-input:checked + .option-label {
-        border-color: #3b82f6;
-        background-color: #eff6ff;
-        color: #1e40af;
+        border-color: #38bdf8;
+        background-color: rgba(56, 189, 248, 0.1);
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        color: #38bdf8;
+      }
+
+      .grid-nav-item {
+        transition: all 0.2s ease;
       }
 
       .grid-nav-item.active {
-        background-color: #3b82f6;
-        color: white;
-        border-color: #2563eb;
+        background-color: #38bdf8;
+        color: #0f172a;
+        transform: scale(1.1);
+        z-index: 10;
       }
 
       .grid-nav-item.answered {
         background-color: #10b981;
-        color: white;
         border-color: #059669;
+        color: white;
       }
 
       #progress-bar {
-        transition: width 0.3s ease-in-out;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 10px;
       }
     </style>
   </head>
   <body class="min-h-screen flex items-center justify-center p-4">
     <!-- Container Utama -->
-    <div class="max-w-4xl w-full">
-      <!-- Screen 1: Login -->
+    <div class="max-w-5xl w-full">
+      <!-- Screen 1: Welcome -->
       <div
         id="screen-login"
-        class="glass-card p-8 rounded-2xl shadow-2xl text-center"
+        class="glass-card p-10 rounded-3xl shadow-2xl text-center border-t-4 border-t-sky-500"
       >
-        <h1 class="text-3xl font-bold text-blue-700 mb-2">LATIHAN PRA LSP</h1>
-        <p class="text-slate-500 mb-8">
-          Uji kompetensi Teknik Komputer & Jaringan
+        <div class="mb-6 inline-flex p-4 bg-sky-500/10 rounded-2xl">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-12 w-12 text-sky-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            />
+          </svg>
+        </div>
+        <h1 class="text-4xl font-extrabold text-white mb-2 tracking-tight">
+          LATIHAN LSP TJKT ☠️
+        </h1>
+        <p class="text-slate-400 mb-8">
+          soal latihan Asesment LSP TJKT Tahun 2026
         </p>
 
-        <div class="max-w-sm mx-auto">
+        <div class="max-w-sm mx-auto bg-slate-800/50 p-6 rounded-2xl">
           <label
-            class="block text-left text-sm font-semibold text-slate-700 mb-2"
-            >Nama Lengkap</label
+            class="block text-left text-xs font-bold text-slate-500 uppercase tracking-widest mb-3"
+            >Nama Peserta</label
           >
           <input
             type="text"
             id="input-nama"
-            class="w-full p-4 border-2 border-slate-200 rounded-xl focus:border-blue-500 outline-none mb-6"
-            placeholder="Masukkan nama kamu..."
+            class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none mb-6 text-white transition-all"
+            placeholder="Ketik nama kamu di sini..."
           />
           <button
             onclick="mulaiUjian()"
-            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg"
+            class="w-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-extrabold py-4 rounded-xl transition-all shadow-lg shadow-sky-500/20 active:scale-95"
           >
-            Mulai Ujian Sekarang
+            Mulai Simulasi
           </button>
         </div>
       </div>
 
       <!-- Screen 2: Ujian -->
       <div id="screen-quiz" class="hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <!-- Sisi Kiri: Soal -->
-          <div class="lg:col-span-3">
-            <div class="glass-card p-6 rounded-2xl shadow-xl">
+          <div class="lg:col-span-8">
+            <div
+              class="glass-card p-8 rounded-3xl shadow-xl min-h-[550px] flex flex-col"
+            >
               <!-- Header Quiz -->
-              <div class="flex justify-between items-center mb-6">
+              <div class="flex justify-between items-start mb-8">
                 <div>
                   <span
-                    class="text-sm font-bold text-blue-600 uppercase tracking-wider"
-                    >Pertanyaan</span
+                    class="px-3 py-1 bg-sky-500/20 text-sky-400 text-xs font-bold rounded-full uppercase tracking-tighter"
+                    >Pertanyaan Ke</span
                   >
                   <h2
-                    class="text-2xl font-bold text-slate-800"
+                    class="text-3xl font-bold text-white mt-2"
                     id="current-question-number"
                   >
-                    1 / 50
+                    1 / 90
                   </h2>
                 </div>
                 <div class="text-right">
-                  <span class="text-xs text-slate-400 block mb-1"
+                  <span
+                    class="text-xs text-slate-500 block mb-2 font-bold uppercase tracking-widest"
                     >Progress</span
                   >
                   <div
-                    class="w-32 bg-slate-200 h-2 rounded-full overflow-hidden"
+                    class="w-40 bg-slate-800 h-3 rounded-full overflow-hidden border border-slate-700"
                   >
-                    <div id="progress-bar" class="bg-blue-500 h-full w-0"></div>
+                    <div
+                      id="progress-bar"
+                      class="bg-gradient-to-r from-sky-500 to-blue-600 h-full w-0"
+                    ></div>
                   </div>
                 </div>
               </div>
 
               <!-- Area Soal -->
-              <div id="question-area" class="min-h-[300px]">
-                <!-- Konten Soal akan diisi oleh JS -->
+              <div id="question-area" class="flex-grow">
+                <!-- Konten diisi JS -->
               </div>
 
               <!-- Navigasi Bawah -->
-              <div class="flex justify-between mt-8 border-t pt-6">
+              <div
+                class="flex justify-between mt-10 border-t border-slate-700/50 pt-8"
+              >
                 <button
                   onclick="prevQuestion()"
                   id="btn-prev"
-                  class="px-6 py-2 rounded-lg font-semibold text-slate-500 hover:bg-slate-100 disabled:opacity-30"
+                  class="px-8 py-3 rounded-xl font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition-all disabled:opacity-20"
                 >
-                  ← Sebelumnya
+                  ← Kembali
                 </button>
                 <button
                   onclick="nextQuestion()"
                   id="btn-next"
-                  class="px-8 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+                  class="px-10 py-3 bg-white text-slate-900 rounded-xl font-extrabold hover:bg-sky-400 hover:text-slate-950 transition-all active:scale-95"
                 >
                   Selanjutnya →
                 </button>
@@ -138,20 +180,30 @@
           </div>
 
           <!-- Sisi Kanan: Navigasi Nomor -->
-          <div class="lg:col-span-1">
-            <div class="glass-card p-4 rounded-2xl shadow-xl">
-              <h3 class="font-bold text-slate-700 mb-4 text-center">
-                Navigasi Soal
-              </h3>
-              <div class="grid grid-cols-5 gap-2" id="question-nav-grid">
+          <div class="lg:col-span-4">
+            <div class="glass-card p-6 rounded-3xl shadow-xl sticky top-4">
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-slate-300">Peta Soal</h3>
+                <span
+                  id="answered-stat"
+                  class="text-xs font-bold text-emerald-400"
+                  >0 Terjawab</span
+                >
+              </div>
+
+              <div
+                class="grid grid-cols-6 gap-2 max-h-[400px] overflow-y-auto pr-2"
+                id="question-nav-grid"
+              >
                 <!-- Grid nomor soal diisi JS -->
               </div>
-              <div class="mt-6">
+
+              <div class="mt-8 pt-6 border-t border-slate-700/50">
                 <button
                   onclick="konfirmasiSelesai()"
-                  class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-md transition-colors"
+                  class="w-full py-4 bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-emerald-950 border border-emerald-500/20 font-black rounded-2xl shadow-lg transition-all active:scale-95"
                 >
-                  Selesai Ujian
+                  SELESAI & KIRIM
                 </button>
               </div>
             </div>
@@ -162,71 +214,69 @@
       <!-- Screen 3: Hasil -->
       <div
         id="screen-result"
-        class="hidden glass-card p-10 rounded-3xl shadow-2xl text-center"
+        class="hidden glass-card p-12 rounded-[40px] shadow-2xl text-center border border-white/10"
       >
-        <div class="mb-6">
-          <div
-            class="inline-block p-4 rounded-full bg-blue-50 text-blue-600 mb-4"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-12 w-12"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <h2 class="text-3xl font-bold text-slate-800">Ujian Selesai!</h2>
-          <p class="text-slate-500" id="result-name">Ganteng</p>
+        <div class="mb-10">
+          <h2 class="text-4xl font-black text-white mb-2">HASIL EVALUASI</h2>
+          <p class="text-slate-400" id="result-name">Ganteng</p>
         </div>
 
-        <div class="flex justify-center gap-8 mb-8">
-          <div class="text-center">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div class="bg-slate-800/50 p-8 rounded-3xl border border-white/5">
             <span
-              class="block text-4xl font-black text-blue-600"
+              class="block text-5xl font-black text-sky-400"
               id="final-score"
               >0</span
             >
-            <span class="text-sm text-slate-400 font-bold uppercase"
+            <span
+              class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-2 block"
               >Skor Akhir</span
             >
           </div>
-          <div class="text-center border-l border-slate-200 pl-8">
+          <div class="bg-slate-800/50 p-8 rounded-3xl border border-white/5">
             <span
-              class="block text-4xl font-black text-emerald-500"
+              class="block text-5xl font-black text-emerald-400"
               id="correct-count"
               >0</span
             >
-            <span class="text-sm text-slate-400 font-bold uppercase"
+            <span
+              class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-2 block"
               >Benar</span
+            >
+          </div>
+          <div class="bg-slate-800/50 p-8 rounded-3xl border border-white/5">
+            <span
+              class="block text-5xl font-black text-rose-500"
+              id="wrong-count"
+              >0</span
+            >
+            <span
+              class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-2 block"
+              >Salah</span
             >
           </div>
         </div>
 
-        <div class="bg-slate-50 rounded-2xl p-6 mb-8 text-left">
-          <p class="text-slate-600 leading-relaxed italic" id="feedback-text">
-            "Hasil ini adalah cerminan belajarmu. Jangan menyerah!"
-          </p>
+        <div class="max-w-xl mx-auto mb-10">
+          <p
+            class="text-xl text-slate-300 leading-relaxed italic"
+            id="feedback-text"
+          ></p>
         </div>
 
-        <button
-          onclick="location.reload()"
-          class="px-10 py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-2xl shadow-xl transition-all"
-        >
-          Coba Lagi
-        </button>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onclick="location.reload()"
+            class="px-10 py-4 bg-white text-slate-950 font-black rounded-2xl shadow-xl hover:bg-sky-400 transition-all"
+          >
+            Ulangi Latihan
+          </button>
+        </div>
       </div>
     </div>
 
     <script>
-      const soal = [
+      const soalAwal = [
         {
           q: "Media transmisi yang menggunakan cahaya adalah …",
           o: ["UTP", "Coaxial", "Fiber Optic", "Bluetooth", "Radio"],
@@ -581,13 +631,378 @@
         },
       ];
 
+      const soalTambahan = [
+        {
+          q: "192.168.80.31 dari IP tersebut manakah yang merupakan Network ID ….",
+          o: ["192.168.80.13", "192.168.80", "192.168", "192", "13"],
+          a: 1,
+        },
+        {
+          q: "Mode switching yang bisa membawa VLAN lebih dari satu disebut….",
+          o: [
+            "Dynamic Mode",
+            "Control Mode",
+            "Encapsulation Mode",
+            "Mode Trunk",
+            "Mode Acces",
+          ],
+          a: 3,
+        },
+        {
+          q: "Server yang berfungsi sebagai pemberi akses atau pertukaran transfer data antara dua komputer disebut dengan ….",
+          o: ["Mail server", "DHCP server", "Web server", "FTP server", "Http"],
+          a: 3,
+        },
+        {
+          q: "Salah satu contoh masalah fisik pada switch adalah konektifitas. Solusi yang tepat adalah ….",
+          o: [
+            "Periksa pemasangan switch dan periksa interface",
+            "Periksa pemasangan kabel dan periksa switch",
+            "Periksa pemasangan port dan periksa interface",
+            "Periksa pemasangan ip Address dan periksa interface",
+            "Periksa pemasangan kabel dan periksa interface",
+          ],
+          a: 4,
+        },
+        {
+          q: "Proses memecah suatu IP jaringan ke sub jaringan yang lebih kecil adalah….",
+          o: [
+            "Subnetting",
+            "Subnet mask",
+            "Subnet mask default",
+            "Subnet mask dan Subnet mask default",
+            "Semua benar",
+          ],
+          a: 0,
+        },
+        {
+          q: "IP Address terdiri dari 2 bagian yaitu ...",
+          o: [
+            "Network ID dan Phyical ID",
+            "Physical ID dan Host ID",
+            "ID dan Address",
+            "Address dan Network ID",
+            "Network ID dan Host ID",
+          ],
+          a: 4,
+        },
+        {
+          q: "Perintah yang digunakan untuk melihat informasi VLAN adalah..",
+          o: [
+            "Switchport mode access",
+            "Show ip interface brief",
+            "Switchport access VLAN 1",
+            "Init.d",
+            "Show VLAN",
+          ],
+          a: 4,
+        },
+        {
+          q: "Apakah fungsi dari konfigurasi DHCP…",
+          o: [
+            "Mengelola distribusi alamat ke komputer client",
+            "Mengelola distribusi alamat IP ke komputer client",
+            "Mengelola alamat IP",
+            "Mendistribusikan alamat IP",
+            "Mengolah Network ID",
+          ],
+          a: 1,
+        },
+        {
+          q: "Manakah yang merupakan fungsi dari VTP server yaitu….",
+          o: [
+            "Mendistribusikan alamat IP",
+            "Sebagai server",
+            "Sebagai server dan bersifat broadcast",
+            "Mengelola alamat IP",
+            "Sebagai client",
+          ],
+          a: 2,
+        },
+        {
+          q: "Routing protocol yang sering dijumpai karena include di dalam operating system adalah…",
+          o: ["OSPF", "RIP", "DGP", "EGP", "AGP"],
+          a: 1,
+        },
+        {
+          q: "Alamat IP 192.168.10.0/24 memiliki Subnet mask….",
+          o: [
+            "255.255.0.0",
+            "255.255.255.0",
+            "255.255.255.128",
+            "255.255.255.192",
+            "255.255.255.224",
+          ],
+          a: 1,
+        },
+        {
+          q: "Alamat IP 172.16.5.10/16 termasuk kedalam kelas jaringan….",
+          o: ["Kelas A", "Kelas B", "Kelas C", "Kelas D", "Kelas E"],
+          a: 1,
+        },
+        {
+          q: "Subnet mask 255.255.255.192 membentuk berapa jumlah Subnet pada kelas C?",
+          o: ["2", "4", "6", "8", "16"],
+          a: 1,
+        },
+        {
+          q: "Berapakah Network dari IP 192.168.1.130/26 ….",
+          o: [
+            "192.168.1.0",
+            "192.168.1.64",
+            "192.168.1.128",
+            "192.168.1.192",
+            "192.168.1.255",
+          ],
+          a: 2,
+        },
+        {
+          q: "Berapa jumlah host maksimal yang terdapat pada jaringan /30 ….",
+          o: ["1", "2", "4", "6", "8"],
+          a: 1,
+        },
+        {
+          q: "Pada IP Address 10.10.10.1/8 memiliki Subnet mask ….",
+          o: [
+            "255.0.0.0",
+            "255.255.0.0",
+            "255.255.255.0",
+            "255.255.255.128",
+            "255.255.255.252",
+          ],
+          a: 0,
+        },
+        {
+          q: "Alamat IP berikut ini yang tidak dapat digunakan sebagai host adalah ….",
+          o: [
+            "192.168.1.1",
+            "192.168.1.254",
+            "192.168.1.0",
+            "172.16.1.10",
+            "10.0.0.1",
+          ],
+          a: 2,
+        },
+        {
+          q: "Jika switch menerima frame dengan MAC tujuan yang tidak ada di tabel, switch akan….",
+          o: [
+            "Membuang frame",
+            "Mengirim ke router",
+            "Mengirim hanya ke port asal",
+            "Melakukan flooding ke semua port kecuali port asal",
+            "Menyimpan frame di buffer",
+          ],
+          a: 3,
+        },
+        {
+          q: "Teknologi yang memungkinkan beberapa VLAN dilewatkan melalui satu link fisik adalah ….",
+          o: ["Access link", "Trunking", "Routing", "Bridging", "Tunneling"],
+          a: 1,
+        },
+        {
+          q: "Protokol untuk mendistribusikan IP Address secara otomatis adalah ….",
+          o: ["DNS", "FTP", "DHCP", "SNMP", "SMTP"],
+          a: 2,
+        },
+        {
+          q: "RouterOS Mikrotik versi x86 adalah versi yang hanya dapat digunakan pada perangkat ….",
+          o: [
+            "Routerboard",
+            "Router Wireless",
+            "Komputer / PC",
+            "Wireless Outdoor",
+            "Virtual Machine",
+          ],
+          a: 2,
+        },
+        {
+          q: "Yang tidak termasuk package aplikasi pada mikrotik adalah....",
+          o: ["System", "Hotspot", "Dhcp", "Mipsbe", "Routing"],
+          a: 3,
+        },
+        {
+          q: "Opsi untuk menonaktifkan package pada mikrotik adalah klik tombol...",
+          o: ["Disable", "Downgrade", "Enable", "Uninstall", "Remove"],
+          a: 0,
+        },
+        {
+          q: "Model arsitektural standar komunikasi data dalam jaringan komputer adalah...",
+          o: ["OSI", "ISO", "IEEE", "IETF", "ITU-T"],
+          a: 0,
+        },
+        {
+          q: "Router beroperasi pada layer ke...",
+          o: ["Data Link", "Network", "Physical", "Transport", "Session"],
+          a: 1,
+        },
+        {
+          q: "Proses framing pada layer OSI berjalan pada layer ke...",
+          o: ["Data Link", "Physical", "Network", "Transport", "Session"],
+          a: 0,
+        },
+        {
+          q: "Layer OSI yang bertugas membentuk dan memutuskan koneksi adalah...",
+          o: [
+            "Layer 5 Session",
+            "Layer 4 Transport",
+            "Layer 3 Network",
+            "Layer 6 Presentation",
+            "Layer 7 Application",
+          ],
+          a: 0,
+        },
+        {
+          q: "Header paket data untuk proses framing berisi informasi...",
+          o: [
+            "Protocol & Port",
+            "Network dan Subnetmask",
+            "Source Address & Destination Address",
+            "Network ID dan Host ID",
+            "TTL & Checksum",
+          ],
+          a: 2,
+        },
+        {
+          q: "Format MAC Address yang tidak valid di bawah ini adalah ....",
+          o: [
+            "91:F5:G8:E7:55:40",
+            "74:E5:43:7A:F1:CE",
+            "02:00:4C:4F:4F:50",
+            "00:1A:2B:3C:4D:5E",
+            "74:E5:43:7A:F1:CE",
+          ],
+          a: 0,
+        },
+        {
+          q: "Berapakah jumlah host dari Network Address 192.168.1.64/27 ….",
+          o: ["32", "30", "31", "33", "28"],
+          a: 1,
+        },
+        {
+          q: "Analisis solusi terbaik saat routing statis kampus terputus adalah …",
+          o: [
+            "Menambah IP statis",
+            "Mengganti kabel",
+            "Menerapkan routing dinamis",
+            "Mengurangi user",
+            "Mematikan firewall",
+          ],
+          a: 2,
+        },
+        {
+          q: "Alasan memilih OSPF dibanding RIP pada satu AS karena …",
+          o: [
+            "Konfigurasinya sulit",
+            "Bandwidth besar",
+            "Cepat konvergensi & skalabel",
+            "Tidak butuh router",
+            "Tidak dukung subnet",
+          ],
+          a: 2,
+        },
+        {
+          q: "Tindakan analisis tepat jika terjadi loop routing dalam satu AS adalah …",
+          o: [
+            "Ganti topologi",
+            "Matikan router",
+            "Evaluasi tabel routing & protokol",
+            "Tambah hub",
+            "Ganti IP publik",
+          ],
+          a: 2,
+        },
+        {
+          q: "Risiko terbesar routing manual pada jaringan yang berkembang pesat adalah …",
+          o: [
+            "Bandwidth naik",
+            "Kesalahan konfigurasi & downtime",
+            "Keamanan naik",
+            "Koneksi cepat",
+            "Topologi sederhana",
+          ],
+          a: 1,
+        },
+        {
+          q: "Dampak positif pengaktifan routing dinamis dalam satu AS adalah …",
+          o: [
+            "Biaya naik",
+            "Adaptasi otomatis perubahan jaringan",
+            "IP jadi manual",
+            "Keamanan turun",
+            "Trafik terblokir",
+          ],
+          a: 1,
+        },
+        {
+          q: "Log server menunjukkan login gagal berulang kali. Analisis awal adalah …",
+          o: [
+            "Rusak hardware",
+            "Serangan brute force",
+            "Salah kabel",
+            "Masalah routing",
+            "Gangguan listrik",
+          ],
+          a: 1,
+        },
+        {
+          q: "Solusi mencegah akses tidak sah dari internal paling efektif adalah …",
+          o: [
+            "Tambah bandwidth",
+            "Ganti router",
+            "Manajemen hak akses akun",
+            "Ubah topologi",
+            "Ganti IP",
+          ],
+          a: 2,
+        },
+        {
+          q: "Trafik tidak wajar pada jam tertentu menunjukkan indikasi …",
+          o: [
+            "Normal",
+            "Peningkatan user sah",
+            "Potensi ancaman keamanan",
+            "Routing error",
+            "Switch rusak",
+          ],
+          a: 2,
+        },
+        {
+          q: "Risiko jika akun karyawan keluar tidak dinonaktifkan adalah …",
+          o: [
+            "Bandwidth turun",
+            "Kebocoran data & akses ilegal",
+            "Koneksi lambat",
+            "Rusak perangkat",
+            "Gangguan topologi",
+          ],
+          a: 1,
+        },
+        {
+          q: "Tujuan utama logging dan audit akun pengguna adalah …",
+          o: [
+            "Kurangi trafik",
+            "Hapus user",
+            "Lacak aktivitas & tingkatkan keamanan",
+            "Percepat routing",
+            "Ganti perangkat",
+          ],
+          a: 2,
+        },
+      ];
+
+      // Gabungkan semua soal
+      const soal = [...soalAwal, ...soalTambahan];
+
       let currentIdx = 0;
       let userAnswers = new Array(soal.length).fill(null);
       let userName = "";
 
       function mulaiUjian() {
         userName = document.getElementById("input-nama").value;
-        if (!userName) return alert("Waduh ganteng, isi nama dulu ya!");
+        if (!userName)
+          return alert(
+            "Ayo ganteng, tulis dulu namamu biar keren di sertifikat nanti!",
+          );
 
         document.getElementById("screen-login").classList.add("hidden");
         document.getElementById("screen-quiz").classList.remove("hidden");
@@ -603,7 +1018,7 @@
           const btn = document.createElement("button");
           btn.id = `nav-${i}`;
           btn.className =
-            "grid-nav-item w-full py-2 text-xs font-bold rounded border-2 border-slate-200 transition-all";
+            "grid-nav-item w-full py-3 text-[10px] font-bold rounded-lg border border-slate-700 bg-slate-800 text-slate-400";
           btn.innerText = i + 1;
           btn.onclick = () => jumpToQuestion(i);
           grid.appendChild(btn);
@@ -614,38 +1029,39 @@
         const area = document.getElementById("question-area");
         const item = soal[currentIdx];
 
-        // Update Header
+        // Update Header & Stats
         document.getElementById("current-question-number").innerText =
           `${currentIdx + 1} / ${soal.length}`;
         const progress = ((currentIdx + 1) / soal.length) * 100;
         document.getElementById("progress-bar").style.width = `${progress}%`;
 
-        // Update Nav Grid
+        const answeredCount = userAnswers.filter((a) => a !== null).length;
+        document.getElementById("answered-stat").innerText =
+          `${answeredCount} Terjawab`;
+
+        // Update Nav Grid UI
         document.querySelectorAll(".grid-nav-item").forEach((btn, idx) => {
           btn.classList.remove("active");
           if (idx === currentIdx) btn.classList.add("active");
-
-          if (userAnswers[idx] !== null) {
-            btn.classList.add("answered");
-          }
+          if (userAnswers[idx] !== null) btn.classList.add("answered");
         });
 
         // Render Content
         area.innerHTML = `
-                <p class="text-xl text-slate-700 mb-8 font-medium leading-relaxed">${item.q}</p>
-                <div class="space-y-4">
+                <p class="text-xl md:text-2xl text-white mb-10 font-bold leading-relaxed">${item.q}</p>
+                <div class="grid grid-cols-1 gap-4">
                     ${item.o
                       .map(
                         (opt, i) => `
-                        <div class="relative">
+                        <div class="relative group">
                             <input type="radio" name="pilihan" id="opt-${i}" class="option-input hidden" value="${i}" 
                                 ${userAnswers[currentIdx] === i ? "checked" : ""} 
                                 onchange="saveAnswer(${i})">
-                            <label for="opt-${i}" class="option-label block p-4 rounded-xl cursor-pointer font-semibold flex items-center">
-                                <span class="w-10 h-10 flex items-center justify-center bg-white border-2 border-slate-200 rounded-lg mr-4 text-slate-400">
+                            <label for="opt-${i}" class="option-label block p-5 rounded-2xl cursor-pointer font-bold flex items-center group-hover:bg-white/5">
+                                <span class="w-10 h-10 flex items-center justify-center bg-slate-900 border border-slate-700 rounded-xl mr-5 text-sky-400 group-hover:border-sky-500 transition-all">
                                     ${String.fromCharCode(65 + i)}
                                 </span>
-                                ${opt}
+                                <span class="text-slate-200">${opt}</span>
                             </label>
                         </div>
                     `,
@@ -654,16 +1070,20 @@
                 </div>
             `;
 
-        // Disable/Enable Tombol
+        // Control Buttons
         document.getElementById("btn-prev").disabled = currentIdx === 0;
         document.getElementById("btn-next").innerText =
-          currentIdx === soal.length - 1 ? "Cek Semua" : "Selanjutnya →";
+          currentIdx === soal.length - 1 ? "Lihat Hasil" : "Selanjutnya →";
       }
 
       function saveAnswer(val) {
         userAnswers[currentIdx] = val;
         const navBtn = document.getElementById(`nav-${currentIdx}`);
         navBtn.classList.add("answered");
+
+        const answeredCount = userAnswers.filter((a) => a !== null).length;
+        document.getElementById("answered-stat").innerText =
+          `${answeredCount} Terjawab`;
       }
 
       function nextQuestion() {
@@ -688,43 +1108,49 @@
       }
 
       function konfirmasiSelesai() {
-        const belumDiisi = userAnswers.filter((a) => a === null).length;
-        let msg = "Yakin ingin menyelesaikan ujian?";
-        if (belumDiisi > 0) {
-          msg = `Masih ada ${belumDiisi} soal yang belum dijawab! Tetap ingin selesai?`;
-        }
+        const kosong = userAnswers.filter((a) => a === null).length;
+        let text = "Yakin sudah selesai, ganteng?";
+        if (kosong > 0)
+          text = `Masih ada ${kosong} soal kosong. Mau maksa kirim?`;
 
-        if (confirm(msg)) {
-          hitungHasil();
+        if (confirm(text)) {
+          tampilkanHasil();
         }
       }
 
-      function hitungHasil() {
+      function tampilkanHasil() {
         let benar = 0;
         userAnswers.forEach((ans, idx) => {
           if (ans === soal[idx].a) benar++;
         });
 
         const skor = (benar / soal.length) * 100;
+        const salah = soal.length - benar;
 
         document.getElementById("screen-quiz").classList.add("hidden");
         document.getElementById("screen-result").classList.remove("hidden");
 
-        document.getElementById("result-name").innerText = userName;
+        document.getElementById("result-name").innerText =
+          `Hebat, ${userName}!`;
         document.getElementById("final-score").innerText = Math.round(skor);
         document.getElementById("correct-count").innerText = benar;
+        document.getElementById("wrong-count").innerText = salah;
 
         let feedback = "";
         if (skor >= 90)
-          feedback = "Luar biasa! Kamu sangat siap menghadapi LSP.";
+          feedback =
+            "Gokill, kamu jenius! Skill networking kamu sudah level dewa. LSP mah gampang buat kamu!";
         else if (skor >= 75)
           feedback =
-            "Bagus sekali! Sedikit lagi belajar kamu pasti lulus kompeten.";
+            "Keren banget! Kamu sudah kompeten. Tinggal poles sedikit lagi biar makin mantap.";
+        else if (skor >= 60)
+          feedback =
+            "Lumayan lah. Tapi mending belajar lagi biar nanti pas LSP gak deg-degan.";
         else
           feedback =
-            "Jangan berkecil hati ya. Terus belajar dan coba lagi latihan ini!";
+            "Waduh, sepertinya butuh ngopi sambil baca modul lagi nih. Semangat terus ya!";
 
-        document.getElementById("feedback-text").innerText = `"${feedback}"`;
+        document.getElementById("feedback-text").innerText = feedback;
       }
     </script>
   </body>
