@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LATIHAN PRA LSP - INTERAKTIF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: #f0f4f8;
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .option-label {
+        transition: all 0.2s ease;
+        border: 2px solid #e2e8f0;
+      }
+
+      .option-input:checked + .option-label {
+        border-color: #3b82f6;
+        background-color: #eff6ff;
+        color: #1e40af;
+      }
+
+      .grid-nav-item.active {
+        background-color: #3b82f6;
+        color: white;
+        border-color: #2563eb;
+      }
+
+      .grid-nav-item.answered {
+        background-color: #10b981;
+        color: white;
+        border-color: #059669;
+      }
+
+      #progress-bar {
+        transition: width 0.3s ease-in-out;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex items-center justify-center p-4">
+    <!-- Container Utama -->
+    <div class="max-w-4xl w-full">
+      <!-- Screen 1: Login -->
+      <div
+        id="screen-login"
+        class="glass-card p-8 rounded-2xl shadow-2xl text-center"
+      >
+        <h1 class="text-3xl font-bold text-blue-700 mb-2">LATIHAN PRA LSP</h1>
+        <p class="text-slate-500 mb-8">
+          Uji kompetensi Teknik Komputer & Jaringan
+        </p>
+
+        <div class="max-w-sm mx-auto">
+          <label
+            class="block text-left text-sm font-semibold text-slate-700 mb-2"
+            >Nama Lengkap</label
+          >
+          <input
+            type="text"
+            id="input-nama"
+            class="w-full p-4 border-2 border-slate-200 rounded-xl focus:border-blue-500 outline-none mb-6"
+            placeholder="Masukkan nama kamu..."
+          />
+          <button
+            onclick="mulaiUjian()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg"
+          >
+            Mulai Ujian Sekarang
+          </button>
+        </div>
+      </div>
+
+      <!-- Screen 2: Ujian -->
+      <div id="screen-quiz" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <!-- Sisi Kiri: Soal -->
+          <div class="lg:col-span-3">
+            <div class="glass-card p-6 rounded-2xl shadow-xl">
+              <!-- Header Quiz -->
+              <div class="flex justify-between items-center mb-6">
+                <div>
+                  <span
+                    class="text-sm font-bold text-blue-600 uppercase tracking-wider"
+                    >Pertanyaan</span
+                  >
+                  <h2
+                    class="text-2xl font-bold text-slate-800"
+                    id="current-question-number"
+                  >
+                    1 / 50
+                  </h2>
+                </div>
+                <div class="text-right">
+                  <span class="text-xs text-slate-400 block mb-1"
+                    >Progress</span
+                  >
+                  <div
+                    class="w-32 bg-slate-200 h-2 rounded-full overflow-hidden"
+                  >
+                    <div id="progress-bar" class="bg-blue-500 h-full w-0"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Area Soal -->
+              <div id="question-area" class="min-h-[300px]">
+                <!-- Konten Soal akan diisi oleh JS -->
+              </div>
+
+              <!-- Navigasi Bawah -->
+              <div class="flex justify-between mt-8 border-t pt-6">
+                <button
+                  onclick="prevQuestion()"
+                  id="btn-prev"
+                  class="px-6 py-2 rounded-lg font-semibold text-slate-500 hover:bg-slate-100 disabled:opacity-30"
+                >
+                  ← Sebelumnya
+                </button>
+                <button
+                  onclick="nextQuestion()"
+                  id="btn-next"
+                  class="px-8 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+                >
+                  Selanjutnya →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sisi Kanan: Navigasi Nomor -->
+          <div class="lg:col-span-1">
+            <div class="glass-card p-4 rounded-2xl shadow-xl">
+              <h3 class="font-bold text-slate-700 mb-4 text-center">
+                Navigasi Soal
+              </h3>
+              <div class="grid grid-cols-5 gap-2" id="question-nav-grid">
+                <!-- Grid nomor soal diisi JS -->
+              </div>
+              <div class="mt-6">
+                <button
+                  onclick="konfirmasiSelesai()"
+                  class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-md transition-colors"
+                >
+                  Selesai Ujian
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 3: Hasil -->
+      <div
+        id="screen-result"
+        class="hidden glass-card p-10 rounded-3xl shadow-2xl text-center"
+      >
+        <div class="mb-6">
+          <div
+            class="inline-block p-4 rounded-full bg-blue-50 text-blue-600 mb-4"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-12 w-12"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h2 class="text-3xl font-bold text-slate-800">Ujian Selesai!</h2>
+          <p class="text-slate-500" id="result-name">Ganteng</p>
+        </div>
+
+        <div class="flex justify-center gap-8 mb-8">
+          <div class="text-center">
+            <span
+              class="block text-4xl font-black text-blue-600"
+              id="final-score"
+              >0</span
+            >
+            <span class="text-sm text-slate-400 font-bold uppercase"
+              >Skor Akhir</span
+            >
+          </div>
+          <div class="text-center border-l border-slate-200 pl-8">
+            <span
+              class="block text-4xl font-black text-emerald-500"
+              id="correct-count"
+              >0</span
+            >
+            <span class="text-sm text-slate-400 font-bold uppercase"
+              >Benar</span
+            >
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-2xl p-6 mb-8 text-left">
+          <p class="text-slate-600 leading-relaxed italic" id="feedback-text">
+            "Hasil ini adalah cerminan belajarmu. Jangan menyerah!"
+          </p>
+        </div>
+
+        <button
+          onclick="location.reload()"
+          class="px-10 py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-2xl shadow-xl transition-all"
+        >
+          Coba Lagi
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const soal = [
+        {
+          q: "Media transmisi yang menggunakan cahaya adalah …",
+          o: ["UTP", "Coaxial", "Fiber Optic", "Bluetooth", "Radio"],
+          a: 2,
+        },
+        {
+          q: "Perangkat pengubah sinyal digital ke analog adalah …",
+          o: ["Router", "Switch", "Modem", "Bridge", "Hub"],
+          a: 2,
+        },
+        {
+          q: "Serangan membanjiri server disebut …",
+          o: ["Phishing", "Hacking", "DoS", "Sniffing", "Spoofing"],
+          a: 2,
+        },
+        {
+          q: "Fungsi QoS adalah …",
+          o: [
+            "Mengatur prioritas trafik",
+            "Mengamankan jaringan",
+            "Membagi IP",
+            "Menghubungkan router",
+            "Menguatkan sinyal",
+          ],
+          a: 0,
+        },
+        {
+          q: "Perangkat yang berfungsi menghubungkan dua jaringan berbeda adalah …",
+          o: ["Switch", "Hub", "Router", "Access Point", "Bridge"],
+          a: 2,
+        },
+        {
+          q: "IP private kelas C adalah …",
+          o: [
+            "10.0.0.0",
+            "172.16.0.0",
+            "192.168.0.0",
+            "224.0.0.0",
+            "127.0.0.0",
+          ],
+          a: 2,
+        },
+        {
+          q: "Kepanjangan LAN adalah …",
+          o: [
+            "Local Area Network",
+            "Large Area Network",
+            "Light Area Network",
+            "Line Area Network",
+            "Link Area Network",
+          ],
+          a: 0,
+        },
+        {
+          q: "Fungsi access point adalah …",
+          o: [
+            "Menghubungkan fiber",
+            "Memancarkan WiFi",
+            "Menyimpan data",
+            "Mengatur IP",
+            "Mengamankan server",
+          ],
+          a: 1,
+        },
+        {
+          q: "Penghubung LAN ke internet adalah …",
+          o: ["Hub", "Switch", "Router", "Repeater", "Bridge"],
+          a: 2,
+        },
+        {
+          q: "Protokol browsing internet adalah …",
+          o: ["FTP", "HTTP", "SMTP", "SNMP", "POP3"],
+          a: 1,
+        },
+        {
+          q: "Media jaringan tanpa kabel disebut …",
+          o: ["Wired", "Wireless", "Fiber", "Coaxial", "UTP"],
+          a: 1,
+        },
+        {
+          q: "Fungsi NAT adalah …",
+          o: [
+            "Mengubah IP private ke public",
+            "Mengatur bandwidth",
+            "Memblokir internet",
+            "Mempercepat jaringan",
+            "Menghubungkan switch",
+          ],
+          a: 0,
+        },
+        {
+          q: "IP 192.168.1.1 termasuk kelas …",
+          o: ["A", "B", "C", "D", "E"],
+          a: 2,
+        },
+        {
+          q: "Topologi jaringan yang menggunakan satu kabel utama sebagai jalur transmisi disebut …",
+          o: ["Star", "Ring", "Bus", "Mesh", "Tree"],
+          a: 2,
+        },
+        {
+          q: "Fungsi bandwidth adalah …",
+          o: [
+            "Mengatur IP",
+            "Mengukur kapasitas transfer data",
+            "Mengamankan jaringan",
+            "Menyimpan data",
+            "Menghubungkan server",
+          ],
+          a: 1,
+        },
+        {
+          q: "Penghubung dua segmen jaringan adalah …",
+          o: ["Router", "Bridge", "Switch", "Hub", "Repeater"],
+          a: 1,
+        },
+        {
+          q: "Fungsi proxy server adalah …",
+          o: [
+            "Penyimpan file",
+            "Perantara akses internet",
+            "Penguat sinyal",
+            "Penghubung LAN",
+            "Pembagi IP",
+          ],
+          a: 1,
+        },
+        {
+          q: "Fungsi hub adalah …",
+          o: [
+            "Memfilter data",
+            "Mengatur IP",
+            "Mengirim data ke semua port",
+            "Mengamankan jaringan",
+            "Menyimpan data",
+          ],
+          a: 2,
+        },
+        {
+          q: "Kabel dengan konektor RJ45 adalah …",
+          o: ["Coaxial", "Fiber", "UTP", "Serial", "HDMI"],
+          a: 2,
+        },
+        {
+          q: "Pemancar sinyal WiFi disebut …",
+          o: ["Router", "Switch", "Hub", "Access Point", "Modem"],
+          a: 3,
+        },
+        {
+          q: "Protokol pengiriman email adalah …",
+          o: ["FTP", "SMTP", "HTTP", "POP3", "DNS"],
+          a: 1,
+        },
+        {
+          q: "Fungsi utama switch pada jaringan adalah …",
+          o: [
+            "Memperkuat sinyal",
+            "Menghubungkan internet",
+            "Mengatur lalu lintas data antar perangkat",
+            "Mengubah sinyal",
+            "Menyimpan data",
+          ],
+          a: 2,
+        },
+        {
+          q: "Protokol connectionless adalah …",
+          o: ["TCP", "HTTP", "FTP", "UDP", "SMTP"],
+          a: 3,
+        },
+        {
+          q: "Jaringan satu gedung disebut …",
+          o: ["WAN", "MAN", "LAN", "PAN", "CAN"],
+          a: 2,
+        },
+        {
+          q: "Kepanjangan ISP adalah …",
+          o: [
+            "Internet Service Provider",
+            "Internal System Protocol",
+            "Internet Signal Provider",
+            "International Service Protocol",
+            "Internal Server Provider",
+          ],
+          a: 0,
+        },
+        {
+          q: "Penguat sinyal jaringan disebut …",
+          o: ["Repeater", "Router", "Bridge", "Switch", "Hub"],
+          a: 0,
+        },
+        {
+          q: "Jaringan pribadi jarak dekat disebut …",
+          o: ["LAN", "MAN", "WAN", "PAN", "CAN"],
+          a: 3,
+        },
+        {
+          q: "Komunikasi dua arah bersamaan disebut …",
+          o: [
+            "Simplex",
+            "Half Duplex",
+            "Full Duplex",
+            "Broadcast",
+            "Multicast",
+          ],
+          a: 2,
+        },
+        {
+          q: "Topologi paling tahan gangguan adalah …",
+          o: ["Bus", "Star", "Ring", "Mesh", "Tree"],
+          a: 3,
+        },
+        {
+          q: "Perintah melihat IP Linux adalah …",
+          o: ["ping", "traceroute", "ifconfig", "netstat", "arp"],
+          a: 2,
+        },
+        {
+          q: "Layer OSI yang mengatur pengalamatan logis adalah …",
+          o: ["Physical", "Data Link", "Network", "Transport", "Session"],
+          a: 2,
+        },
+        {
+          q: "Fungsi subnetting adalah …",
+          o: [
+            "Memperbesar jaringan",
+            "Membagi jaringan",
+            "Mengamankan jaringan",
+            "Menghapus IP",
+            "Mempercepat server",
+          ],
+          a: 1,
+        },
+        {
+          q: "Penghubung jaringan kabel dan wireless adalah …",
+          o: ["Hub", "Switch", "Router", "Modem", "Bridge"],
+          a: 2,
+        },
+        {
+          q: "Protokol transfer file adalah …",
+          o: ["FTP", "SMTP", "POP3", "IMAP", "SNMP"],
+          a: 0,
+        },
+        {
+          q: "Fungsi VLAN adalah …",
+          o: [
+            "Menghubungkan internet",
+            "Membagi jaringan logis",
+            "Mempercepat server",
+            "Mengamankan router",
+            "Mengatur bandwidth",
+          ],
+          a: 1,
+        },
+        {
+          q: "Protokol manajemen jaringan adalah …",
+          o: ["FTP", "SMTP", "SNMP", "HTTP", "DNS"],
+          a: 2,
+        },
+        {
+          q: "Standar WiFi adalah …",
+          o: ["802.3", "802.11", "802.15", "802.16", "802.1Q"],
+          a: 1,
+        },
+        {
+          q: "Perintah untuk mengecek koneksi jaringan adalah …",
+          o: ["tracert", "ipconfig", "ping", "netstat", "nslookup"],
+          a: 2,
+        },
+        {
+          q: "Layer OSI pengirim bit data adalah …",
+          o: ["Network", "Transport", "Physical", "Session", "Presentation"],
+          a: 2,
+        },
+        {
+          q: "Topologi dengan pusat kendali adalah …",
+          o: ["Bus", "Ring", "Star", "Mesh", "Hybrid"],
+          a: 2,
+        },
+        {
+          q: "Alamat IP versi 4 terdiri dari …",
+          o: ["16 bit", "24 bit", "32 bit", "64 bit", "128 bit"],
+          a: 2,
+        },
+        {
+          q: "Protokol remote server adalah …",
+          o: ["HTTP", "FTP", "SSH", "SMTP", "DNS"],
+          a: 2,
+        },
+        {
+          q: "Jaringan antar negara disebut …",
+          o: ["LAN", "MAN", "WAN", "PAN", "CAN"],
+          a: 2,
+        },
+        {
+          q: "Fungsi DNS adalah …",
+          o: [
+            "Mengatur trafik",
+            "Mengubah domain menjadi IP",
+            "Mengamankan jaringan",
+            "Menyimpan file",
+            "Mengatur bandwidth",
+          ],
+          a: 1,
+        },
+        {
+          q: "Perangkat OSI Layer 3 adalah …",
+          o: ["Switch", "Hub", "Router", "Repeater", "Access Point"],
+          a: 2,
+        },
+        {
+          q: "Topologi berbentuk lingkaran adalah …",
+          o: ["Star", "Bus", "Ring", "Tree", "Hybrid"],
+          a: 2,
+        },
+        {
+          q: "Jaringan skala kota disebut …",
+          o: ["LAN", "MAN", "WAN", "PAN", "SAN"],
+          a: 1,
+        },
+        {
+          q: "Standar kabel UTP adalah …",
+          o: [
+            "T568A dan T568B",
+            "RJ11 dan RJ45",
+            "CAT3 dan CAT4",
+            "IEEE dan ISO",
+            "TCP dan UDP",
+          ],
+          a: 0,
+        },
+        {
+          q: "Kepanjangan TCP adalah …",
+          o: [
+            "Transfer Control Protocol",
+            "Transmission Control Protocol",
+            "Transport Communication Protocol",
+            "Technical Control Protocol",
+            "Transmission Communication Protocol",
+          ],
+          a: 1,
+        },
+        {
+          q: "Fungsi firewall adalah …",
+          o: [
+            "Mempercepat jaringan",
+            "Mengamankan jaringan",
+            "Menghubungkan komputer",
+            "Menyimpan data",
+            "Mengatur IP",
+          ],
+          a: 1,
+        },
+      ];
+
+      let currentIdx = 0;
+      let userAnswers = new Array(soal.length).fill(null);
+      let userName = "";
+
+      function mulaiUjian() {
+        userName = document.getElementById("input-nama").value;
+        if (!userName) return alert("Waduh ganteng, isi nama dulu ya!");
+
+        document.getElementById("screen-login").classList.add("hidden");
+        document.getElementById("screen-quiz").classList.remove("hidden");
+
+        initNavGrid();
+        renderSoal();
+      }
+
+      function initNavGrid() {
+        const grid = document.getElementById("question-nav-grid");
+        grid.innerHTML = "";
+        for (let i = 0; i < soal.length; i++) {
+          const btn = document.createElement("button");
+          btn.id = `nav-${i}`;
+          btn.className =
+            "grid-nav-item w-full py-2 text-xs font-bold rounded border-2 border-slate-200 transition-all";
+          btn.innerText = i + 1;
+          btn.onclick = () => jumpToQuestion(i);
+          grid.appendChild(btn);
+        }
+      }
+
+      function renderSoal() {
+        const area = document.getElementById("question-area");
+        const item = soal[currentIdx];
+
+        // Update Header
+        document.getElementById("current-question-number").innerText =
+          `${currentIdx + 1} / ${soal.length}`;
+        const progress = ((currentIdx + 1) / soal.length) * 100;
+        document.getElementById("progress-bar").style.width = `${progress}%`;
+
+        // Update Nav Grid
+        document.querySelectorAll(".grid-nav-item").forEach((btn, idx) => {
+          btn.classList.remove("active");
+          if (idx === currentIdx) btn.classList.add("active");
+
+          if (userAnswers[idx] !== null) {
+            btn.classList.add("answered");
+          }
+        });
+
+        // Render Content
+        area.innerHTML = `
+                <p class="text-xl text-slate-700 mb-8 font-medium leading-relaxed">${item.q}</p>
+                <div class="space-y-4">
+                    ${item.o
+                      .map(
+                        (opt, i) => `
+                        <div class="relative">
+                            <input type="radio" name="pilihan" id="opt-${i}" class="option-input hidden" value="${i}" 
+                                ${userAnswers[currentIdx] === i ? "checked" : ""} 
+                                onchange="saveAnswer(${i})">
+                            <label for="opt-${i}" class="option-label block p-4 rounded-xl cursor-pointer font-semibold flex items-center">
+                                <span class="w-10 h-10 flex items-center justify-center bg-white border-2 border-slate-200 rounded-lg mr-4 text-slate-400">
+                                    ${String.fromCharCode(65 + i)}
+                                </span>
+                                ${opt}
+                            </label>
+                        </div>
+                    `,
+                      )
+                      .join("")}
+                </div>
+            `;
+
+        // Disable/Enable Tombol
+        document.getElementById("btn-prev").disabled = currentIdx === 0;
+        document.getElementById("btn-next").innerText =
+          currentIdx === soal.length - 1 ? "Cek Semua" : "Selanjutnya →";
+      }
+
+      function saveAnswer(val) {
+        userAnswers[currentIdx] = val;
+        const navBtn = document.getElementById(`nav-${currentIdx}`);
+        navBtn.classList.add("answered");
+      }
+
+      function nextQuestion() {
+        if (currentIdx < soal.length - 1) {
+          currentIdx++;
+          renderSoal();
+        } else {
+          konfirmasiSelesai();
+        }
+      }
+
+      function prevQuestion() {
+        if (currentIdx > 0) {
+          currentIdx--;
+          renderSoal();
+        }
+      }
+
+      function jumpToQuestion(idx) {
+        currentIdx = idx;
+        renderSoal();
+      }
+
+      function konfirmasiSelesai() {
+        const belumDiisi = userAnswers.filter((a) => a === null).length;
+        let msg = "Yakin ingin menyelesaikan ujian?";
+        if (belumDiisi > 0) {
+          msg = `Masih ada ${belumDiisi} soal yang belum dijawab! Tetap ingin selesai?`;
+        }
+
+        if (confirm(msg)) {
+          hitungHasil();
+        }
+      }
+
+      function hitungHasil() {
+        let benar = 0;
+        userAnswers.forEach((ans, idx) => {
+          if (ans === soal[idx].a) benar++;
+        });
+
+        const skor = (benar / soal.length) * 100;
+
+        document.getElementById("screen-quiz").classList.add("hidden");
+        document.getElementById("screen-result").classList.remove("hidden");
+
+        document.getElementById("result-name").innerText = userName;
+        document.getElementById("final-score").innerText = Math.round(skor);
+        document.getElementById("correct-count").innerText = benar;
+
+        let feedback = "";
+        if (skor >= 90)
+          feedback = "Luar biasa! Kamu sangat siap menghadapi LSP.";
+        else if (skor >= 75)
+          feedback =
+            "Bagus sekali! Sedikit lagi belajar kamu pasti lulus kompeten.";
+        else
+          feedback =
+            "Jangan berkecil hati ya. Terus belajar dan coba lagi latihan ini!";
+
+        document.getElementById("feedback-text").innerText = `"${feedback}"`;
+      }
+    </script>
+  </body>
+</html>
