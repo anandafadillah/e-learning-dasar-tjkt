@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kuis KODING & KA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      }
+    </style>
+  </head>
+  <body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+    <!-- Container Utama -->
+    <div
+      id="app"
+      class="bg-white w-full max-w-2xl rounded-2xl shadow-xl overflow-hidden transition-all duration-500"
+    >
+      <!-- Screen 1: Registrasi Nama -->
+      <div id="screen-welcome" class="p-8 text-center">
+        <div class="mb-6 flex justify-center">
+          <div class="bg-blue-100 p-4 rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-12 w-12 text-blue-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+              />
+            </svg>
+          </div>
+        </div>
+        <h1 class="text-3xl font-bold text-blue-900 mb-2">
+          Latihan Asesmen KODING | 12 TJKT
+        </h1>
+        <p class="text-blue-600 mb-8">Masukan Nama Kalian terlebih dahulu</p>
+
+        <input
+          type="text"
+          id="input-name"
+          placeholder="Ketik namamu di sini..."
+          class="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:border-blue-500 focus:outline-none text-lg mb-6 text-center"
+        />
+
+        <button
+          onclick="startQuiz()"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition-transform active:scale-95"
+        >
+          Mulai Kuis Sekarang
+        </button>
+      </div>
+
+      <!-- Screen 2: Soal Kuis -->
+      <div id="screen-quiz" class="hidden">
+        <div
+          class="bg-blue-600 p-4 text-white flex justify-between items-center"
+        >
+          <span id="display-student-name" class="font-semibold">Nama: -</span>
+          <span
+            id="quiz-progress"
+            class="bg-blue-500 px-3 py-1 rounded-full text-sm"
+            >Soal 1 / 20</span
+          >
+        </div>
+
+        <div class="p-8">
+          <div
+            id="question-text"
+            class="text-xl font-bold text-gray-800 mb-6 leading-relaxed"
+          >
+            Memuat soal...
+          </div>
+
+          <div id="options-container" class="space-y-3">
+            <!-- Tombol pilihan akan muncul di sini -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 3: Hasil & Skor -->
+      <div id="screen-result" class="hidden">
+        <div class="p-8 text-center bg-blue-50">
+          <h2 class="text-2xl font-bold text-blue-900 mb-2">
+            Hasil Latihan Kamu
+          </h2>
+          <div class="inline-block bg-white p-6 rounded-full shadow-inner my-4">
+            <span id="final-score" class="text-6xl font-black text-blue-600"
+              >0</span
+            >
+            <span class="text-2xl text-gray-400">/ 100</span>
+          </div>
+          <p
+            id="result-message"
+            class="text-lg font-medium text-gray-700 mb-6"
+          ></p>
+          <button
+            onclick="location.reload()"
+            class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold"
+          >
+            Coba Lagi
+          </button>
+        </div>
+
+        <div class="p-6">
+          <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">
+            Review Jawaban:
+          </h3>
+          <div
+            id="review-container"
+            class="space-y-4 max-h-96 overflow-y-auto pr-2"
+          >
+            <!-- Review akan muncul di sini -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const quizData = [
+        {
+          q: "Apa definisi sederhana dari Artificial Intelligence (AI)?",
+          options: [
+            "Sebuah mesin yang memiliki perasaan seperti manusia.",
+            "Simulasi proses kecerdasan manusia oleh sistem komputer.",
+            "Sebuah program yang hanya bisa mengetik teks secara otomatis.",
+            "Alat untuk menggantikan seluruh pekerjaan manusia secara total.",
+          ],
+          correct: 1,
+          explanation:
+            "AI meniru cara berpikir manusia menggunakan perangkat lunak dan komputer.",
+        },
+        {
+          q: "AI Generatif, seperti Gemini, memiliki fokus utama pada...",
+          options: [
+            "Menghapus data lama dari internet.",
+            "Memperbaiki perangkat keras komputer secara otomatis.",
+            "Membuat konten baru seperti teks, gambar, dan kode pemrograman.",
+            "Mengatur jadwal tidur pengguna secara mandiri.",
+          ],
+          correct: 2,
+          explanation:
+            "AI Generatif fokus pada 'generate' atau menciptakan konten baru.",
+        },
+        {
+          q: "Bagaimana cara kerja AI dalam memprediksi jawaban?",
+          options: [
+            "Membaca pikiran pengguna secara langsung.",
+            "Belajar dari miliaran data untuk memprediksi elemen yang paling masuk akal.",
+            "Mencari jawaban di buku perpustakaan fisik secara manual.",
+            "Menggunakan keberuntungan tanpa dasar data.",
+          ],
+          correct: 1,
+          explanation:
+            "AI menggunakan pola data besar untuk memprediksi kata berikutnya yang logis.",
+        },
+        {
+          q: "Apa yang dimaksud dengan 'Prompt' dalam konteks AI?",
+          options: [
+            "Sebuah kode rahasia untuk meretas sistem.",
+            "Nama merek dari sebuah perusahaan teknologi.",
+            "Instruksi atau pertanyaan yang diberikan pengguna kepada AI.",
+            "Kecepatan internet yang digunakan saat mengakses AI.",
+          ],
+          correct: 2,
+          explanation:
+            "Prompt adalah 'perintah' atau masukan teks yang kita berikan ke AI.",
+        },
+        {
+          q: "Dalam teknik SMART, huruf 'S' (Specific Role) bertujuan untuk...",
+          options: [
+            "Membuat AI memberikan jawaban yang sangat singkat.",
+            "Menentukan peran spesifik agar AI menggunakan kosakata dan pengetahuan industri yang relevan.",
+            "Memberitahu AI untuk berbicara dalam bahasa Spanyol.",
+            "Meminta AI untuk merahasiakan identitasnya.",
+          ],
+          correct: 1,
+          explanation:
+            "Memberi peran membantu AI membatasi area pengetahuannya agar lebih ahli.",
+        },
+        {
+          q: "Contoh penerapan 'Specific Role' yang baik adalah...",
+          options: [
+            "'Jadilah seorang penulis.'",
+            "'Tolong bantu saya menulis sesuatu.'",
+            "'Bertindaklah sebagai Copywriter senior yang menguasai psikologi persuasi.'",
+            "'Bekerjalah seperti robot yang pintar.'",
+          ],
+          correct: 2,
+          explanation:
+            "Semakin spesifik perannya (seperti Copywriter Senior), semakin baik hasilnya.",
+        },
+        {
+          q: "Elemen 'M' dalam SMART (Main Task) menyarankan agar tugas yang besar...",
+          options: [
+            "Diabaikan saja karena terlalu rumit.",
+            "Diberikan sekaligus tanpa penjelasan tambahan.",
+            "Dipecah menjadi bagian-bagian kecil atau langkah-demi-langkah.",
+            "Diserahkan sepenuhnya pada kreativitas AI tanpa arahan.",
+          ],
+          correct: 2,
+          explanation:
+            "Memecah tugas besar membuat AI lebih fokus dan hasilnya tidak dangkal.",
+        },
+        {
+          q: "Mengapa menentukan 'Audience' (A) sangat penting dalam sebuah prompt?",
+          options: [
+            "Agar AI tahu berapa banyak orang yang akan membaca.",
+            "Karena pemilihan kata dan gaya bahasa akan berubah drastis sesuai dengan siapa yang diajak bicara.",
+            "Untuk membantu AI menghitung biaya konten.",
+            "Agar AI bisa melacak lokasi audiens.",
+          ],
+          correct: 1,
+          explanation:
+            "Gaya bicara untuk anak kecil tentu berbeda dengan gaya bicara untuk direktur.",
+        },
+        {
+          q: "Jika audiens yang dituju adalah 'Dewan Direksi', maka fokus informasi sebaiknya pada...",
+          options: [
+            "Analogi sederhana seperti bermain Lego.",
+            "Kalimat yang penuh empati dan menenangkan.",
+            "ROI (Return on Investment) dan data statistik.",
+            "Istilah gaul yang sedang populer.",
+          ],
+          correct: 2,
+          explanation: "Direksi membutuhkan data bisnis dan hasil nyata (ROI).",
+        },
+        {
+          q: "Apa fungsi utama dari 'Relevant Restrictions' (R)?",
+          options: [
+            "Memberi kebebasan penuh kepada AI untuk berimajinasi.",
+            "Menghindari 'sampah' informasi dengan memberitahu AI apa yang TIDAK boleh dilakukan.",
+            "Mempercepat koneksi server AI.",
+            "Mengunci akun AI.",
+          ],
+          correct: 1,
+          explanation:
+            "Batasan membantu membuang informasi yang tidak kita inginkan (sampah).",
+        },
+        {
+          q: "Berikut ini yang merupakan contoh 'Restriction' (batasan) adalah...",
+          options: [
+            "'Gunakan gaya bahasa yang ceria.'",
+            "'Jelaskan dengan sangat detail.'",
+            "'Jangan gunakan kata klise seperti di era digital ini.'",
+            "'Bertindaklah sebagai seorang dokter.'",
+          ],
+          correct: 2,
+          explanation:
+            "Kata 'Jangan' atau larangan adalah bentuk batasan (restriction).",
+        },
+        {
+          q: "Elemen 'T' dalam SMART (Tone & Terminology) berkaitan dengan...",
+          options: [
+            "Kecepatan AI dalam memproses jawaban.",
+            "Emosi, gaya bicara, dan istilah teknis yang digunakan dalam teks.",
+            "Ukuran huruf (font) yang dihasilkan.",
+            "Batas waktu penggunaan aplikasi AI.",
+          ],
+          correct: 1,
+          explanation:
+            "Tone adalah nada bicara, apakah formal, santai, atau teknis.",
+        },
+        {
+          q: "Jika Anda ingin AI terdengar seperti Ryan Reynolds, maka Anda sedang mengatur bagian...",
+          options: ["Specific Role.", "Main Task.", "Audience.", "Tone."],
+          correct: 3,
+          explanation:
+            "Meniru gaya tokoh tertentu adalah pengaturan Tone (nada bicara).",
+        },
+        {
+          q: "Apa risiko jika kita TIDAK memberikan instruksi 'Tone' pada prompt?",
+          options: [
+            "AI tidak akan menjawab sama sekali.",
+            "AI cenderung menggunakan gaya 'robot sopan' yang hambar.",
+            "Jawaban AI akan menjadi sangat kasar.",
+            "AI akan otomatis menggunakan bahasa daerah.",
+          ],
+          correct: 1,
+          explanation:
+            "Tanpa arah gaya, AI biasanya memilih gaya standar yang membosankan.",
+        },
+        {
+          q: "Manakah dari pilihan berikut yang merupakan 'Prompt Buruk' karena terlalu umum?",
+          options: [
+            "'Tulis resep nasi goreng di bawah 20 ribu.'",
+            "'Buat tips belajar bahasa Inggris.'",
+            "'Jelaskan teori relativitas ke anak 5 tahun.'",
+            "'Bertindaklah sebagai koki diet keto.'",
+          ],
+          correct: 1,
+          explanation:
+            "Hanya meminta 'tips belajar' tanpa konteks lain membuat hasil AI terlalu luas.",
+        },
+        {
+          q: "Dalam contoh prompt belajar bahasa Inggris, pembatasan (Restriction) yang diberikan adalah...",
+          options: [
+            "Harus menguasai 1000 kata.",
+            "Fokus pada latihan lisan dan jangan berikan teori tata bahasa rumit.",
+            "Menggunakan bahasa formal kaku.",
+            "Belajar 2 jam setiap hari.",
+          ],
+          correct: 1,
+          explanation:
+            "Larangan memberikan teori grammar rumit adalah bentuk pembatasan.",
+        },
+        {
+          q: "Mengapa penggunaan format 'Markdown dengan poin-poin' termasuk dalam 'Requirements' (R)?",
+          options: [
+            "Karena itu adalah gaya bicara.",
+            "Karena itu adalah peran AI.",
+            "Karena itu menentukan struktur visual dan penyajian informasi.",
+            "Karena itu adalah identitas audiens.",
+          ],
+          correct: 2,
+          explanation:
+            "Format (seperti tabel atau poin) adalah bagian dari syarat hasil (requirements).",
+        },
+        {
+          q: "Memberikan 'Context' dalam tugas utama (Main Task) membantu AI agar...",
+          options: [
+            "Tidak merasa bosan.",
+            "Menghasilkan jawaban yang lebih mendalam dan tidak dangkal.",
+            "Mengetahui nama asli pengguna.",
+            "Menghubungkan dirinya dengan satelit.",
+          ],
+          correct: 1,
+          explanation:
+            "Konteks membuat AI mengerti situasi tugas tersebut sehingga hasilnya akurat.",
+        },
+        {
+          q: "Teknik SMART dirancang agar hasil dari AI menjadi...",
+          options: [
+            "Lebih panjang dan bertele-tele.",
+            "Lebih sulit dipahami.",
+            "Lebih akurat, relevan, dan sesuai kebutuhan.",
+            "Sama persis dengan hasil Google.",
+          ],
+          correct: 2,
+          explanation:
+            "SMART adalah standar industri untuk mendapatkan hasil AI yang optimal.",
+        },
+        {
+          q: "Jika Anda meminta AI menggunakan istilah medis karena audiensnya dokter, Anda menerapkan...",
+          options: [
+            "Specific Role dan Tone.",
+            "Audience dan Terminology.",
+            "Main Task dan Restrictions.",
+            "Semua jawaban salah.",
+          ],
+          correct: 1,
+          explanation:
+            "Target pembaca (Audience) menentukan istilah khusus (Terminology) yang dipakai.",
+        },
+      ];
+
+      let currentQuestion = 0;
+      let score = 0;
+      let studentName = "";
+      let userAnswers = [];
+
+      function startQuiz() {
+        const nameInput = document.getElementById("input-name");
+        if (nameInput.value.trim() === "") {
+          alert("Silakan masukkan namamu dulu ya!");
+          return;
+        }
+        studentName = nameInput.value;
+        document.getElementById("display-student-name").innerText =
+          `Siswa: ${studentName}`;
+        document.getElementById("screen-welcome").classList.add("hidden");
+        document.getElementById("screen-quiz").classList.remove("hidden");
+        showQuestion();
+      }
+
+      function showQuestion() {
+        const question = quizData[currentQuestion];
+        document.getElementById("quiz-progress").innerText =
+          `Soal ${currentQuestion + 1} / ${quizData.length}`;
+        document.getElementById("question-text").innerText = question.q;
+
+        const container = document.getElementById("options-container");
+        container.innerHTML = "";
+
+        question.options.forEach((opt, index) => {
+          const btn = document.createElement("button");
+          btn.className =
+            "w-full text-left p-4 border-2 border-blue-100 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-colors font-medium flex items-center";
+          btn.innerHTML = `
+                    <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-3 font-bold">${String.fromCharCode(65 + index)}</span>
+                    <span class="text-gray-700">${opt}</span>
+                `;
+          btn.onclick = () => handleAnswer(index);
+          container.appendChild(btn);
+        });
+      }
+
+      function handleAnswer(choice) {
+        userAnswers.push(choice);
+        if (choice === quizData[currentQuestion].correct) {
+          score += 5;
+        }
+
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      }
+
+      function showResult() {
+        document.getElementById("screen-quiz").classList.add("hidden");
+        document.getElementById("screen-result").classList.remove("hidden");
+
+        document.getElementById("final-score").innerText = score;
+
+        let msg = "";
+        if (score === 100)
+          msg = "Luar biasa! Kamu sudah paham betul teknik Prompting SMART!";
+        else if (score >= 75)
+          msg = "Bagus sekali! Sedikit lagi kamu jadi ahli AI.";
+        else if (score >= 50)
+          msg = "Cukup baik, pelajari lagi beberapa poin teknik SMART ya.";
+        else
+          msg =
+            "Jangan menyerah, coba pelajari materinya lagi dan ulangi kuisnya!";
+
+        document.getElementById("result-message").innerText =
+          `${studentName}, ${msg}`;
+
+        const reviewContainer = document.getElementById("review-container");
+        reviewContainer.innerHTML = "";
+
+        quizData.forEach((item, i) => {
+          const isCorrect = userAnswers[i] === item.correct;
+          const div = document.createElement("div");
+          div.className = `p-4 rounded-lg border ${isCorrect ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`;
+          div.innerHTML = `
+                    <p class="font-bold text-gray-800 text-sm mb-1">${i + 1}. ${item.q}</p>
+                    <p class="text-sm ${isCorrect ? "text-green-700" : "text-red-700"}">
+                        Jawabanmu: ${item.options[userAnswers[i]]} ${isCorrect ? "✅" : "❌"}
+                    </p>
+                    ${!isCorrect ? `<p class="text-sm text-blue-700 font-semibold mt-1 italic">Jawaban Benar: ${item.options[item.correct]}</p>` : ""}
+                    <p class="text-xs text-gray-500 mt-2 bg-white/50 p-2 rounded"><strong>Info:</strong> ${item.explanation}</p>
+                `;
+          reviewContainer.appendChild(div);
+        });
+      }
+    </script>
+  </body>
+</html>
