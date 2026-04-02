@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CBT - SMK Cyber Media</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .option-card:hover {
+        border-color: #3b82f6;
+        background-color: #eff6ff;
+      }
+      .option-selected {
+        border-color: #2563eb;
+        background-color: #dbeafe;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Container Utama -->
+    <div id="app" class="max-w-4xl mx-auto p-4 md:p-8">
+      <!-- HALAMAN 1: LOGIN -->
+      <div id="login-page" class="bg-white p-8 rounded-2xl shadow-xl mt-10">
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold text-blue-700">SMK Cyber Media</h1>
+          <p class="text-gray-500">Sistem Asesmen Digital (CBT)</p>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Nama Lengkap</label
+            >
+            <input
+              type="text"
+              id="user-name"
+              placeholder="Masukkan nama Anda..."
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Kelas</label
+            >
+            <input
+              type="text"
+              id="user-class"
+              placeholder="Contoh: X RPL 1"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+            />
+          </div>
+          <button
+            onclick="startExam()"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition transform active:scale-95"
+          >
+            Mulai Ujian
+          </button>
+        </div>
+      </div>
+
+      <!-- HALAMAN 2: UJIAN -->
+      <div id="quiz-page" class="hidden">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-xl shadow-sm mb-6 border-l-4 border-blue-600"
+        >
+          <div class="mb-2 md:mb-0">
+            <span class="text-sm text-gray-500">Peserta:</span>
+            <span id="display-name" class="font-bold text-blue-800 ml-1"></span>
+            <span class="mx-2">|</span>
+            <span id="display-class" class="text-gray-600"></span>
+          </div>
+          <div class="text-blue-700 font-mono font-bold text-lg" id="timer">
+            Soal <span id="current-index-display">1</span> / 45
+          </div>
+        </div>
+
+        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+          <div id="question-container">
+            <p
+              id="question-text"
+              class="text-lg md:text-xl font-semibold text-gray-800 mb-6 leading-relaxed"
+            ></p>
+            <div id="options-container" class="grid grid-cols-1 gap-3">
+              <!-- Pilihan jawaban akan muncul di sini -->
+            </div>
+          </div>
+
+          <div class="flex justify-between mt-10 pt-6 border-t border-gray-100">
+            <button
+              id="prev-btn"
+              onclick="prevQuestion()"
+              class="px-6 py-2 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 disabled:opacity-30 disabled:cursor-not-allowed transition"
+            >
+              Kembali
+            </button>
+            <button
+              id="next-btn"
+              onclick="nextQuestion()"
+              class="px-8 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+            >
+              Selanjutnya
+            </button>
+            <button
+              id="finish-btn"
+              onclick="showResults()"
+              class="hidden px-8 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+            >
+              Selesai Ujian
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HALAMAN 3: HASIL -->
+      <div id="result-page" class="hidden">
+        <div class="bg-white p-8 rounded-2xl shadow-xl text-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">Hasil Asesmen</h2>
+          <div class="text-6xl font-black text-blue-600 my-6" id="final-score">
+            0
+          </div>
+          <p class="text-gray-600 mb-4" id="result-summary"></p>
+          <button
+            onclick="location.reload()"
+            class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition"
+          >
+            Ulangi Ujian
+          </button>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
+            Review Jawaban
+          </h3>
+          <div id="review-container" class="space-y-6">
+            <!-- Detail review jawaban akan muncul di sini -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const originalQuizData = [
+        {
+          q: 'Manakah di bawah ini yang merupakan tipe data untuk menyimpan angka bulat di Python?',
+          a: 'C',
+          options: ['String', 'Float', 'Integer', 'Boolean', 'List'],
+        },
+        {
+          q: "Jika Anda ingin menyimpan data teks seperti 'SMK Cyber Media', tipe data apa yang paling tepat digunakan?",
+          a: 'B',
+          options: ['Int', 'String', 'Float', 'Complex', 'Tuple'],
+        },
+        {
+          q: 'Output dari kode print(10 > 5) adalah...',
+          a: 'A',
+          options: ['True', 'False', '10', 'Error', '5'],
+        },
+        {
+          q: 'Operator != dalam Python digunakan untuk...',
+          a: 'C',
+          options: [
+            'Membandingkan kesamaan nilai',
+            'Menjumlahkan dua variabel',
+            'Mengecek apakah nilai tidak sama dengan',
+            'Mengalikan variabel',
+            'Menentukan nilai sisa bagi',
+          ],
+        },
+        {
+          q: 'Fungsi utama dari method input() pada Python adalah...',
+          a: 'C',
+          options: [
+            'Menampilkan hasil ke layar',
+            'Menghentikan program secara paksa',
+            'Mengambil data masukan dari pengguna',
+            'Mengubah tipe data menjadi angka',
+            'Membuat perulangan otomatis',
+          ],
+        },
+        {
+          q: 'Perhatikan kode: x = "10"; y = 5; print(x * y). Outputnya adalah...',
+          a: 'B',
+          options: ['50', '1010101010', '105', 'Error', '"50"'],
+        },
+        {
+          q: 'Mengapa hasil dari print("10" * 5) bukan 50?',
+          a: 'B',
+          options: [
+            'Karena Python tidak bisa perkalian',
+            'Karena "10" dianggap sebagai String, sehingga dilakukan repetisi',
+            'Karena angka 5 harus dalam tanda kutip',
+            'Karena kurang tanda titik koma',
+            'Karena variabel belum dideklarasikan',
+          ],
+        },
+        {
+          q: 'Untuk mengubah string "25" menjadi integer agar bisa dihitung secara matematis, fungsi yang digunakan adalah...',
+          a: 'C',
+          options: ['str()', 'float()', 'int()', 'input()', 'print()'],
+        },
+        {
+          q: 'Dalam struktur if-elif-else, apa yang terjadi jika kondisi pertama (if) sudah terpenuhi (True)?',
+          a: 'C',
+          options: [
+            'Program akan mengecek elif di bawahnya',
+            'Program akan langsung menjalankan else',
+            'Program menjalankan blok if dan mengabaikan kondisi berikutnya',
+            'Program akan error',
+            'Program berhenti total',
+          ],
+        },
+        {
+          q: 'Perhatikan kode: nilai = 75. Jika ada kondisi if nilai > 70: print("K") dan elif nilai > 80: print("L"), apa yang dicetak?',
+          a: 'A',
+          options: ['K', 'L', 'K dan L', 'Tidak ada yang dicetak', 'Error'],
+        },
+        {
+          q: 'Apa kepanjangan dari S dalam prinsip S.M.A.R.T pada prompting AI?',
+          a: 'B',
+          options: ['Simple', 'Specific', 'Standard', 'System', 'Smart'],
+        },
+        {
+          q: 'Agar prompt AI menghasilkan jawaban yang bisa diukur keberhasilannya, maka harus memenuhi unsur...',
+          a: 'C',
+          options: [
+            'Attainable',
+            'Relevant',
+            'Measurable',
+            'Time-bound',
+            'Specific',
+          ],
+        },
+        {
+          q: 'Manakah simbol yang benar untuk perulangan yang sudah diketahui jumlah pastinya di Python?',
+          a: 'C',
+          options: ['If', 'While', 'For', 'Switch', 'Def'],
+        },
+        {
+          q: 'Apa output dari operasi logika -5 > 7?',
+          a: 'B',
+          options: ['True', 'False', '-5', '7', 'None'],
+        },
+        {
+          q: 'Simbol flowchart yang digunakan untuk menunjukkan proses keputusan (decision) seperti if adalah...',
+          a: 'D',
+          options: [
+            'Persegi panjang',
+            'Oval',
+            'Jajar genjang',
+            'Belah ketupat (Diamond)',
+            'Lingkaran',
+          ],
+        },
+        {
+          q: 'Tipe data yang hanya memiliki dua nilai, yaitu True atau False, disebut...',
+          a: 'C',
+          options: ['String', 'Integer', 'Boolean', 'Float', 'Array'],
+        },
+        {
+          q: "Jika Anda menginput huruf 'A' ke dalam fungsi int(input()), apa yang akan terjadi?",
+          a: 'C',
+          options: [
+            "Program mencetak 'A'",
+            "Program mengubah 'A' jadi angka 1",
+            'Program mengalami ValueError',
+            'Program mengabaikan input tersebut',
+            'Program otomatis berhenti tanpa pesan',
+          ],
+        },
+        {
+          q: 'Manakah penulisan variabel yang benar di Python?',
+          a: 'D',
+          options: [
+            '1_nilai = 90',
+            '-siswa = 90',
+            'nilai siswa = 90',
+            'nilai_siswa = 90',
+            'if = 90',
+          ],
+        },
+        {
+          q: "Dalam prinsip SMART, 'Relevant' berarti prompt yang diberikan harus...",
+          a: 'B',
+          options: [
+            'Singkat dan padat',
+            'Sesuai dengan konteks atau tujuan yang ingin dicapai',
+            'Memiliki batas waktu',
+            'Bisa dilakukan oleh AI',
+            'Sangat detail dan teknis',
+          ],
+        },
+        {
+          q: 'Software yang dibutuhkan untuk menjalankan script Python di komputer secara minimal adalah...',
+          a: 'B',
+          options: [
+            'Adobe Photoshop',
+            'Python Interpreter',
+            'Microsoft Word',
+            'Corel Draw',
+            'WinRAR',
+          ],
+        },
+        {
+          q: 'Apa kegunaan dari indentasi (spasi menjorok ke dalam) pada Python?',
+          a: 'C',
+          options: [
+            'Hanya sebagai hiasan agar rapi',
+            'Menandai awal dan akhir baris kode',
+            'Menandai blok kode (seperti isi dari if atau for)',
+            'Mempercepat jalannya program',
+            'Mengurangi penggunaan memori',
+          ],
+        },
+        {
+          q: "Operator perbandingan untuk 'lebih kecil atau sama dengan' adalah...",
+          a: 'C',
+          options: ['<', '>', '<=', '>=', '!='],
+        },
+        {
+          q: 'Apa hasil dari print(15 % 4)?',
+          a: 'A',
+          options: ['3', '4', '3.75', '1', '0'],
+        },
+        {
+          q: 'Simbol flowchart berbentuk jajar genjang digunakan untuk...',
+          a: 'C',
+          options: [
+            'Start/Stop',
+            'Proses perhitungan',
+            'Input/Output data',
+            'Percabangan',
+            'Penghubung halaman',
+          ],
+        },
+        {
+          q: 'Apa fungsi dari elif dalam Python?',
+          a: 'B',
+          options: [
+            'Menghapus kondisi sebelumnya',
+            'Menambahkan kondisi tambahan jika kondisi if salah',
+            'Mengakhiri program',
+            'Mengulang kode secara terus-menerus',
+            'Menampilkan pesan error khusus',
+          ],
+        },
+        {
+          q: 'Dalam prompting, memberikan batasan waktu atau deadline hasil termasuk dalam unsur...',
+          a: 'E',
+          options: [
+            'Specific',
+            'Measurable',
+            'Attainable',
+            'Relevant',
+            'Time-bound',
+          ],
+        },
+        {
+          q: 'Method perulangan yang berjalan selama kondisi bernilai True adalah...',
+          a: 'B',
+          options: ['For', 'While', 'Do-While', 'Repeat', 'If'],
+        },
+        {
+          q: 'Jika kita ingin membuat flowchart perulangan, tanda panah yang kembali ke proses sebelumnya disebut...',
+          a: 'C',
+          options: [
+            'Sequence',
+            'Selection',
+            'Looping/Loopback',
+            'Termination',
+            'Input',
+          ],
+        },
+        {
+          q: 'Perhatikan: nilai = 85. Kondisi: if nilai >= 85: print("Lulus"). Hasilnya adalah...',
+          a: 'A',
+          options: ['Lulus', 'Tidak Lulus', 'Error', '85', 'Kosong'],
+        },
+        {
+          q: 'Bagaimana cara menulis komentar di Python?',
+          a: 'C',
+          options: [
+            '// Ini komentar',
+            '/* Ini komentar */',
+            '# Ini komentar',
+            '-- Ini komentar',
+            'Kosong',
+          ],
+        },
+        {
+          q: 'Tipe data untuk angka desimal (seperti 3.14) adalah...',
+          a: 'C',
+          options: ['Integer', 'String', 'Float', 'Boolean', 'Char'],
+        },
+        {
+          q: "Manakah yang merupakan contoh prompt AI yang 'Specific'?",
+          a: 'B',
+          options: [
+            "'Buatlah kode.'",
+            "'Buatlah kode Python untuk menghitung diskon belanja 10%.'",
+            "'Tolong bantu saya koding.'",
+            "'Jelaskan tentang komputer.'",
+            "'Apa itu AI?'",
+          ],
+        },
+        {
+          q: 'Keyword yang digunakan untuk keluar dari perulangan secara paksa adalah...',
+          a: 'C',
+          options: ['Continue', 'Pass', 'Break', 'Exit', 'Stop'],
+        },
+        {
+          q: 'Apa yang terjadi jika kita lupa menulis tanda titik dua (:) di akhir baris if?',
+          a: 'B',
+          options: [
+            'Program tetap jalan',
+            'Program akan memberikan SyntaxError',
+            'Program akan melewati baris tersebut',
+            'Hasil output jadi salah',
+            'Warna kode berubah',
+          ],
+        },
+        {
+          q: 'Untuk menggabungkan dua string, kita menggunakan operator...',
+          a: 'C',
+          options: ['*', '/', '+', '-', '%'],
+        },
+        {
+          q: 'Urutan langkah-langkah logis untuk menyelesaikan masalah disebut...',
+          a: 'B',
+          options: [
+            'Variabel',
+            'Algoritma',
+            'Tipe Data',
+            'Prompting',
+            'Output',
+          ],
+        },
+        {
+          q: "Jika input adalah '123', maka type(input()) akan menghasilkan...",
+          a: 'C',
+          options: [
+            "<class 'int'>",
+            "<class 'float'>",
+            "<class 'str'>",
+            "<class 'bool'>",
+            'Error',
+          ],
+        },
+        {
+          q: "Dalam AI Canvas Gemini, bagian 'Context' berfungsi untuk...",
+          a: 'B',
+          options: [
+            'Memberikan instruksi utama',
+            'Memberikan latar belakang informasi agar AI lebih paham',
+            'Menentukan format file output',
+            'Menghapus riwayat chat',
+            'Membayar biaya langganan',
+          ],
+        },
+        {
+          q: 'Apa output dari print(not True)?',
+          a: 'B',
+          options: ['True', 'False', 'Error', 'None', '0'],
+        },
+        {
+          q: 'Di bawah ini yang merupakan instruksi untuk menampilkan data ke layar pada Python adalah...',
+          a: 'B',
+          options: ['input()', 'print()', 'int()', 'if', 'while'],
+        },
+        {
+          q: 'Manakah dari operator berikut yang digunakan untuk menghitung hasil bagi (pembulatan ke bawah) di Python?',
+          a: 'D',
+          options: ['/', '%', '**', '//', '=='],
+        },
+        {
+          q: "Dalam pembuatan flowchart, simbol 'Oval' atau 'Capsule' digunakan untuk menunjukkan...",
+          a: 'C',
+          options: [
+            'Proses perhitungan',
+            'Input data dari pengguna',
+            'Titik awal (Start) atau akhir (End) program',
+            'Percabangan kondisi if',
+            'Arah aliran data',
+          ],
+        },
+        {
+          q: 'Perhatikan potongan kode: for i in range(3): print("Halo"). Berapa kali kata \'Halo\' akan muncul di layar?',
+          a: 'C',
+          options: [
+            '1 kali',
+            '2 kali',
+            '3 kali',
+            '4 kali',
+            'Tidak muncul sama sekali',
+          ],
+        },
+        {
+          q: 'Unsur A dalam SMART prompting adalah singkatan dari Attainable, yang berarti...',
+          a: 'B',
+          options: [
+            'Prompt harus sangat panjang',
+            'Tugas yang diberikan harus realistis atau bisa dikerjakan oleh AI',
+            'Prompt harus memiliki batasan karakter',
+            'Jawaban AI harus bisa dibagikan ke media sosial',
+            'Prompt harus menggunakan bahasa Inggris',
+          ],
+        },
+        {
+          q: 'Apa yang akan terjadi jika kita menjalankan kode print(10 + "5") di Python?',
+          a: 'C',
+          options: [
+            'Muncul angka 15',
+            'Muncul angka 105',
+            'Terjadi TypeError (Error karena tipe data berbeda)',
+            'Muncul angka 10 sebanyak 5 kali',
+            "Program akan mengabaikan angka '5'",
+          ],
+        },
+      ];
+
+      let quizData = [];
+      let currentQuestion = 0;
+      let userAnswers = [];
+      let userName = '';
+      let userClass = '';
+
+      const indexMap = ['A', 'B', 'C', 'D', 'E'];
+
+      // Fungsi untuk mengacak array (Fisher-Yates Shuffle)
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      function startExam() {
+        userName = document.getElementById('user-name').value;
+        userClass = document.getElementById('user-class').value;
+
+        if (!userName || !userClass) {
+          alert('Mohon isi Nama dan Kelas terlebih dahulu!');
+          return;
+        }
+
+        // Mengacak soal dari data original
+        quizData = shuffleArray([...originalQuizData]);
+        // Reset jawaban user berdasarkan urutan baru
+        userAnswers = new Array(quizData.length).fill(null);
+        currentQuestion = 0;
+
+        document.getElementById('login-page').classList.add('hidden');
+        document.getElementById('quiz-page').classList.remove('hidden');
+
+        document.getElementById('display-name').textContent = userName;
+        document.getElementById('display-class').textContent = userClass;
+
+        renderQuestion();
+      }
+
+      function renderQuestion() {
+        const question = quizData[currentQuestion];
+        document.getElementById('current-index-display').textContent =
+          currentQuestion + 1;
+        document.getElementById('question-text').textContent =
+          currentQuestion + 1 + '. ' + question.q;
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+
+        question.options.forEach((opt, idx) => {
+          const label = indexMap[idx];
+          const button = document.createElement('div');
+          button.className = `option-card flex items-center p-4 border-2 rounded-xl cursor-pointer transition ${userAnswers[currentQuestion] === label ? 'option-selected' : 'border-gray-200'}`;
+          button.onclick = () => selectOption(label);
+
+          button.innerHTML = `
+                    <span class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-lg mr-4 font-bold text-gray-600">${label}</span>
+                    <span class="text-gray-700">${opt}</span>
+                `;
+          optionsContainer.appendChild(button);
+        });
+
+        // Handle visibility buttons
+        document.getElementById('prev-btn').disabled = currentQuestion === 0;
+        if (currentQuestion === quizData.length - 1) {
+          document.getElementById('next-btn').classList.add('hidden');
+          document.getElementById('finish-btn').classList.remove('hidden');
+        } else {
+          document.getElementById('next-btn').classList.remove('hidden');
+          document.getElementById('finish-btn').classList.add('hidden');
+        }
+      }
+
+      function selectOption(label) {
+        userAnswers[currentQuestion] = label;
+        renderQuestion();
+      }
+
+      function nextQuestion() {
+        if (currentQuestion < quizData.length - 1) {
+          currentQuestion++;
+          renderQuestion();
+          window.scrollTo(0, 0);
+        }
+      }
+
+      function prevQuestion() {
+        if (currentQuestion > 0) {
+          currentQuestion--;
+          renderQuestion();
+          window.scrollTo(0, 0);
+        }
+      }
+
+      function showResults() {
+        const unanswered = userAnswers.filter((ans) => ans === null).length;
+        if (unanswered > 0) {
+          const confirmFinish = confirm(
+            `Ada ${unanswered} soal belum dijawab. Tetap selesai?`,
+          );
+          if (!confirmFinish) return;
+        }
+
+        document.getElementById('quiz-page').classList.add('hidden');
+        document.getElementById('result-page').classList.remove('hidden');
+
+        let score = 0;
+        const reviewContainer = document.getElementById('review-container');
+        reviewContainer.innerHTML = '';
+
+        quizData.forEach((data, i) => {
+          const isCorrect = userAnswers[i] === data.a;
+          if (isCorrect) score++;
+
+          const reviewItem = document.createElement('div');
+          reviewItem.className = `p-4 border-l-4 rounded-lg bg-gray-50 ${isCorrect ? 'border-green-500' : 'border-red-500'}`;
+
+          const userAnswerText = userAnswers[i]
+            ? `${userAnswers[i]}. ${data.options[indexMap.indexOf(userAnswers[i])]}`
+            : 'Tidak dijawab';
+          const correctAnswerText = `${data.a}. ${data.options[indexMap.indexOf(data.a)]}`;
+
+          reviewItem.innerHTML = `
+                    <p class="font-bold text-gray-800 mb-2">${i + 1}. ${data.q}</p>
+                    <div class="text-sm space-y-1">
+                        <p><span class="font-semibold">Jawaban Anda:</span> <span class="${isCorrect ? 'text-green-600' : 'text-red-600'}">${userAnswerText}</span></p>
+                        ${!isCorrect ? `<p class="text-green-600"><span class="font-semibold">Kunci Jawaban:</span> ${correctAnswerText}</p>` : ''}
+                    </div>
+                `;
+          reviewContainer.appendChild(reviewItem);
+        });
+
+        const finalPercentage = Math.round((score / quizData.length) * 100);
+        document.getElementById('final-score').textContent = finalPercentage;
+        document.getElementById('result-summary').textContent =
+          `Berhasil menjawab benar ${score} dari ${quizData.length} soal.`;
+        window.scrollTo(0, 0);
+      }
+    </script>
+  </body>
+</html>
