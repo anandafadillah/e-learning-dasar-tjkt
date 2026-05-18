@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS TJKT - Ujian Akhir Sumatif Genap</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        secondary: '#06b6d4',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2 rounded-lg shadow-md shadow-indigo-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900 tracking-tight">E-LMS SMK TJKT</h1>
+                    <p class="text-xs text-slate-500 font-medium">Asesmen Akhir Sumatif Genap Fase E</p>
+                </div>
+            </div>
+            
+            <div id="quiz-meta-header" class="hidden flex items-center space-x-6">
+                <!-- Timer -->
+                <div class="flex items-center space-x-2 bg-rose-50 border border-rose-100 text-rose-700 px-3 py-1.5 rounded-lg font-semibold text-sm">
+                    <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span id="timer-display">90:00</span>
+                </div>
+                <!-- Student Info Badge -->
+                <div class="hidden sm:flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                    <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span id="header-student-info" class="text-xs font-bold text-slate-700">GUEST</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col">
+        <!-- 1. REGISTRATION SCREEN -->
+        <section id="screen-reg" class="flex-grow flex items-center justify-center p-4 sm:p-6 md:p-8">
+            <div class="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-200/80 max-w-md w-full p-6 sm:p-8 transition-all">
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-14 h-14 bg-indigo-50 text-indigo-600 rounded-full mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-slate-900">Ujian Teori TJKT</h2>
+                    <p class="text-slate-500 text-sm mt-1">Harap isi biodata Anda sebelum memulai ujian paket 100 Soal.</p>
+                </div>
+
+                <form id="reg-form" onsubmit="handleStartQuiz(event)" class="space-y-4">
+                    <div>
+                        <label for="input-name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
+                        <input type="text" id="input-name" required placeholder="Masukkan nama Anda..." class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-slate-800 font-medium">
+                    </div>
+                    <div>
+                        <label for="input-class" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Kelas / Rombel</label>
+                        <select id="input-class" required class="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-slate-800 font-medium bg-white">
+                            <option value="">-- Pilih Kelas --</option>
+                            <option value="X TJKT 1">X TJKT 1</option>
+                            <option value="X TJKT 2">X TJKT 2</option>
+                            <option value="X TJKT 3">X TJKT 3</option>
+                            <option value="X TJKT 4">X TJKT 4</option>
+                        </select>
+                    </div>
+                    
+                    <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100 text-xs text-indigo-800 space-y-1.5">
+                        <div class="flex items-center font-bold">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            Informasi Ujian:
+                        </div>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Jumlah Soal: <strong>100 Butir</strong> (Pilihan Ganda A-E).</li>
+                            <li>Waktu Pengerjaan: <strong>90 Menit</strong>.</li>
+                            <li>Ujian akan tersubmit otomatis jika waktu habis.</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center space-x-2">
+                        <span>Mulai Ujian Sekarang</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 2. QUIZ DASHBOARD SCREEN (SPLIT-SCREEN) -->
+        <section id="screen-quiz" class="hidden flex-grow flex flex-col md:flex-row max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 gap-6">
+            <!-- Left Side: Question Pane -->
+            <div class="flex-grow flex flex-col bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 sm:p-7 min-w-[320px] md:w-2/3">
+                <!-- Question Header -->
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                    <span id="question-badge" class="bg-indigo-50 text-indigo-700 font-bold px-3.5 py-1 rounded-full text-xs uppercase tracking-wide">SOAL 1 DARI 100</span>
+                    <button onclick="toggleFlag()" class="text-slate-400 hover:text-amber-500 flex items-center space-x-1.5 transition-colors text-xs font-semibold">
+                        <svg id="flag-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a5 5 0 017-5a2 2 0 010 4a5 5 0 01-7 1c-.3 0-.6-.1-.9-.2l-.6-2.4a3 3 0 00-.5.6V17a1 1 0 002 0v-4.5h5.5a1 1 0 000-2H6.5v-3H12a1 1 0 000-2H6.5V5z"></path>
+                        </svg>
+                        <span id="flag-text">Tandai Soal</span>
+                    </button>
+                </div>
+
+                <!-- Question Text -->
+                <div class="flex-grow">
+                    <h3 id="question-text" class="text-slate-900 font-semibold text-base sm:text-lg leading-relaxed mb-6">
+                        Memuat pertanyaan...
+                    </h3>
+
+                    <!-- Answer Options -->
+                    <div id="options-container" class="space-y-3">
+                        <!-- Options injected dynamically by JS -->
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="border-t border-slate-100 pt-5 mt-8 flex items-center justify-between gap-3">
+                    <button id="btn-prev" onclick="goToPrev()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all flex items-center space-x-1.5 text-sm disabled:opacity-40 disabled:cursor-not-allowed">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                        <span>Sebelumnya</span>
+                    </button>
+                    
+                    <button id="btn-next" onclick="goToNext()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all flex items-center space-x-1.5 text-sm">
+                        <span>Berikutnya</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Side: Navigation Grid & Action Sidebar -->
+            <div class="w-full md:w-1/3 flex flex-col gap-6">
+                <!-- Info Siswa Card -->
+                <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-5 shadow-sm border border-indigo-950">
+                    <p class="text-[10px] uppercase font-bold text-indigo-300 tracking-wider">PESERTA UJIAN</p>
+                    <h4 id="sidebar-student-name" class="text-lg font-extrabold truncate mt-0.5">NAMA SISWA</h4>
+                    <p id="sidebar-student-class" class="text-xs text-indigo-200">KELAS TJKT</p>
+                </div>
+
+                <!-- Grid Navigasi Soal -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 flex-grow flex flex-col min-h-[350px]">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                        <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">LEMBAR JAWABAN</span>
+                        <span id="answered-count-badge" class="bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded text-[11px]">0/100 Terjawab</span>
+                    </div>
+
+                    <!-- Grid Container (Scrollable) -->
+                    <div class="flex-grow overflow-y-auto max-h-[300px] pr-1.5">
+                        <div id="grid-container" class="grid grid-cols-5 xs:grid-cols-6 sm:grid-cols-8 md:grid-cols-5 lg:grid-cols-6 gap-2">
+                            <!-- 100 Grid items injected dynamically by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Status Color Guide -->
+                    <div class="grid grid-cols-3 gap-2 border-t border-slate-100 pt-4 mt-4 text-[10px] font-bold text-slate-500">
+                        <div class="flex items-center space-x-1.5">
+                            <div class="w-3 h-3 rounded bg-slate-100 border border-slate-300"></div>
+                            <span>Belum</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <div class="w-3 h-3 rounded bg-indigo-100 border border-indigo-400"></div>
+                            <span>Terjawab</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5">
+                            <div class="w-3 h-3 rounded bg-amber-400 border border-amber-500"></div>
+                            <span>Ragu</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selesai Button -->
+                <button onclick="confirmSubmit()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-lg shadow-emerald-600/10 transition-all flex items-center justify-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    </svg>
+                    <span>Kirim & Selesai Ujian</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 3. RESULT & REVIEW SCREEN -->
+        <section id="screen-result" class="hidden flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8">
+                <!-- Header Hasil -->
+                <div class="text-center pb-8 border-b border-slate-100">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full mb-4">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-slate-900">Ujian Selesai!</h2>
+                    <p class="text-slate-500 text-sm mt-1">Hasil asesmen Anda telah direkam dan dianalisis.</p>
+                </div>
+
+                <!-- Informasi Siswa & Skor Utama -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-150">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider">PROFIL SISWA</h4>
+                        <p id="result-student-name" class="text-lg font-extrabold text-slate-800 mt-2 truncate">NAMA LENGKAP</p>
+                        <p id="result-student-class" class="text-sm text-slate-500">KELAS TJKT</p>
+                        <p class="text-xs text-indigo-600 font-bold mt-3">Mata Pelajaran: Dasar-dasar TJKT</p>
+                    </div>
+
+                    <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-100 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-indigo-700 uppercase tracking-wider">STATISTIK SOAL</h4>
+                            <div class="grid grid-cols-2 gap-2 mt-3">
+                                <div class="bg-white p-2.5 rounded-xl border border-indigo-100">
+                                    <span class="text-[10px] text-slate-400 font-bold block uppercase">BENAR</span>
+                                    <span id="result-correct-count" class="text-xl font-extrabold text-emerald-600">0</span>
+                                </div>
+                                <div class="bg-white p-2.5 rounded-xl border border-indigo-100">
+                                    <span class="text-[10px] text-slate-400 font-bold block uppercase">SALAH</span>
+                                    <span id="result-wrong-count" class="text-xl font-extrabold text-rose-500">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 text-white p-5 rounded-2xl border border-slate-950 flex flex-col items-center justify-center text-center relative overflow-hidden">
+                        <div class="absolute -right-8 -bottom-8 w-24 h-24 bg-indigo-600/10 rounded-full blur-xl"></div>
+                        <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider">NILAI AKHIR</h4>
+                        <div class="flex items-baseline mt-2">
+                            <span id="result-score" class="text-5xl font-black text-white">0</span>
+                            <span class="text-slate-400 text-lg ml-1">/100</span>
+                        </div>
+                        <span id="result-status-badge" class="mt-3 px-3.5 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-full tracking-wide">LULUS ASESMEN</span>
+                    </div>
+                </div>
+
+                <!-- Action Button Review -->
+                <div class="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-6">
+                    <h3 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Review Pembahasan Soal
+                    </h3>
+                    <div class="flex items-center gap-2">
+                        <button onclick="window.print()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-all flex items-center space-x-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-3a2 2 0 00-2-2H9a2 2 0 00-2 2v3a2 2 0 002 2zm5-17v2m0 12v-2m-4-2h8"></path>
+                            </svg>
+                            <span>Cetak Hasil</span>
+                        </button>
+                        <button onclick="resetLMS()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition-all flex items-center space-x-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A9 9 0 1120.74 9h-2.74"></path>
+                            </svg>
+                            <span>Ulangi Ujian</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Review -->
+                <div class="flex items-center gap-2 mt-6 overflow-x-auto pb-1.5">
+                    <button onclick="filterReview('all')" id="btn-filter-all" class="px-3.5 py-1.5 bg-indigo-500 text-white font-bold rounded-lg text-xs transition-colors whitespace-nowrap">Semua Soal</button>
+                    <button onclick="filterReview('correct')" id="btn-filter-correct" class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-lg text-xs transition-colors whitespace-nowrap">Benar saja</button>
+                    <button onclick="filterReview('wrong')" id="btn-filter-wrong" class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-lg text-xs transition-colors whitespace-nowrap">Salah saja</button>
+                </div>
+
+                <!-- Review Items Container -->
+                <div id="review-container" class="space-y-6 mt-6">
+                    <!-- Dynamic review cards injected here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Konfirmasi Submit -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xl max-w-sm w-full p-6 animate-in fade-in zoom-in-95 duration-200">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-amber-50 text-amber-500 rounded-full mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900">Apakah Anda Yakin?</h3>
+                <p class="text-slate-500 text-sm mt-1.5">Anda akan mengakhiri ujian dan merekam hasil. Anda tidak bisa kembali untuk mengubah jawaban.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mt-6">
+                <button onclick="closeModal()" class="py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm transition-colors">Batal</button>
+                <button onclick="doSubmit()" class="py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-colors shadow-lg shadow-emerald-600/10">Ya, Selesai</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400 font-medium">
+        <p>© 2026 SMK TJKT Digital Assessment Platform. Dibuat khusus untuk Anda, Ganteng.</p>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Database 100 Soal TJKT (Lengkap, tervalidasi, representasi soal ujian yang diminta)
+        const dbQuestions = [
+            // Topik 1: Jaringan Komputer & Manfaat (1-10)
+            { id: 1, text: "Sekumpulan komputer atau perangkat yang saling terhubung dan dapat berkomunikasi untuk berbagi data dan sumber daya disebut...", options: ["Sistem operasi", "Jaringan komputer", "Perangkat keras", "Aplikasi server", "Sistem informasi"], answer: 1, explanation: "Jaringan komputer adalah gabungan beberapa perangkat (node) yang dikoneksikan dengan media kabel/nirkabel untuk bertukar file/resource." },
+            { id: 2, text: "Berikut ini yang bukan merupakan manfaat dari jaringan komputer adalah...", options: ["Berbagi data antar pengguna", "Berbagi perangkat seperti printer", "Menambah kecepatan listrik komputer", "Memudahkan komunikasi antar perangkat", "Berbagi koneksi internet"], answer: 2, explanation: "Menambah kecepatan listrik bukanlah fungsi dari jaringan komputer, karena hal itu berhubungan dengan daya listrik (power supply)." },
+            { id: 3, text: "Dalam sebuah kantor, sebuah printer ingin dipasang agar dapat digunakan oleh seluruh karyawan secara bersamaan tanpa memindahkan kabel USB. Teknologi ini dinamakan...", options: ["Data Sharing", "Device Sharing / Resource Sharing", "Multi-tasking", "Database server", "Internet sharing"], answer: 1, explanation: "Device Sharing / Resource Sharing adalah proses menggunakan bersama perangkat keras seperti printer, scanner, atau storage di dalam jaringan." },
+            { id: 4, text: "Penerapan sistem reservasi tiket kereta online atau website pemesanan pesawat menunjukkan peran jaringan komputer dalam bidang...", options: ["E-learning", "E-commerce dan Transaksi Online", "Hiburan", "Sistem Kelistrikan", "Aplikasi perkantoran offline"], answer: 1, explanation: "Sistem transaksi tiket online memanfaatkan jaringan internet berskala global untuk update data secara real-time demi kemudahan bisnis e-commerce." },
+            { id: 5, text: "Media transmisi pada jaringan komputer yang menggunakan gelombang elektromagnetik sebagai pengirim datanya tergolong dalam media...", options: ["Guided Media (Kabel)", "Unguided Media (Nirkabel)", "Fiber Optic", "Coaxial", "UTP"], answer: 1, explanation: "Unguided media adalah media transmisi nirkabel (wireless) seperti WiFi, bluetooth, satelit, menggunakan gelombang radio/elektromagnetik." },
+            { id: 6, text: "Keuntungan utama menggunakan kabel serat optik (fiber optic) dibandingkan kabel tembaga (UTP) adalah...", options: ["Harganya jauh lebih murah", "Proses instalasi dan crimping yang sangat mudah", "Tahan terhadap interferensi elektromagnetik dan bandwidth sangat besar", "Dapat ditekuk hingga sudut tajam tanpa merusak inti", "Menggunakan tegangan listrik yang tinggi sebagai pembawa data"], answer: 2, explanation: "Kabel serat optik menggunakan modulasi cahaya melalui kaca, sehingga kebal terhadap induksi listrik/elektromagnetik dan memiliki kecepatan transmisi sangat tinggi." },
+            { id: 7, text: "Konektor RJ-45 biasanya digunakan sebagai ujung sambungan untuk jenis kabel...", options: ["Coaxial", "Fiber Optic", "UTP/STP", "Kabel Telepon RJ-11", "Kabel HDMI"], answer: 2, explanation: "RJ-45 (Registered Jack 45) adalah konektor standar yang dipasang pada ujung kabel UTP untuk membangun jaringan ethernet lokal." },
+            { id: 8, text: "Jenis kabel UTP yang memiliki pelindung tambahan berupa aluminium foil untuk meredam gangguan interferensi elektromagnetik luar adalah...", options: ["UTP biasa", "STP (Shielded Twisted Pair)", "Coaxial RG-6", "Fiber patch cord", "Kabel optik singlemode"], answer: 1, explanation: "STP memiliki lapisan pembungkus logam (shield) untuk melindunginya dari noise/interferensi gelombang luar." },
+            { id: 9, text: "Komputer yang berfungsi melayani dan mengelola permintaan data dari komputer-komputer pengguna dalam suatu jaringan disebut...", options: ["Client", "Host", "Server", "Workstation", "Switch"], answer: 2, explanation: "Server bertugas sebagai penyedia layanan, basis data, atau aplikasi yang diakses oleh komputer client." },
+            { id: 10, text: "Arsitektur jaringan di mana setiap komputer memiliki kedudukan yang sama dan dapat berfungsi sebagai client maupun server dinamakan...", options: ["Client-Server", "Peer-to-Peer", "Star Topology", "Bus Topology", "Mainframe architecture"], answer: 1, explanation: "Peer-to-peer (P2P) meniadakan server khusus; semua komputer dapat bertukar data secara langsung satu sama lain." },
+
+            // Topik 2: LAN, MAN, WAN, PAN, Internet (11-20)
+            { id: 11, text: "Jaringan komputer yang area cakupannya hanya satu gedung, ruangan kelas, atau laboratorium sekolah disebut...", options: ["WAN", "MAN", "LAN", "Internet", "Intranet"], answer: 2, explanation: "LAN (Local Area Network) dibatasi oleh jangkauan geografis kecil, biasanya di dalam satu ruangan atau gedung." },
+            { id: 12, text: "Jaringan yang mencakup wilayah satu kota besar dengan menghubungkan beberapa instansi atau LAN antar kantor cabang disebut...", options: ["LAN", "MAN", "WAN", "PAN", "VPN"], answer: 1, explanation: "MAN (Metropolitan Area Network) mencakup radius satu kota, berkisar antara 10 km hingga 50 km." },
+            { id: 13, text: "Jaringan komputer yang cakupan areanya sangat luas, menjangkau antar pulau, lintas negara, bahkan benua disebut...", options: ["LAN", "MAN", "WAN", "PAN", "HAN"], answer: 2, explanation: "WAN (Wide Area Network) menghubungkan jaringan antar wilayah geografis yang sangat besar di dunia." },
+            { id: 14, text: "Jaringan nirkabel pribadi jarak sangat pendek yang dibentuk saat Anda menghubungkan smartphone dengan speaker bluetooth disebut...", options: ["LAN", "MAN", "WAN", "PAN (Personal Area Network)", "SAN"], answer: 3, explanation: "PAN mencakup area sangat dekat untuk perangkat pribadi individu (biasanya kurang dari 10 meter)." },
+            { id: 15, text: "Internet pada dasarnya merupakan singkatan dari Interconnected Network, yang merupakan...", options: ["Sekumpulan komputer dalam satu laboratorium tertutup", "Jaringan WAN terbesar di dunia yang saling terhubung secara global", "Sebuah aplikasi web browser buatan Microsoft", "Sistem operasi jaringan open-source", "Koneksi LAN tanpa kabel"], answer: 1, explanation: "Internet menghubungkan jutaan LAN dan WAN di seluruh dunia menggunakan protokol TCP/IP standar global." },
+            { id: 16, text: "Jaringan internal privat milik perusahaan yang dibangun menggunakan teknologi internet/web namun hanya dapat diakses oleh kalangan internal disebut...", options: ["Internet", "Intranet", "Extranet", "Ethernet", "Broadband"], answer: 1, explanation: "Intranet adalah jaringan lokal berskala privat yang mengimplementasikan protokol internet tetapi ditutup untuk umum." },
+            { id: 17, text: "Topologi jaringan fisik di mana semua perangkat terhubung ke satu kabel pusat (backbone) yang kedua ujungnya dipasang terminator dinamakan...", options: ["Topologi Star", "Topologi Bus", "Topologi Ring", "Topologi Mesh", "Topologi Tree"], answer: 1, explanation: "Topologi Bus mengandalkan kabel tunggal lurus (bus) sebagai medium transmisi data utama." },
+            { id: 18, text: "Kelemahan utama dari topologi jaringan berbentuk lingkaran (Ring) adalah...", options: ["Jika salah satu komputer atau kabel rusak, seluruh jaringan akan lumpuh", "Membutuhkan hub/switch yang sangat mahal", "Boros dalam penggunaan kabel", "Sukar dikembangkan ke jaringan besar", "Kecepatan transfer data sangat lambat"], answer: 0, explanation: "Karena data mengalir searah melingkar, putusnya satu titik akan menghentikan seluruh sirkulasi data di topologi ring." },
+            { id: 19, text: "Topologi jaringan yang paling banyak digunakan di jaringan LAN modern karena memiliki tingkat toleransi kesalahan yang tinggi serta mudah dikembangkan adalah...", options: ["Topologi Bus", "Topologi Ring", "Topologi Star", "Topologi Mesh", "Topologi Linear"], answer: 2, explanation: "Topologi Star menggunakan hub/switch sentral. Jika satu kabel client rusak, komputer lain tetap dapat terhubung." },
+            { id: 20, text: "Topologi yang setiap node-nya terhubung langsung secara point-to-point ke semua node lain tanpa perantara, menawarkan keamanan dan redundansi terbaik tetapi boros kabel adalah...", options: ["Topologi Star", "Topologi Ring", "Topologi Mesh (Jala)", "Topologi Tree", "Topologi Bus"], answer: 2, explanation: "Topologi Mesh menyediakan jalur cadangan yang melimpah untuk setiap perangkat namun mahal dari segi instalasi fisik." },
+
+            // Topik 3: Router, Switch, Hub, Access Point, ISP (21-30)
+            { id: 21, text: "Perangkat jaringan yang bekerja pada Layer 3 (Network Layer) dan berfungsi untuk rute/menghubungkan dua jaringan yang berbeda subnet adalah...", options: ["Switch", "Hub", "Router", "Repeater", "Access Point"], answer: 2, explanation: "Router meneruskan paket data antar subnet/jaringan yang berbeda segmen IP." },
+            { id: 22, text: "Apa perbedaan utama antara Hub dan Switch pintar dalam jaringan lokal?", options: ["Hub lebih cepat dari switch", "Switch menyebarkan data ke semua port secara membabi buta, sedangkan hub menyaringnya", "Hub mengirimkan paket data ke seluruh port (broadcast), sedangkan Switch mengirim langsung ke port MAC address tujuan (unicast)", "Switch hanya bekerja pada kabel fiber optik", "Hub memiliki port yang lebih banyak dari switch"], answer: 2, explanation: "Switch memiliki tabel MAC address sehingga ia mampu mengirim paket data langsung ke tujuan tanpa membanjiri port lainnya seperti Hub." },
+            { id: 23, text: "Perangkat yang berfungsi untuk memancarkan sinyal gelombang radio agar client dapat terhubung ke jaringan LAN secara nirkabel (wireless) adalah...", options: ["Switch", "Router", "Access Point", "Modem", "Repeater"], answer: 2, explanation: "Access Point (AP) bertindak sebagai gerbang jembatan penghubung nirkabel (wireless) bagi client WiFi." },
+            { id: 24, text: "ISP adalah singkatan dari istilah industri jaringan yaitu...", options: ["Internet Service Provider", "Internet System Protocol", "Internal Service Port", "Intranet Server Provider", "International Service Protocol"], answer: 0, explanation: "Internet Service Provider adalah perusahaan penyelenggara jasa internet yang menyewakan jalur koneksi ke publik." },
+            { id: 25, text: "Berikut ini yang merupakan contoh penyelenggara ISP resmi di Indonesia adalah...", options: ["Google, Facebook, Yahoo", "Telkom IndiHome, Biznet, MyRepublic", "MikroTik, Cisco, TP-Link", "Windows, Linux, macOS", "Chrome, Mozilla Firefox, Safari"], answer: 1, explanation: "IndiHome, Biznet, MyRepublic menyediakan langganan koneksi internet ke rumah-rumah/kantor." },
+            { id: 26, text: "Perangkat keras yang berfungsi mengubah sinyal analog dari ISP menjadi sinyal digital (atau sebaliknya) agar dapat dipahami komputer adalah...", options: ["Switch", "Router", "Modem (Modulator Demodulator)", "Access Point", "Hub"], answer: 2, explanation: "Modem menerjemahkan sinyal pembawa analog di jaringan telekomunikasi menjadi bit-bit digital komputer." },
+            { id: 27, text: "Alat crimping tool digunakan oleh teknisi jaringan untuk...", options: ["Memotong kabel fiber optik", "Mengupas, memotong, dan menjepit konektor RJ-45 pada kabel UTP", "Menguji sinyal wireless", "Melakukan konfigurasi software router", "Mengukur tegangan listrik switch"], answer: 1, explanation: "Crimping tool adalah tang khusus untuk memasang konektor RJ-45/RJ-11 ke kabel tembaga." },
+            { id: 28, text: "Alat ukur sederhana yang digunakan untuk mengetes kebenaran urutan pin kabel UTP setelah dipasang konektor RJ-45 adalah...", options: ["Optical Power Meter", "LAN Tester", "Multitester", "Splicer", "Spectrum Analyzer"], answer: 1, explanation: "LAN Tester memiliki lampu indikator LED 1 sampai 8 untuk memeriksa kelurusan sambungan kabel." },
+            { id: 29, text: "Standar urutan warna kabel UTP jenis Straight-Through berdasarkan standar T568B di ujung pertama adalah...", options: ["Putih Oranye - Oranye - Putih Hijau - Biru - Putih Biru - Hijau - Putih Cokelat - Cokelat", "Putih Hijau - Hijau - Putih Oranye - Biru - Putih Biru - Oranye - Putih Cokelat - Cokelat", "Putih Cokelat - Cokelat - Putih Hijau - Hijau - Putih Oranye - Biru - Putih Biru - Oranye", "Oranye - Putih Oranye - Biru - Putih Biru - Hijau - Putih Hijau - Cokelat - Putih Cokelat", "Putih Oranye - Oranye - Putih Biru - Biru - Putih Hijau - Hijau - Putih Cokelat - Cokelat"], answer: 0, explanation: "Standar T568B dimulai dari Putih Oranye, Oranye, Putih Hijau, Biru, Putih Biru, Hijau, Putih Cokelat, Cokelat." },
+            { id: 30, text: "Jenis susunan kabel UTP yang digunakan untuk menghubungkan dua perangkat sejenis (misal: Komputer ke Komputer langsung, atau Switch ke Switch) adalah...", options: ["Straight-Through", "Crossover", "Rollover", "Console", "Loopback"], answer: 1, explanation: "Kabel Crossover menyilangkan pin transmit (Tx) dan receive (Rx) untuk menghubungkan dua device selevel." },
+
+            // Topik 4: IP Address (31-45)
+            { id: 31, text: "Alamat logis yang unik dan digunakan untuk mengidentifikasi setiap perangkat di jaringan komputer agar bisa saling kirim data disebut...", options: ["MAC Address", "IP Address", "Gateway", "DNS", "Subnet Mask"], answer: 1, explanation: "IP Address (Internet Protocol Address) adalah alamat logis unik pada protokol TCP/IP." },
+            { id: 32, text: "IP Address versi 4 (IPv4) yang umum digunakan saat ini terdiri dari panjang...", options: ["16 bit", "32 bit", "64 bit", "128 bit", "256 bit"], answer: 1, explanation: "IPv4 terdiri atas 32 bit biner yang dibagi menjadi 4 oktet desimal yang dipisahkan titik." },
+            { id: 33, text: "IP Address versi 6 (IPv6) memiliki panjang alamat sebesar...", options: ["32 bit", "64 bit", "96 bit", "128 bit", "256 bit"], answer: 3, explanation: "IPv6 menggunakan 128 bit biner yang ditulis dalam format heksadesimal demi memperluas ruang alamat internet." },
+            { id: 34, text: "Alamat IP: 192.168.1.50 tergolong ke dalam kelas...", options: ["Kelas A", "Kelas B", "Kelas C", "Kelas D", "Kelas E"], answer: 2, explanation: "Kelas C memiliki rentang nilai oktet pertama antara 192 hingga 223." },
+            { id: 35, text: "Rentang desimal oktet pertama untuk IP Address kelas A adalah...", options: ["1 – 126", "128 – 191", "192 – 223", "224 – 239", "240 – 255"], answer: 0, explanation: "Oktet pertama Kelas A berkisar dari 1 hingga 126 (angka 127 dicadangkan untuk loopback)." },
+            { id: 36, text: "Rentang desimal oktet pertama untuk IP Address kelas B adalah...", options: ["1 – 126", "127 – 128", "128 – 191", "192 – 223", "224 – 239"], answer: 2, explanation: "Kelas B berkisar antara 128 sampai 191 pada blok oktet pertamanya." },
+            { id: 37, text: "Subnet mask default untuk alamat IP kelas B adalah...", options: ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.255", "0.0.0.0"], answer: 1, explanation: "Default subnet mask kelas B adalah /16 atau dalam desimal ditulis 255.255.0.0." },
+            { id: 38, text: "Subnet mask default untuk alamat IP kelas C adalah...", options: ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.255", "255.255.255.192"], answer: 2, explanation: "Default subnet mask kelas C adalah /24 atau dalam desimal ditulis 255.255.255.0." },
+            { id: 39, text: "Subnet mask default untuk alamat IP kelas A adalah...", options: ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.255", "0.255.255.255"], answer: 0, explanation: "Default subnet mask kelas A adalah /8 atau dalam desimal ditulis 255.0.0.0." },
+            { id: 40, text: "Berikut ini yang merupakan rentang IP Private Kelas C yang biasa digunakan untuk jaringan lokal privat adalah...", options: ["10.0.0.0 – 10.255.255.255", "172.16.0.0 – 172.31.255.255", "192.168.0.0 – 192.168.255.255", "169.254.0.0 – 169.254.255.255", "8.8.8.0 – 8.8.8.255"], answer: 2, explanation: "Blok IP Private Kelas C yang ditetapkan IANA adalah 192.168.0.0/16." },
+            { id: 41, text: "IP Address yang didapatkan dari ISP untuk terhubung langsung ke jaringan internet global publik dinamakan...", options: ["IP Private", "IP Public", "IP Localhost", "IP Dynamic Local", "IP Broadcast"], answer: 1, explanation: "IP Public bersifat unik global dan dialokasikan untuk perutean langsung di internet." },
+            { id: 42, text: "Apa fungsi utama dari DNS (Domain Name System) di dalam jaringan internet?", options: ["Mengamankan jaringan dari virus luar", "Mengubah nama domain (seperti google.com) menjadi IP Address numerik agar dikenali komputer", "Menerjemahkan IP private ke IP public", "Membagikan bandwidth secara adil", "Membuat IP address menjadi statis"], answer: 1, explanation: "DNS bertindak seperti buku telepon internet, menerjemahkan domain tekstual menjadi alamat IP numerik." },
+            { id: 43, text: "Alamat fisik unik sepanjang 48 bit yang tertanam secara permanen pada kartu jaringan (NIC) perangkat sejak diproduksi disebut...", options: ["IP Address", "MAC Address (Media Access Control)", "Host ID", "Subnet Mask", "Port ID"], answer: 1, explanation: "MAC Address adalah pengenal fisik permanen di Layer 2 (Data Link) buatan pabrikan NIC." },
+            { id: 44, text: "Layanan di internet yang bertugas memberikan alamat IP secara otomatis kepada client yang baru terhubung disebut...", options: ["DNS Server", "DHCP Server", "Web Server", "FTP Server", "Proxy Server"], answer: 1, explanation: "DHCP (Dynamic Host Configuration Protocol) mengalokasikan parameter IP otomatis bagi client." },
+            { id: 45, text: "Alamat loopback default yang digunakan oleh komputer untuk merujuk ke dirinya sendiri dalam pengujian tumpukan TCP/IP adalah...", options: ["192.168.1.1", "127.0.0.1", "255.255.255.255", "0.0.0.0", "10.0.0.1"], answer: 1, explanation: "IP 127.0.0.1 dicadangkan sebagai localhost atau loopback IP komputer." },
+
+            // Topik 5: Komponen Hardware Komputer (46-55)
+            { id: 46, text: "Komponen komputer yang berfungsi sebagai tempat penyimpanan data sementara sewaktu komputer sedang berjalan (data hilang saat dimatikan) adalah...", options: ["Harddisk", "Processor", "RAM (Random Access Memory)", "VGA Card", "Motherboard"], answer: 2, explanation: "RAM bersifat volatile, hanya menyimpan data instruksi aplikasi selama sistem dialiri daya listrik." },
+            { id: 47, text: "Komponen komputer yang berfungsi sebagai otak utama untuk memproses semua data dan instruksi program dinamakan...", options: ["RAM", "Harddisk/SSD", "GPU", "Processor (CPU)", "Power Supply"], answer: 3, explanation: "CPU (Central Processing Unit) / Processor mengeksekusi siklus logika dan matematika dari program komputer." },
+            { id: 48, text: "Papan induk sirkuit utama yang menghubungkan seluruh komponen internal komputer seperti CPU, RAM, dan Storage satu sama lain dinamakan...", options: ["Casing", "Motherboard / Mainboard", "VGA Card", "Power Supply", "LAN Card"], answer: 1, explanation: "Motherboard menghubungkan berbagai slot ekspansi, jalur bus data, dan soket prosesor." },
+            { id: 49, text: "Komponen penyimpanan data permanen berkecepatan tinggi yang tidak memiliki piringan berputar (memakai flash memory) adalah...", options: ["HDD (Hard Disk Drive)", "SSD (Solid State Drive)", "CD-ROM", "RAM", "Floppy Disk"], answer: 1, explanation: "SSD menggunakan IC flash memory tanpa komponen mekanis, membuatnya jauh lebih cepat dibanding HDD biasa." },
+            { id: 50, text: "Komponen komputer yang bertugas mengubah arus AC dari stopkontak PLN menjadi arus DC bertegangan rendah untuk menyuplai daya seluruh komponen adalah...", options: ["UPS", "Stabilizer", "Power Supply Unit (PSU)", "Inverter", "Motherboard"], answer: 2, explanation: "PSU mendistribusikan tegangan listrik DC stabil (seperti +12V, +5V, +3.3V) ke hardware komputer." },
+            { id: 51, text: "Perangkat keras yang berfungsi untuk mengolah data grafis agar dapat ditampilkan pada layar monitor adalah...", options: ["Sound Card", "Network Card", "VGA Card / GPU (Video Graphics Array)", "RAM", "Processor"], answer: 2, explanation: "VGA Card memproses rendering grafis 2D/3D demi kenyamanan visual pengguna." },
+            { id: 52, text: "Perangkat keras input pada komputer yang digunakan untuk mengontrol pergerakan kursor di layar GUI adalah...", options: ["Keyboard", "Mouse", "Monitor", "Printer", "Scanner"], answer: 1, explanation: "Mouse mendeteksi gerakan dua dimensi untuk menggeser pointer di layar komputer." },
+            { id: 53, text: "Perangkat output komputer yang berfungsi mengeluarkan salinan data digital menjadi bentuk fisik kertas adalah...", options: ["Plotter", "Printer", "Scanner", "Proyektor", "Speaker"], answer: 1, explanation: "Printer mencetak dokumen teks atau gambar digital ke media kertas fisik." },
+            { id: 54, text: "Jika komputer Anda menyala tetapi tidak menampilkan gambar di monitor (no-display) disertai bunyi bip berulang, komponen mana yang paling dicurigai kotor/longgar?", options: ["SSD/Harddisk", "Power Supply", "RAM (Random Access Memory)", "Keyboard", "Heatsink fan"], answer: 2, explanation: "Masalah kontak kuningan RAM yang kotor atau longgar kerap menyebabkan kegagalan POST (no-display) disertai kode bip BIOS." },
+            { id: 55, text: "Sistem pendingin pasif berupa logam bersirip aluminium/tembaga yang dipasang di atas processor untuk menyerap panas dinamakan...", options: ["Casing Fan", "Thermal Paste", "Heatsink", "Water Block", "Liquid Cooler"], answer: 2, explanation: "Heatsink menyebarkan panas dari die CPU ke sirip logam untuk dibuang oleh kipas (fan)." },
+
+            // Topik 6: Subnetting (56-70)
+            { id: 56, text: "Sebuah jaringan menggunakan IP 192.168.10.0/24. Jumlah host yang dapat dipasangkan dan digunakan pada client di jaringan tersebut adalah...", options: ["254 host", "255 host", "256 host", "128 host", "510 host"], answer: 0, explanation: "Total alamat pada /24 adalah 256. Dikurangi 2 alamat untuk Network ID (.0) dan Broadcast ID (.255), menyisakan 254 host usable." },
+            { id: 57, text: "Pada IP address 192.168.1.0/24, alamat pertama 192.168.1.0 berfungsi khusus sebagai...", options: ["IP Host client", "IP Broadcast", "IP Network (Network ID)", "IP Gateway utama", "IP DNS Google"], answer: 2, explanation: "Alamat pertama dari sebuah range IP subnet digunakan sebagai penanda pengenal segmen jaringan tersebut (Network ID)." },
+            { id: 58, text: "Pada jaringan 192.168.1.0/24, alamat broadcast yang digunakan untuk mengirim data ke seluruh host sekaligus adalah...", options: ["192.168.1.0", "192.168.1.1", "192.168.1.254", "192.168.1.255", "192.168.1.256"], answer: 3, explanation: "IP terakhir pada range /24 (.255) dicadangkan sebagai alamat broadcast jaringan." },
+            { id: 59, text: "Subnet mask /26 jika dikonversi ke dalam bentuk desimal bertitik (dotted decimal) adalah...", options: ["255.255.255.0", "255.255.255.128", "255.255.255.192", "255.255.255.224", "255.255.255.240"], answer: 2, explanation: "/26 berarti 26 bit bernilai 1 (11111111.11111111.11111111.11000000), yang bernilai desimal 255.255.255.192." },
+            { id: 60, text: "Berapakah jumlah host komputer yang dapat digunakan pada satu subnet dengan mask /28?", options: ["14 host", "16 host", "30 host", "32 host", "62 host"], answer: 0, explanation: "/28 menyisakan 4 bit host (32 - 28 = 4). Total IP = 2^4 = 16. Host usable = 16 - 2 = 14 host." },
+            { id: 61, text: "Berapa banyak subnet yang terbentuk jika jaringan kelas C 192.168.20.0 dipecah menggunakan mask /27?", options: ["2 subnet", "4 subnet", "8 subnet", "16 subnet", "32 subnet"], answer: 2, explanation: "/27 menggunakan 3 bit tambahan di oktet ke-4 (27 - 24 = 3). Jumlah subnet = 2^3 = 8 subnet." },
+            { id: 62, text: "Subnet mask desimal untuk prefix CIDR /27 adalah...", options: ["255.255.255.128", "255.255.255.192", "255.255.255.224", "255.255.255.240", "255.255.255.248"], answer: 2, explanation: "/27 memiliki biner 11100000 di oktet terakhir, yang dikonversi menjadi 128 + 64 + 32 = 224." },
+            { id: 63, text: "Jika Anda memiliki IP 192.168.50.0/26, berapakah alamat Broadcast untuk subnet pertama?", options: ["192.168.50.31", "192.168.50.63", "192.168.50.127", "192.168.50.255", "192.168.50.191"], answer: 1, explanation: "Block size /26 adalah 64. Subnet pertama berkisar dari .0 hingga .63. Maka .63 adalah Broadcast ID-nya." },
+            { id: 64, text: "Berapakah rentang IP host yang valid dan dapat digunakan untuk subnet pertama pada IP 192.168.50.0/26?", options: ["192.168.50.1 – 192.168.50.254", "192.168.50.1 – 192.168.50.62", "192.168.50.0 – 192.168.50.63", "192.168.50.64 – 192.168.50.127", "192.168.50.1 – 192.168.50.126"], answer: 1, explanation: "Dengan Network ID .0 dan Broadcast .63, maka rentang host usable adalah dari .1 hingga .62." },
+            { id: 65, text: "Berapakah jumlah host usable (yang dapat dikonfigurasi ke client) pada subnet mask /30 yang biasanya digunakan untuk koneksi point-to-point antar router?", options: ["1 host", "2 host", "4 host", "6 host", "14 host"], answer: 1, explanation: "/30 menyisakan 2 bit host (32 - 30 = 2). Total IP = 2^2 = 4. Usable host = 4 - 2 = 2 host." },
+            { id: 66, text: "Subnet mask desimal dari /30 adalah...", options: ["255.255.255.240", "255.255.255.248", "255.255.255.252", "255.255.255.254", "255.255.255.192"], answer: 2, explanation: "/30 menghasilkan 11111100 biner pada oktet terakhir, setara dengan desimal 252." },
+            { id: 67, text: "Prefix /29 memiliki jumlah alamat total sebanyak 8 IP. Berapa jumlah komputer client maksimal yang bisa terhubung secara valid?", options: ["8 komputer", "7 komputer", "6 komputer", "4 komputer", "2 komputer"], answer: 2, explanation: "Total IP = 8. Dikurangi 2 (Network & Broadcast), sehingga maksimal client yang terpasang IP adalah 6." },
+            { id: 68, text: "Prefix CIDR yang setara dengan subnet mask 255.255.255.128 adalah...", options: ["/24", "/25", "/26", "/27", "/28"], answer: 1, explanation: "Desimal 128 di oktet terakhir bernilai biner 10000000 (ada 1 bit bernilai 1). Maka total bit network = 24 + 1 = 25." },
+            { id: 69, text: "Metode subnetting yang membagi segmen jaringan dengan ukuran subnet mask yang bervariasi disesuaikan dengan kebutuhan jumlah host riil di masing-masing divisi disebut...", options: ["FLSM (Fixed Length Subnet Mask)", "VLSM (Variable Length Subnet Mask)", "Classful Subnetting", "CIDR Routing", "Supernetting"], answer: 1, explanation: "VLSM mengizinkan pembagian alamat IP secara efisien menggunakan subnet mask yang berbeda-beda per segmen lokal." },
+            { id: 70, text: "Perintah CLI pada CMD Windows untuk memeriksa konfigurasi detail IP Address, Subnet Mask, dan Default Gateway komputer kita adalah...", options: ["ping", "ipconfig", "nslookup", "tracert", "netstat"], answer: 1, explanation: "Perintah 'ipconfig' menampilkan info adapter kartu jaringan pada Windows." },
+
+            // Topik 7: MikroTik Dasar (71-80)
+            { id: 71, text: "MikroTik RouterOS adalah produk utama MikroTik berupa...", options: ["Perangkat keras router termahal di dunia", "Sistem operasi berbasis Linux yang dirancang khusus untuk fungsi router dan manajemen jaringan", "Aplikasi browser internet super cepat", "Antivirus untuk server lokal", "Bahasa pemrograman web"], answer: 1, explanation: "MikroTik RouterOS adalah sistem operasi mandiri berbasis Linux untuk menjadikannya router tangguh." },
+            { id: 72, text: "Aplikasi bawaan MikroTik berbasis GUI Windows yang sangat populer digunakan oleh admin jaringan untuk mempermudah konfigurasi router adalah...", options: ["Winbox", "WinRAR", "Winbox Lite", "Putty", "Terminal"], answer: 0, explanation: "Winbox adalah tool GUI resmi dari MikroTik untuk mengelola konfigurasi RouterOS secara visual." },
+            { id: 73, text: "Secara default pada kondisi baru atau setelah di-reset total, username administrator untuk masuk ke MikroTik adalah...", options: ["admin", "root", "administrator", "mikrotik", "kosong/tanpa username"], answer: 0, explanation: "User bawaan MikroTik adalah 'admin' (huruf kecil semua) tanpa password." },
+            { id: 74, text: "Secara default pada MikroTik baru, isian password di Winbox diisi dengan...", options: ["admin", "123456", "admin123", "Dikosongkan (tanpa password)", "mikrotik"], answer: 3, explanation: "Secara default pabrikan, akun 'admin' MikroTik tidak dipasangi kata sandi (dikosongkan)." },
+            { id: 75, text: "Untuk memberi nama/identitas unik pada router MikroTik agar tidak tertukar saat diremote, menu Winbox yang harus diakses adalah...", options: ["IP > Address", "System > Identity", "Interface > Wireless", "System > Reset", "IP > Firewall"], answer: 1, explanation: "Mengatur nama router dilakukan di jendela System > Identity." },
+            { id: 76, text: "Perintah CLI (Command Line Interface) di Terminal MikroTik yang benar untuk mengubah nama identitas router menjadi 'RTR-LAB-TJKT' adalah...", options: ["/system identity set name=RTR-LAB-TJKT", "/ip address set name=RTR-LAB-TJKT", "/system name=RTR-LAB-TJKT", "/identity name RTR-LAB-TJKT", "/set rtr name=RTR-LAB-TJKT"], answer: 0, explanation: "Perintah lengkap CLI-nya: /system identity set name=[nama]." },
+            { id: 77, text: "Dua metode login utama yang ditawarkan Winbox untuk mengakses router MikroTik yang berada dalam satu segmen fisik adalah melalui...", options: ["IP Address dan MAC Address", "Username dan Email", "Serial Port dan USB Port", "Kabel Telnet dan SSH", "Koneksi Wifi saja"], answer: 0, explanation: "Winbox mendeteksi router menggunakan tab Neighbors, mengizinkan login via MAC Address (jika belum ada IP) atau via IP Address." },
+            { id: 78, text: "Nama sistem operasi bawaan perangkat routerboard keras produksi MikroTik adalah...", options: ["RouterOS", "SwitchOS", "MikroOS", "Debian Linux", "Cisco IOS"], answer: 0, explanation: "RouterOS adalah sistem operasi bawaan pada hampir seluruh varian RouterBoard MikroTik." },
+            { id: 79, text: "Menu pada Winbox yang berfungsi untuk memantau, memberi nama, serta mengaktifkan/menonaktifkan port Ethernet fisik router adalah...", options: ["IP > Route", "Interfaces", "Files", "Log", "Tools"], answer: 1, explanation: "Menu 'Interfaces' menampilkan daftar port fisik (seperti ether1, ether2) dan virtual pada MikroTik." },
+            { id: 80, text: "Di manakah Anda bisa menuliskan catatan (comment) pada sebuah konfigurasi IP Address di Winbox untuk mempermudah identifikasi kegunaan port?", options: ["Gunakan tombol 'Comment' (ikon kertas kuning) di jendela IP Address", "Tulis langsung di kolom subnet mask", "Edit pada kolom interface", "Tulis di nama Identity", "Melalui menu System > Note"], answer: 0, explanation: "Ikon 'Comment' berwarna kuning di Winbox digunakan untuk memberi label penjelasan pada baris aturan/IP." },
+
+            // Topik 8: MikroTik Reset (81-85)
+            { id: 81, text: "Tindakan 'Soft Reset' pada perangkat MikroTik bertujuan untuk...", options: ["Menghapus seluruh konfigurasi buatan sendiri dan mengembalikan router ke setelan default pabrik via software", "Mematikan paksa aliran listrik router", "Melakukan install ulang sistem operasi RouterOS", "Menghapus password wifi saja", "Melakukan restart sistem tanpa menghapus data"], answer: 0, explanation: "Soft reset mengosongkan konfigurasi aktif melalui menu software RouterOS/Winbox." },
+            { id: 82, text: "Metode melakukan 'Hard Reset' secara fisik pada RouterBoard MikroTik adalah dengan cara...", options: ["Mengetikkan perintah ping terus-menerus di terminal", "Mencabut adaptor listrik, menekan dan menahan tombol reset fisik, lalu menancapkan kembali adaptor sambil terus menahan tombol hingga lampu LED ACT berkedip", "Menghubungkan port ether1 langsung ke port ether2 dengan kabel UTP", "Mengganti chip memory router", "Mengklik menu reboot berulang kali"], answer: 1, explanation: "Hard reset menuntut penekanan tombol reset fisik saat boot-up awal sampai LED berkedip." },
+            { id: 83, text: "Pada menu System > Reset Configuration di Winbox, jika kita mencentang opsi 'No Default Configuration', apa efeknya pada router setelah menyala kembali?", options: ["Router akan langsung terhubung ke internet otomatis", "Router menyala bersih tanpa ada konfigurasi default bawaan (kosong total, IP ether1 kosong)", "Sistem operasi router akan terhapus", "Sandi admin berubah menjadi 'admin123'", "Fitur wireless otomatis aktif"], answer: 1, explanation: "'No Default Configuration' mengabaikan konfigurasi standard bawaan, menghasilkan konfigurasi kosong tanpa IP awal." },
+            { id: 84, text: "Jika Anda melakukan reset MikroTik dengan mencentang opsi 'Keep User Configuration', maka...", options: ["Konfigurasi IP Address tidak akan dihapus", "Pengaturan akun user admin dan password lama akan tetap dipertahankan", "Router tidak akan melakukan reboot", "Firewall NAT tetap aktif", "Nama router akan dipertahankan"], answer: 1, explanation: "'Keep User Configuration' menyelamatkan database akun user admin saat proses reset konfigurasi berlangsung." },
+            { id: 85, text: "Menu Winbox untuk melakukan soft reset konfigurasi berada pada urutan...", options: ["IP > Firewall > Reset", "System > Reset Configuration", "Tools > Reset", "Interfaces > Reset", "System > Identity"], answer: 1, explanation: "Menu reset konfigurasi diakses lewat klik menu System, lalu pilih Reset Configuration." },
+
+            // Topik 9: DHCP Client & DHCP Server (86-90)
+            { id: 86, text: "Untuk membuat router MikroTik meminta dan mendapatkan IP Address, Gateway, serta DNS otomatis dari modem ISP, kita harus mengonfigurasi...", options: ["DHCP Server", "DHCP Client", "Hotspot", "PPPoE Server", "Web Proxy"], answer: 1, explanation: "DHCP Client meminta konfigurasi IP otomatis dari server DHCP (dalam hal ini modem ISP)." },
+            { id: 87, text: "Pada konfigurasi DHCP Client di router MikroTik, interface manakah yang wajib dipilih?", options: ["Interface lokal yang mengarah ke PC client", "Interface yang terhubung langsung secara fisik ke Modem ISP/Sumber Internet", "Interface virtual loopback", "Semua interface Ethernet", "Interface WLAN saja"], answer: 1, explanation: "DHCP Client ditujukan ke port luar yang terkoneksi langsung dengan penyedia internet (ISP)." },
+            { id: 88, text: "Status apakah yang menunjukkan bahwa DHCP Client pada MikroTik telah sukses memperoleh alamat IP dari ISP?", options: ["Searching", "Stop", "Bound", "Disabled", "Requesting"], answer: 2, explanation: "Status 'bound' mengindikasikan IP berhasil disewa dan siap dipakai di interface tersebut." },
+            { id: 89, text: "Agar router MikroTik dapat mendistribusikan IP Address secara otomatis ke puluhan PC Client di jaringan lokal, kita harus mengaktifkan...", options: ["DHCP Client", "DHCP Server", "DNS Server", "IP Address Static", "NAT Masquerade"], answer: 1, explanation: "DHCP Server menyalurkan konfigurasi IP dinamis otomatis kepada client LAN." },
+            { id: 90, text: "Fitur interaktif di Winbox yang memandu admin langkah demi langkah dalam membangun DHCP Server di LAN dengan cepat disebut...", options: ["DHCP Client Add", "DHCP Setup", "IP Pool Wizard", "DHCP Network", "Quick Set"], answer: 1, explanation: "Tombol 'DHCP Setup' memberikan dialog wizard untuk membuat DHCP Server dengan cepat." },
+
+            // Topik 10: Firewall & NAT (91-95)
+            { id: 91, text: "Fitur MikroTik yang bertugas menyaring, mengawasi, serta memanipulasi paket data yang keluar-masuk router dinamakan...", options: ["Wireless", "Firewall", "Queues", "Routing", "Identity"], answer: 1, explanation: "Firewall mengontrol izin akses lalu lintas paket data demi keamanan." },
+            { id: 92, text: "NAT (Network Address Translation) pada router berfungsi penting untuk...", options: ["Menerjemahkan alamat IP privat lokal agar bisa dikenali dan terhubung ke internet menggunakan IP publik", "Membatasi kecepatan download client", "Memblokir situs web pornografi", "Memancarkan sinyal wireless", "Mendeteksi kabel LAN terputus"], answer: 0, explanation: "NAT menyembunyikan IP privat LAN di balik IP publik router agar dapat mengarungi jaringan internet global." },
+            { id: 93, text: "Action NAT pada MikroTik yang menyamar (masking) dan menerjemahkan seluruh IP privat client menjadi IP publik interface keluar adalah...", options: ["accept", "drop", "masquerade", "redirect", "reject"], answer: 2, explanation: "Action 'masquerade' otomatis memetakan IP client internal ke IP publik luar router." },
+            { id: 94, text: "Pada konfigurasi NAT di MikroTik, Chain yang dipilih untuk memproses paket data dari client lokal yang keluar menuju internet adalah...", options: ["input", "forward", "output", "srcnat", "dstnat"], answer: 3, explanation: "Chain 'srcnat' (Source NAT) bekerja pada paket data yang berasal dari lokal keluar ke internet." },
+            { id: 95, text: "Out-Interface pada aturan NAT masquerade harus diisi dengan port interface yang...", options: ["Mengarah ke Switch lokal", "Mengarah ke PC Client", "Terhubung langsung ke sumber internet/modem ISP (misal ether1)", "Interface WLAN yang tidak aktif", "Interface loopback"], answer: 2, explanation: "Out-interface menentukan pintu keluar paket data ke jaringan internet luar." },
+
+            // Topik 11: Wireless & Koneksi ISP ke Client (96-100)
+            { id: 96, text: "Mode wireless MikroTik yang dikonfigurasi agar router bertindak sebagai pemancar sinyal WiFi (Access Point) bagi client adalah...", options: ["station", "ap bridge", "bridge", "alignment only", "wds slave"], answer: 1, explanation: "Mode 'ap bridge' mengaktifkan fungsi Access Point pemancar sinyal WiFi pada kartu WLAN MikroTik." },
+            { id: 97, text: "Mode wireless MikroTik yang dikonfigurasi agar router berfungsi sebagai penerima sinyal (client) dari Access Point lain adalah...", options: ["ap bridge", "station", "bridge", "nstreme", "station pseudobridge"], answer: 1, explanation: "Mode 'station' menempatkan interface WLAN sebagai penangkap sinyal AP pemancar." },
+            { id: 98, text: "Fitur 'Scan' pada menu Wireless MikroTik digunakan teknisi untuk...", options: ["Memindai file virus di memori flash router", "Mencari dan mendeteksi daftar SSID WiFi/AP yang aktif di sekitar jangkauan router", "Memindai port firewall yang bocor", "Memindai mac address client LAN", "Melacak kabel putus"], answer: 1, explanation: "Fitur 'Scan' mendata sinyal nirkabel di udara sekitar lengkap dengan kekuatan sinyal (dBm) dan frekuensinya." },
+            { id: 99, text: "Manakah urutan konfigurasi dasar MikroTik yang runtut dan benar agar internet dari ISP sukses dibagikan ke PC client lokal?", options: ["DHCP Server -> DHCP Client -> NAT -> IP Address", "DHCP Client ke ISP -> IP Address LAN -> DHCP Server LAN -> NAT masquerade", "NAT -> Firewall -> DHCP Server -> Identity", "Wireless AP -> Reset -> NAT -> DHCP Client", "DNS -> IP Address -> Reset -> Ping 8.8.8.8"], answer: 1, explanation: "Alur logis: Dapatkan IP internet via DHCP Client -> beri IP gateway lokal -> sediakan DHCP Server di lokal -> pasang NAT masquerade." },
+            { id: 100, text: "Metode paling sederhana pada PC client Windows untuk menguji apakah komputer sudah mendapatkan koneksi internet sukses dari router adalah...", options: ["Melakukan ping ke IP gateway lokal router", "Melakukan ping ke IP DNS publik global (misal: ping 8.8.8.8) melalui Command Prompt", "Mematikan firewall Windows", "Mengubah nama komputer", "Melakukan hard reset router MikroTik fisik"], answer: 1, explanation: "Ping ke 8.8.8.8 membuktikan koneksi paket data berhasil melewati gateway lokal hingga ke internet luar." }
+        ];
+
+        // State Management
+        let state = {
+            studentName: '',
+            studentClass: '',
+            currentQuestionIdx: 0,
+            answers: Array(100).fill(null), // simpan indeks jawaban (0-4)
+            flags: Array(100).fill(false), // tandai ragu-ragu
+            timerSeconds: 90 * 60, // 90 Menit
+            timerInterval: null,
+            status: 'not_started' // not_started, ongoing, completed
+        };
+
+        // DOM elements
+        const screenReg = document.getElementById('screen-reg');
+        const screenQuiz = document.getElementById('screen-quiz');
+        const screenResult = document.getElementById('screen-result');
+        const quizMetaHeader = document.getElementById('quiz-meta-header');
+        
+        const inputName = document.getElementById('input-name');
+        const inputClass = document.getElementById('input-class');
+        
+        const questionBadge = document.getElementById('question-badge');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const gridContainer = document.getElementById('grid-container');
+        
+        const flagIcon = document.getElementById('flag-icon');
+        const flagText = document.getElementById('flag-text');
+        
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        
+        const timerDisplay = document.getElementById('timer-display');
+        const headerStudentInfo = document.getElementById('header-student-info');
+        const sidebarStudentName = document.getElementById('sidebar-student-name');
+        const sidebarStudentClass = document.getElementById('sidebar-student-class');
+        
+        // Modal
+        const confirmModal = document.getElementById('confirm-modal');
+
+        // Initial setup
+        window.onload = function() {
+            // No direct actions required on load.
+        };
+
+        // Form Submission - Start Quiz
+        function handleStartQuiz(e) {
+            e.preventDefault();
+            state.studentName = inputName.value.trim();
+            state.studentClass = inputClass.value;
+            
+            if (!state.studentName || !state.studentClass) return;
+
+            // Transisi Screen
+            screenReg.classList.add('hidden');
+            screenQuiz.classList.remove('hidden');
+            quizMetaHeader.classList.remove('hidden');
+            
+            // Set State
+            state.status = 'ongoing';
+            
+            // Render UI Siswa
+            headerStudentInfo.innerText = `${state.studentName.toUpperCase()} | ${state.studentClass}`;
+            sidebarStudentName.innerText = state.studentName;
+            sidebarStudentClass.innerText = state.studentClass;
+
+            // Inisialisasi Soal & Kisi Navigasi
+            initGrid();
+            renderQuestion();
+            startTimer();
+        }
+
+        // Timer Logic
+        function startTimer() {
+            state.timerInterval = setInterval(() => {
+                if (state.timerSeconds <= 0) {
+                    clearInterval(state.timerInterval);
+                    doSubmit(); // Auto-submit
+                    return;
+                }
+                state.timerSeconds--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(state.timerSeconds / 60);
+            const seconds = state.timerSeconds % 60;
+            timerDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Warn if < 5 minutes
+            if (state.timerSeconds < 300) {
+                timerDisplay.parentElement.classList.remove('bg-rose-50', 'text-rose-700', 'border-rose-100');
+                timerDisplay.parentElement.classList.add('bg-rose-600', 'text-white', 'border-rose-700', 'animate-pulse');
+            }
+        }
+
+        // Build 100 Grid Navigasi Soal
+        function initGrid() {
+            gridContainer.innerHTML = '';
+            for (let i = 0; i < 100; i++) {
+                const button = document.createElement('button');
+                button.id = `grid-btn-${i}`;
+                button.innerText = i + 1;
+                button.className = "h-11 flex items-center justify-center font-bold text-sm rounded-xl border transition-all " + getGridClass(i);
+                button.onclick = () => jumpToQuestion(i);
+                gridContainer.appendChild(button);
+            }
+            updateAnsweredCount();
+        }
+
+        // Get CSS style for grid buttons
+        function getGridClass(idx) {
+            if (idx === state.currentQuestionIdx) {
+                return "bg-indigo-600 text-white border-indigo-700 ring-2 ring-indigo-500/30 scale-105 shadow-sm";
+            }
+            if (state.flags[idx]) {
+                return "bg-amber-400 text-white border-amber-500";
+            }
+            if (state.answers[idx] !== null) {
+                return "bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100";
+            }
+            return "bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100";
+        }
+
+        // Update Grid styling dynamic
+        function updateGridItem(idx) {
+            const btn = document.getElementById(`grid-btn-${idx}`);
+            if (btn) {
+                btn.className = "h-11 flex items-center justify-center font-bold text-sm rounded-xl border transition-all " + getGridClass(idx);
+            }
+        }
+
+        function updateAnsweredCount() {
+            const count = state.answers.filter(a => a !== null).length;
+            document.getElementById('answered-count-badge').innerText = `${count}/100 Terjawab`;
+        }
+
+        // Render Current Question
+        function renderQuestion() {
+            const q = dbQuestions[state.currentQuestionIdx];
+            
+            // Update Header & Badge
+            questionBadge.innerText = `SOAL ${q.id} DARI 100`;
+            questionText.innerText = q.text;
+
+            // Update Flag UI
+            if (state.flags[state.currentQuestionIdx]) {
+                flagIcon.classList.remove('text-slate-400');
+                flagIcon.classList.add('text-amber-500');
+                flagIcon.setAttribute('fill', 'currentColor');
+                flagText.innerText = 'Ditandai Ragu';
+                flagText.classList.add('text-amber-600', 'font-bold');
+            } else {
+                flagIcon.classList.add('text-slate-400');
+                flagIcon.classList.remove('text-amber-500');
+                flagIcon.removeAttribute('fill');
+                flagText.innerText = 'Tandai Ragu';
+                flagText.classList.remove('text-amber-600', 'font-bold');
+            }
+
+            // Render Options
+            optionsContainer.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D', 'E'];
+            
+            q.options.forEach((opt, idx) => {
+                const isSelected = state.answers[state.currentQuestionIdx] === idx;
+                
+                const optButton = document.createElement('button');
+                optButton.className = `w-full text-left p-4 rounded-xl border flex items-start space-x-3 transition-all cursor-pointer ${
+                    isSelected 
+                    ? 'border-indigo-600 bg-indigo-50/70 text-indigo-900 font-medium ring-1 ring-indigo-500/20' 
+                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'
+                }`;
+                optButton.onclick = () => selectAnswer(idx);
+
+                optButton.innerHTML = `
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold ${
+                        isSelected 
+                        ? 'bg-indigo-600 text-white' 
+                        : 'bg-slate-100 text-slate-500'
+                    }">${labels[idx]}</span>
+                    <span class="text-sm leading-relaxed">${opt}</span>
+                `;
+                optionsContainer.appendChild(optButton);
+            });
+
+            // Handle Nav Button state
+            btnPrev.disabled = state.currentQuestionIdx === 0;
+            if (state.currentQuestionIdx === 99) {
+                btnNext.innerHTML = `<span>Selesai</span>`;
+                btnNext.onclick = confirmSubmit;
+            } else {
+                btnNext.innerHTML = `<span>Berikutnya</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
+                btnNext.onclick = goToNext;
+            }
+        }
+
+        // Choose Option
+        function selectAnswer(optIdx) {
+            state.answers[state.currentQuestionIdx] = optIdx;
+            updateGridItem(state.currentQuestionIdx);
+            updateAnsweredCount();
+            renderQuestion(); // Re-render options styling
+        }
+
+        // Toggle Flag (Ragu-ragu)
+        function toggleFlag() {
+            state.flags[state.currentQuestionIdx] = !state.flags[state.currentQuestionIdx];
+            updateGridItem(state.currentQuestionIdx);
+            renderQuestion();
+        }
+
+        // Navigation
+        function goToNext() {
+            if (state.currentQuestionIdx < 99) {
+                const prevIdx = state.currentQuestionIdx;
+                state.currentQuestionIdx++;
+                updateGridItem(prevIdx);
+                updateGridItem(state.currentQuestionIdx);
+                renderQuestion();
+            }
+        }
+
+        function goToPrev() {
+            if (state.currentQuestionIdx > 0) {
+                const prevIdx = state.currentQuestionIdx;
+                state.currentQuestionIdx--;
+                updateGridItem(prevIdx);
+                updateGridItem(state.currentQuestionIdx);
+                renderQuestion();
+            }
+        }
+
+        function jumpToQuestion(idx) {
+            const prevIdx = state.currentQuestionIdx;
+            state.currentQuestionIdx = idx;
+            updateGridItem(prevIdx);
+            updateGridItem(state.currentQuestionIdx);
+            renderQuestion();
+        }
+
+        // Custom Modal Confirm Submit
+        function confirmSubmit() {
+            confirmModal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            confirmModal.classList.add('hidden');
+        }
+
+        // Process Submit
+        function doSubmit() {
+            closeModal();
+            clearInterval(state.timerInterval);
+            state.status = 'completed';
+
+            // Hitung Statistik Nilai
+            let correctCount = 0;
+            state.answers.forEach((ans, idx) => {
+                if (ans === dbQuestions[idx].answer) {
+                    correctCount++;
+                }
+            });
+
+            const wrongCount = 100 - correctCount;
+            const finalScore = correctCount; // Karena total soal pas 100, maka skor = jumlah benar.
+
+            // Render hasil ke UI
+            document.getElementById('result-student-name').innerText = state.studentName.toUpperCase();
+            document.getElementById('result-student-class').innerText = state.studentClass;
+            document.getElementById('result-correct-count').innerText = correctCount;
+            document.getElementById('result-wrong-count').innerText = wrongCount;
+            document.getElementById('result-score').innerText = finalScore;
+
+            const statusBadge = document.getElementById('result-status-badge');
+            if (finalScore >= 75) {
+                statusBadge.innerText = "LULUS ASESMEN";
+                statusBadge.className = "mt-3 px-3.5 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-full tracking-wide";
+            } else {
+                statusBadge.innerText = "BELUM LULUS (REMEDIAL)";
+                statusBadge.className = "mt-3 px-3.5 py-1 bg-rose-500/20 text-rose-300 text-xs font-bold rounded-full tracking-wide";
+            }
+
+            // Ganti Screen ke Result
+            screenQuiz.classList.add('hidden');
+            quizMetaHeader.classList.add('hidden');
+            screenResult.classList.remove('hidden');
+
+            // Render Pembahasan
+            renderReview('all');
+        }
+
+        // Review & Pembahasan Builder
+        let activeFilter = 'all';
+        function renderReview(filter) {
+            activeFilter = filter;
+            
+            // Atur gaya tombol filter
+            const btnAll = document.getElementById('btn-filter-all');
+            const btnCorrect = document.getElementById('btn-filter-correct');
+            const btnWrong = document.getElementById('btn-filter-wrong');
+
+            [btnAll, btnCorrect, btnWrong].forEach(btn => {
+                btn.className = "px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-lg text-xs transition-colors whitespace-nowrap";
+            });
+
+            if (filter === 'all') btnAll.className = "px-3.5 py-1.5 bg-indigo-600 text-white font-bold rounded-lg text-xs transition-colors whitespace-nowrap shadow-md shadow-indigo-600/10";
+            if (filter === 'correct') btnCorrect.className = "px-3.5 py-1.5 bg-emerald-600 text-white font-bold rounded-lg text-xs transition-colors whitespace-nowrap shadow-md shadow-emerald-600/10";
+            if (filter === 'wrong') btnWrong.className = "px-3.5 py-1.5 bg-rose-600 text-white font-bold rounded-lg text-xs transition-colors whitespace-nowrap shadow-md shadow-rose-600/10";
+
+            const container = document.getElementById('review-container');
+            container.innerHTML = '';
+
+            const alphabet = ['A', 'B', 'C', 'D', 'E'];
+
+            dbQuestions.forEach((q, qIdx) => {
+                const userAnswer = state.answers[qIdx];
+                const isCorrect = userAnswer === q.answer;
+
+                // Terapkan filter
+                if (filter === 'correct' && !isCorrect) return;
+                if (filter === 'wrong' && isCorrect) return;
+
+                const card = document.createElement('div');
+                card.className = `p-5 rounded-2xl border transition-all ${
+                    isCorrect 
+                    ? 'border-emerald-100 bg-emerald-50/10' 
+                    : 'border-rose-100 bg-rose-50/10'
+                }`;
+
+                let optionsHTML = '';
+                q.options.forEach((opt, optIdx) => {
+                    let optStyle = 'border-slate-100 text-slate-600 bg-slate-50/50';
+                    let badgeStyle = 'bg-slate-200/60 text-slate-500';
+
+                    if (optIdx === q.answer) {
+                        // Opsi yang BENAR
+                        optStyle = 'border-emerald-200 bg-emerald-50 text-emerald-900 font-semibold';
+                        badgeStyle = 'bg-emerald-600 text-white';
+                    } else if (optIdx === userAnswer && !isCorrect) {
+                        // Opsi SALAH yang dipilih siswa
+                        optStyle = 'border-rose-200 bg-rose-50 text-rose-900 font-medium';
+                        badgeStyle = 'bg-rose-500 text-white';
+                    }
+
+                    optionsHTML += `
+                        <div class="p-3 border rounded-xl flex items-center space-x-2.5 text-xs ${optStyle}">
+                            <span class="inline-flex items-center justify-center w-5 h-5 rounded font-bold text-[10px] ${badgeStyle}">${alphabet[optIdx]}</span>
+                            <span>${opt}</span>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold ${isCorrect ? 'text-emerald-700' : 'text-rose-600'}">SOAL NOMOR ${q.id}</span>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                            isCorrect 
+                            ? 'bg-emerald-100 text-emerald-800' 
+                            : 'bg-rose-100 text-rose-800'
+                        }">
+                            ${isCorrect ? '✓ BENAR' : '✗ SALAH'}
+                        </span>
+                    </div>
+                    
+                    <h4 class="text-slate-800 font-semibold text-sm leading-relaxed mb-4">${q.text}</h4>
+                    
+                    <div class="space-y-2 mb-4">
+                        ${optionsHTML}
+                    </div>
+
+                    <div class="bg-slate-100 rounded-xl p-3 border border-slate-200 text-xs">
+                        <span class="font-extrabold text-slate-700 block mb-1">💡 PEMBAHASAN:</span>
+                        <p class="text-slate-500 leading-relaxed">${q.explanation}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (container.children.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-slate-400 font-medium">
+                        Tidak ada soal yang sesuai dengan filter ini.
+                    </div>
+                `;
+            }
+        }
+
+        function filterReview(filter) {
+            renderReview(filter);
+        }
+
+        // Reset LMS state to restart
+        function resetLMS() {
+            state = {
+                studentName: state.studentName, // Simpan nama
+                studentClass: state.studentClass, // Simpan kelas
+                currentQuestionIdx: 0,
+                answers: Array(100).fill(null),
+                flags: Array(100).fill(false),
+                timerSeconds: 90 * 60,
+                timerInterval: null,
+                status: 'ongoing'
+            };
+
+            screenResult.classList.add('hidden');
+            screenQuiz.classList.remove('hidden');
+            quizMetaHeader.classList.remove('hidden');
+
+            initGrid();
+            renderQuestion();
+            startTimer();
+        }
+    </script>
+</body>
+</html>
