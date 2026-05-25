@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Perpustakaan Digital QR Code</title>
+  
+  <!-- 1. Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 2. Font Awesome -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  
+  <!-- 3. jsPDF & AutoTable Plugin -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  
+  <!-- 4. Google Fonts (Poppins) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- 5. HTML5 QR Code Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+  <!-- Tailwind Custom Theme Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Poppins', 'sans-serif'] },
+          colors: {
+            primary: { 
+              50: '#f5f3ff', 
+              100: '#ede9fe', 
+              500: '#6366f1', 
+              600: '#4f46e5', 
+              700: '#4338ca' 
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Menghilangkan elemen visual default blogger */
+    #header-wrapper, .header-outer, #footer-wrapper,
+    .sidebar-wrapper, .post-footer, .comments {
+      display: none !important;
+    }
+    .main-outer, .content-inner, .post-outer {
+      padding: 0 !important; margin: 0 !important;
+      width: 100% !important; max-width: 100% !important;
+    }
+    body { background-color: #f8fafc; margin: 0; overflow-x: hidden; }
+
+    /* Custom CSS Overrides */
+    .status-badge { padding: 4px 10px; border-radius: 99px; font-size: .75rem; font-weight: 600; text-transform: uppercase; }
+    .status-aktif    { background: #dcfce7; color: #166534; }
+    .status-nonaktif { background: #fee2e2; color: #991b1b; }
+    .status-dipinjam  { background: #fef9c3; color: #854d0e; }
+    .status-kembali   { background: #dbeafe; color: #1e40af; }
+
+    /* Glassmorphism Sensation */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,.8);
+      z-index: 9999;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+  
+  <!-- Thumbnail Metadata Blogger -->
+  <div style="display:none">
+    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=1000" alt="App Thumbnail" />
+  </div>
+
+  <!-- SPINNER LOADING GLOBAL -->
+  <div id="loading" class="loading-overlay hidden">
+    <div class="relative flex items-center justify-center">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-indigo-600 border-r-4 border-slate-200"></div>
+      <i class="fas fa-book-reader text-indigo-600 absolute text-lg"></i>
+    </div>
+    <p class="text-indigo-600 font-semibold text-sm mt-4 animate-pulse">Menghubungkan ke Perpustakaan Cloud...</p>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="hidden fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl bg-white border border-slate-100 max-w-sm transition-all duration-300 transform translate-y-10">
+    <div id="toast-icon" class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-white font-bold"></div>
+    <div>
+      <p id="toast-msg" class="text-sm font-semibold text-slate-800"></p>
+    </div>
+  </div>
+
+  <!-- MODAL DIALOG UMUM -->
+  <div id="modal" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative overflow-hidden">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+        <i class="fas fa-times text-lg"></i>
+      </button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- MODAL BOX KONFIRMASI HAPUS -->
+  <div id="modal-confirm" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl text-center">
+      <div class="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-exclamation-triangle text-rose-500 text-2xl"></i>
+      </div>
+      <h3 class="font-bold text-slate-800 text-lg mb-1">Konfirmasi Hapus</h3>
+      <p class="text-sm text-slate-500 mb-6">Data yang dihapus tidak dapat dikembalikan secara permanen.</p>
+      <div class="flex gap-3">
+        <button onclick="document.getElementById('modal-confirm').classList.add('hidden')"
+          class="flex-1 py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+          Batal
+        </button>
+        <button id="btn-hapus-ok" class="flex-1 py-3 rounded-xl bg-rose-500 text-white text-sm font-semibold hover:bg-rose-600 transition shadow-lg shadow-rose-200">
+          Ya, Hapus
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORE APP WRAPPER -->
+  <div id="app" class="flex-grow flex flex-col md:flex-row min-h-screen">
+    
+    <!-- LOGIN PAGE VIEW -->
+    <div id="login-view" class="w-full flex-grow flex items-center justify-center p-4 bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-800">
+      <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 border border-white/20 transform transition duration-500 hover:scale-[1.01]">
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 bg-indigo-500 text-white rounded-2xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-lg shadow-indigo-200">
+            <i class="fas fa-book-open"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-800">PERPUS DIGITAL QR</h2>
+          <p class="text-sm text-slate-400 mt-1">Sistem Katalog Buku & Transaksi Pustaka</p>
+        </div>
+
+        <form id="form-login" onsubmit="handleLogin(event)">
+          <div class="mb-5">
+            <label class="block text-xs font-semibold uppercase text-slate-500 tracking-wider mb-2">Username</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                <i class="fas fa-user"></i>
+              </span>
+              <input type="text" id="login-username" required placeholder="Masukkan username"
+                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition outline-none text-sm text-slate-700">
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-xs font-semibold uppercase text-slate-500 tracking-wider mb-2">Password</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                <i class="fas fa-lock"></i>
+              </span>
+              <input type="password" id="login-password" required placeholder="Masukkan password"
+                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition outline-none text-sm text-slate-700">
+            </div>
+          </div>
+
+          <button type="submit" 
+            class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-indigo-100 hover:shadow-indigo-200 transition-all text-sm flex items-center justify-center gap-2">
+            Masuk <i class="fas fa-sign-in-alt"></i>
+          </button>
+        </form>
+
+        <div class="mt-8 text-center border-t border-slate-100 pt-4">
+          <p class="text-xs text-slate-400">Gunakan akun demo: <br><strong>admin / admin2026</strong> (Super Admin) atau <br><strong>staf / staf2026</strong> (Staf)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN APP SHELL (SIDEBAR + MAIN CONTENT AREA) -->
+    <div id="main-shell" class="hidden w-full flex flex-col md:flex-row min-h-screen">
+      
+      <!-- SIDEBAR NAVIGATION -->
+      <aside class="w-full md:w-64 bg-slate-900 text-slate-300 shrink-0 flex flex-col shadow-xl">
+        <div class="p-6 border-b border-slate-800 flex items-center gap-3">
+          <div class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-lg shadow-lg">
+            <i class="fas fa-book"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-white text-sm tracking-wide leading-tight" id="sidebar-app-name">DIGITAL PERPUS</h1>
+            <span class="text-[10px] text-slate-500 font-medium tracking-widest uppercase">E-LIBRARY & QR</span>
+          </div>
+        </div>
+
+        <!-- USER PROFILE AREA -->
+        <div class="p-4 mx-4 my-4 bg-slate-800/50 rounded-2xl flex items-center gap-3 border border-slate-800">
+          <div class="w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm">
+            <i class="fas fa-user-circle text-2xl"></i>
+          </div>
+          <div class="overflow-hidden">
+            <h3 class="font-semibold text-white text-sm truncate" id="profile-name">Pustakawan</h3>
+            <p class="text-xs text-indigo-400 capitalize truncate" id="profile-role">Admin</p>
+          </div>
+        </div>
+
+        <!-- NAV LINKS -->
+        <nav class="flex-grow px-3 space-y-1">
+          <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition">
+            <i class="fas fa-chart-pie w-5"></i> Dashboard
+          </button>
+          
+          <button onclick="navigateTo('books')" id="nav-books" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition">
+            <i class="fas fa-book-open w-5"></i> Katalog Buku
+          </button>
+
+          <button onclick="navigateTo('scanner')" id="nav-scanner" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition">
+            <i class="fas fa-qrcode w-5"></i> Scanner QR
+          </button>
+
+          <button onclick="navigateTo('loans')" id="nav-loans" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition">
+            <i class="fas fa-exchange-alt w-5"></i> Sirkulasi Pinjam
+          </button>
+
+          <button onclick="navigateTo('users')" id="nav-users" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition">
+            <i class="fas fa-users-cog w-5"></i> Kelola User
+          </button>
+
+          <button onclick="navigateTo('settings')" id="nav-settings" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium hover:bg-slate-800 hover:text-white transition">
+            <i class="fas fa-sliders-h w-5"></i> Aturan Perpus
+          </button>
+        </nav>
+
+        <!-- FOOTER SIDEBAR -->
+        <div class="p-4 border-t border-slate-800">
+          <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 rounded-xl text-sm font-semibold transition">
+            <i class="fas fa-sign-out-alt"></i> Keluar
+          </button>
+        </div>
+      </aside>
+
+      <!-- CONTENT MAIN -->
+      <main class="flex-grow flex flex-col overflow-y-auto">
+        
+        <!-- HEADER TOP BAR -->
+        <header class="bg-white border-b border-slate-200 py-4 px-6 md:px-8 flex justify-between items-center shrink-0">
+          <div class="flex items-center gap-3">
+            <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-500 text-lg">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h2 class="text-xl font-bold text-slate-800" id="page-title">Dashboard</h2>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs bg-indigo-50 text-indigo-600 font-bold px-3 py-1.5 rounded-full border border-indigo-100 hidden sm:inline" id="header-time">Live Status</span>
+          </div>
+        </header>
+
+        <!-- WORKSPACE AREA -->
+        <div class="p-6 md:p-8 flex-grow" id="content-area"></div>
+      </main>
+
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION & GLOBAL STATE
+    // ==========================================
+    const IS_PREVIEW = true; // Set FALSE jika dicolok ke URL deployment GAS asli!
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbz_XXXXXXXXXXXX/exec';
+
+    // Mock/Dummy Data untuk simulasi Preview-Ready
+    const DUMMY_DATA = {
+      books: [
+        { id: 'BOK-001', qr_code: 'ISBN-978-602', judul: 'Laskar Pelangi', pengarang: 'Andrea Hirata', penerbit: 'Bentang Pustaka', kategori: 'Novel', stok_total: 5, stok_tersedia: 4, lokasi_rak: 'Rak Novel A-1', timestamp: '2026-05-18 08:00:00' },
+        { id: 'BOK-002', qr_code: 'ISBN-978-623', judul: 'Filosofi Teras', pengarang: 'Henry Manampiring', penerbit: 'Kompas', kategori: 'Filsafat', stok_total: 3, stok_tersedia: 3, lokasi_rak: 'Rak NonFiksi B-2', timestamp: '2026-05-18 08:05:00' },
+        { id: 'BOK-003', qr_code: 'ISBN-978-979', judul: 'Bumi Manusia', pengarang: 'Pramoedya Ananta Toer', penerbit: 'Lentera Dipantara', kategori: 'Sastra', stok_total: 4, stok_tersedia: 2, lokasi_rak: 'Rak Novel A-2', timestamp: '2026-05-18 08:10:00' },
+        { id: 'BOK-004', qr_code: 'ISBN-978-006', judul: 'Atomic Habits', pengarang: 'James Clear', penerbit: 'Gramedia', kategori: 'Self-Help', stok_total: 8, stok_tersedia: 8, lokasi_rak: 'Rak NonFiksi B-1', timestamp: '2026-05-18 08:15:00' }
+      ],
+      loans: [
+        { id: 'TX-1001', book_id: 'BOK-001', user_id: 'USR-MEMBER01', tanggal_pinjam: '2026-05-10', batas_kembali: '2026-05-17', tanggal_kembali: '2026-05-16', denda_terakumulasi: 0, status: 'KEMBALI', diproses_oleh: 'Staf Pustakawan' },
+        { id: 'TX-1002', book_id: 'BOK-003', user_id: 'USR-MEMBER01', tanggal_pinjam: '2026-05-11', batas_kembali: '2026-05-18', tanggal_kembali: '', denda_terakumulasi: 0, status: 'DIPINJAM', diproses_oleh: 'Kepala Pustakawan' },
+        { id: 'TX-1003', book_id: 'BOK-003', user_id: 'USR-MEMBER01', tanggal_pinjam: '2026-05-01', batas_kembali: '2026-05-08', tanggal_kembali: '', denda_terakumulasi: 20000, status: 'DIPINJAM', diproses_oleh: 'Staf Pustakawan' }
+      ],
+      users: [
+        { id: 'USR-ADMIN01', username: 'admin', password: 'admin2026', nama: 'Kepala Pustakawan', role: 'super_admin', email_telepon: 'admin@perpus.digital', status: 'aktif' },
+        { id: 'USR-STAFF01', username: 'staf', password: 'staf2026', nama: 'Staf Pustakawan', role: 'operator', email_telepon: 'operator@perpus.digital', status: 'aktif' },
+        { id: 'USR-MEMBER01', username: 'budi', password: 'budi123', nama: 'Budi Pratama', role: 'anggota', email_telepon: '081234567890', status: 'aktif' }
+      ],
+      settings: [
+        { key: 'nama_perpustakaan', value: 'Perpustakaan Digital Mandiri' },
+        { key: 'denda_per_hari', value: '2000' },
+        { key: 'maksimal_hari_pinjam', value: '7' }
+      ]
+    };
+
+    let currentUser = null;
+    let state = {
+      books: [],
+      loans: [],
+      users: [],
+      settings: []
+    };
+
+    // ==========================================
+    // INITIALIZATION & LOGIN
+    // ==========================================
+    window.onload = function() {
+      showLoading(false);
+      // Mode simulasi/preview langsung disiapkan datanya
+      if (IS_PREVIEW) {
+        toast('Sistem Berjalan dalam Mode Simulasi (Preview)', 'info');
+      }
+    };
+
+    function showLoading(show) {
+      const loader = document.getElementById('loading');
+      if (show) {
+        loader.classList.remove('hidden');
+      } else {
+        loader.classList.add('hidden');
+      }
+    }
+
+    function toast(message, type = 'success') {
+      const toastEl = document.getElementById('toast');
+      const toastIcon = document.getElementById('toast-icon');
+      const toastMsg = document.getElementById('toast-msg');
+
+      toastMsg.innerText = message;
+      toastEl.classList.remove('hidden', 'translate-y-10');
+
+      if (type === 'success') {
+        toastIcon.className = 'w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-white font-bold bg-emerald-500';
+        toastIcon.innerHTML = '<i class="fas fa-check"></i>';
+      } else if (type === 'error') {
+        toastIcon.className = 'w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-white font-bold bg-rose-500';
+        toastIcon.innerHTML = '<i class="fas fa-times"></i>';
+      } else {
+        toastIcon.className = 'w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-white font-bold bg-amber-500';
+        toastIcon.innerHTML = '<i class="fas fa-info"></i>';
+      }
+
+      setTimeout(() => {
+        toastEl.classList.add('hidden', 'translate-y-10');
+      }, 4000);
+    }
+
+    function openModal(contentHtml) {
+      const modal = document.getElementById('modal');
+      const container = document.getElementById('modal-content');
+      container.innerHTML = contentHtml;
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    // Call GAS Tunneling Function
+    function callGAS(func, args = []) {
+      return new Promise((resolve, reject) => {
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(reject)
+            [func](...args);
+        } else {
+          console.warn('Backend GAS tidak terdeteksi.');
+          reject('GAS environment missing');
+        }
+      });
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('login-username').value;
+      const pass = document.getElementById('login-password').value;
+
+      showLoading(true);
+
+      if (IS_PREVIEW) {
+        // Otentikasi dummy
+        const found = DUMMY_DATA.users.find(u => u.username === user && u.password === pass);
+        if (found) {
+          currentUser = found;
+          setupUserSession();
+        } else {
+          toast('Akun tidak terdaftar atau password salah!', 'error');
+          showLoading(false);
+        }
+      } else {
+        try {
+          const res = await callGAS('loginUser', [user, pass]);
+          if (res.success) {
+            currentUser = res.user;
+            setupUserSession();
+          } else {
+            toast(res.message, 'error');
+            showLoading(false);
+          }
+        } catch (err) {
+          toast('Koneksi Gagal!', 'error');
+          showLoading(false);
+        }
+      }
+    }
+
+    function setupUserSession() {
+      document.getElementById('login-view').classList.add('hidden');
+      document.getElementById('main-shell').classList.remove('hidden');
+      
+      document.getElementById('profile-name').innerText = currentUser.nama;
+      document.getElementById('profile-role').innerText = currentUser.role.replace('_', ' ');
+      
+      // Batasan Hak Akses Menu
+      if (currentUser.role === 'anggota') {
+        document.getElementById('nav-scanner').classList.add('hidden');
+        document.getElementById('nav-users').classList.add('hidden');
+        document.getElementById('nav-settings').classList.add('hidden');
+      } else if (currentUser.role === 'operator') {
+        document.getElementById('nav-users').classList.add('hidden');
+        document.getElementById('nav-settings').classList.add('hidden');
+      } else {
+        // Super Admin memiliki semua menu
+        document.getElementById('nav-scanner').classList.remove('hidden');
+        document.getElementById('nav-users').classList.remove('hidden');
+        document.getElementById('nav-settings').classList.remove('hidden');
+      }
+
+      navigateTo('dashboard');
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      document.getElementById('login-view').classList.remove('hidden');
+      document.getElementById('main-shell').classList.add('hidden');
+      document.getElementById('login-username').value = '';
+      document.getElementById('login-password').value = '';
+      toast('Berhasil keluar!', 'success');
+    }
+
+    // ==========================================
+    // ROUTER SPA (SINGLE PAGE APPLICATION)
+    // ==========================================
+    async function navigateTo(pageId) {
+      const area = document.getElementById('content-area');
+      const title = document.getElementById('page-title');
+
+      // Update Nav Active State Styling
+      document.querySelectorAll('.nav-item').forEach(el => {
+        el.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg');
+        el.classList.add('text-slate-300', 'hover:bg-slate-800');
+      });
+
+      const activeNav = document.getElementById('nav-' + pageId);
+      if (activeNav) {
+        activeNav.classList.add('bg-indigo-600', 'text-white', 'shadow-lg');
+        activeNav.classList.remove('text-slate-300', 'hover:bg-slate-800');
+      }
+
+      showLoading(true);
+      await syncData();
+
+      // Set Title Area
+      switch (pageId) {
+        case 'dashboard': title.innerText = 'Dashboard Ringkasan'; renderDashboard(area); break;
+        case 'books': title.innerText = 'Katalog & Daftar Buku'; renderBooks(area); break;
+        case 'scanner': title.innerText = 'Transaksi via QR Code'; renderScanner(area); break;
+        case 'loans': title.innerText = 'Sirkulasi Peminjaman'; renderLoans(area); break;
+        case 'users': title.innerText = 'Kelola Akun & Anggota'; renderUsers(area); break;
+        case 'settings': title.innerText = 'Aturan Perpustakaan'; renderSettings(area); break;
+      }
+      showLoading(false);
+    }
+
+    async function syncData() {
+      if (IS_PREVIEW) {
+        state.books = DUMMY_DATA.books;
+        state.loans = DUMMY_DATA.loans;
+        state.users = DUMMY_DATA.users;
+        state.settings = DUMMY_DATA.settings;
+      } else {
+        try {
+          const [b, l, u, s] = await Promise.all([
+            callGAS('getData', ['books']),
+            callGAS('getData', ['loans']),
+            callGAS('getData', ['users']),
+            callGAS('getData', ['settings'])
+          ]);
+          state.books = b;
+          state.loans = l;
+          state.users = u;
+          state.settings = s;
+        } catch (e) {
+          console.error('Sinkronisasi database gagal:', e);
+          toast('Sinkronisasi data gagal. Cek koneksi Anda.', 'error');
+        }
+      }
+
+      // Update Application Name di Header/Sidebar berdasarkan setelan DB
+      const appNameSetting = state.settings.find(st => st.key === 'nama_perpustakaan');
+      if (appNameSetting) {
+        document.getElementById('sidebar-app-name').innerText = appNameSetting.value.toUpperCase();
+      }
+    }
+
+    // ==========================================
+    // RENDER MODULE 1: DASHBOARD
+    // ==========================================
+    function renderDashboard(container) {
+      // Hitung Statisik
+      const totalBuku = state.books.reduce((acc, curr) => acc + parseInt(curr.stok_total), 0);
+      const totalDipinjam = state.loans.filter(l => l.status === 'DIPINJAM').length;
+      const totalAnggota = state.users.filter(u => u.role === 'anggota').length;
+      
+      // Hitung Denda Belum Bayar
+      const dendaRate = parseInt(state.settings.find(s => s.key === 'denda_per_hari')?.value || 2000);
+      let totalDendaPending = 0;
+      
+      state.loans.forEach(l => {
+        if (l.status === 'DIPINJAM') {
+          const limitDate = new Date(l.batas_kembali);
+          const today = new Date();
+          limitDate.setHours(0,0,0,0);
+          today.setHours(0,0,0,0);
+          if (today.getTime() > limitDate.getTime()) {
+            const days = Math.ceil((today.getTime() - limitDate.getTime()) / (1000 * 60 * 60 * 24));
+            totalDendaPending += (days * dendaRate);
+          }
+        } else {
+          totalDendaPending += parseInt(l.denda_terakumulasi || 0);
+        }
+      });
+
+      // Filter sirkulasi jatuh tempo
+      const overdueLoans = state.loans.filter(l => {
+        if (l.status !== 'DIPINJAM') return false;
+        const limit = new Date(l.batas_kembali);
+        const today = new Date();
+        limit.setHours(0,0,0,0);
+        today.setHours(0,0,0,0);
+        return today > limit;
+      });
+
+      let alertBoxHtml = '';
+      if (overdueLoans.length > 0) {
+        alertBoxHtml = `
+          <div class="mb-6 bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-start gap-3">
+            <i class="fas fa-exclamation-circle text-rose-500 text-lg mt-0.5"></i>
+            <div>
+              <h4 class="text-rose-800 font-semibold text-sm">Ada ${overdueLoans.length} Peminjaman Melewati Batas Waktu!</h4>
+              <p class="text-xs text-rose-600 mt-0.5">Sistem mendeteksi anggota belum mengembalikan buku melebihi jatuh tempo. Segera hubungi anggota bersangkutan.</p>
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        ${alertBoxHtml}
+        
+        <!-- STAT CARDS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold text-slate-400 uppercase">Koleksi Buku</span>
+              <h3 class="text-2xl font-bold text-slate-800 mt-1">${totalBuku} Eks</h3>
+            </div>
+            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-xl">
+              <i class="fas fa-book-medical"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold text-slate-400 uppercase">Buku Dipinjam</span>
+              <h3 class="text-2xl font-bold text-slate-800 mt-1">${totalDipinjam} Pcs</h3>
+            </div>
+            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+              <i class="fas fa-clock"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold text-slate-400 uppercase">Anggota Aktif</span>
+              <h3 class="text-2xl font-bold text-slate-800 mt-1">${totalAnggota} Orang</h3>
+            </div>
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+              <i class="fas fa-id-card"></i>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-semibold text-slate-400 uppercase">Akumulasi Denda</span>
+              <h3 class="text-2xl font-bold text-slate-800 mt-1">Rp ${totalDendaPending.toLocaleString('id-ID')}</h3>
+            </div>
+            <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl">
+              <i class="fas fa-hand-holding-usd"></i>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- QUICK LINK QR ACTIONS -->
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-1">
+            <h3 class="font-bold text-slate-800 text-base mb-4"><i class="fas fa-bolt text-indigo-500 mr-2"></i> Akses Cepat QR</h3>
+            <div class="space-y-3">
+              <button onclick="navigateTo('scanner')" class="w-full py-4 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm transition flex items-center justify-center gap-3 shadow-lg shadow-indigo-100">
+                <i class="fas fa-qrcode text-lg"></i> Scan QR Sirkulasi
+              </button>
+              <button onclick="openFormBuku()" class="w-full py-4 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-sm transition flex items-center justify-center gap-3">
+                <i class="fas fa-plus-circle"></i> Tambah Buku Baru
+              </button>
+            </div>
+            
+            <div class="mt-6 pt-6 border-t border-slate-100">
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Informasi Sistem</h4>
+              <div class="text-xs space-y-2 text-slate-600">
+                <div class="flex justify-between"><span>Nama Sistem:</span> <strong class="text-slate-800">Perpus Digital QR v1.0</strong></div>
+                <div class="flex justify-between"><span>Status Engine:</span> <span class="text-emerald-600 font-bold">Online</span></div>
+                <div class="flex justify-between"><span>Jam Kerja:</span> <strong class="text-slate-800">08:00 - 16:00</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RECENT TRANSACTIONS TABLE -->
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2">
+            <h3 class="font-bold text-slate-800 text-base mb-4"><i class="fas fa-list-alt text-indigo-500 mr-2"></i> Transaksi Sirkulasi Terkini</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100">
+                    <th class="py-3 px-4">ID Transaksi</th>
+                    <th class="py-3 px-4">Buku</th>
+                    <th class="py-3 px-4">Peminjam</th>
+                    <th class="py-3 px-4">Batas Kembali</th>
+                    <th class="py-3 px-4">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${state.loans.length === 0 ? `
+                    <tr><td colspan="5" class="text-center py-6 text-slate-400">Belum ada transaksi terekam.</td></tr>
+                  ` : state.loans.slice(-5).reverse().map(l => {
+                    const bk = state.books.find(b => b.id === l.book_id) || { judul: 'Buku Dihapus' };
+                    const mem = state.users.find(u => u.id === l.user_id) || { nama: 'Anggota Dihapus' };
+                    return `
+                      <tr class="hover:bg-slate-50">
+                        <td class="py-3 px-4 font-semibold text-indigo-600">${l.id}</td>
+                        <td class="py-3 px-4 font-medium text-slate-800">${bk.judul}</td>
+                        <td class="py-3 px-4 text-slate-600">${mem.nama}</td>
+                        <td class="py-3 px-4 text-slate-500">${l.batas_kembali}</td>
+                        <td class="py-3 px-4">
+                          <span class="status-badge status-${l.status.toLowerCase()}">${l.status}</span>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // RENDER MODULE 2: CATALOG / BOOKS
+    // ==========================================
+    function renderBooks(container) {
+      container.innerHTML = `
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <!-- BARIS ATAS FILTER & AKSI -->
+          <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 mb-6">
+            <div class="relative flex-grow max-w-md">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fas fa-search"></i>
+              </span>
+              <input type="text" id="search-book" oninput="filterBooksTable()" placeholder="Cari judul, pengarang, penerbit, rak..."
+                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm">
+            </div>
+
+            <div class="flex gap-2">
+              <button onclick="openFormBuku()" 
+                class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition flex items-center gap-2">
+                <i class="fas fa-plus"></i> Buku Baru
+              </button>
+              <button onclick="exportKatalogPDF()" 
+                class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition flex items-center gap-2">
+                <i class="fas fa-file-pdf"></i> Export PDF
+              </button>
+            </div>
+          </div>
+
+          <!-- TABEL BUKU -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm" id="table-books">
+              <thead>
+                <tr class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 text-xs">
+                  <th class="py-4 px-4">QR Code / ID</th>
+                  <th class="py-4 px-4">Detail Buku</th>
+                  <th class="py-4 px-4">Kategori</th>
+                  <th class="py-4 px-4">Lokasi Rak</th>
+                  <th class="py-4 px-4 text-center">Stok (Total/Sisa)</th>
+                  <th class="py-4 px-4 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <!-- Row data akan diisi dinamis -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      filterBooksTable();
+    }
+
+    function filterBooksTable() {
+      const q = document.getElementById('search-book')?.value.toLowerCase() || '';
+      const tbody = document.querySelector('#table-books tbody');
+      
+      const filtered = state.books.filter(b => 
+        b.judul.toLowerCase().includes(q) ||
+        b.pengarang.toLowerCase().includes(q) ||
+        b.penerbit.toLowerCase().includes(q) ||
+        b.kategori.toLowerCase().includes(q) ||
+        b.lokasi_rak.toLowerCase().includes(q) ||
+        b.qr_code.toLowerCase().includes(q)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400"><i class="fas fa-search mb-2 text-xl block"></i>Buku tidak ditemukan</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(b => {
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${b.qr_code}`;
+        return `
+          <tr class="hover:bg-slate-50 transition text-xs sm:text-sm">
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-3">
+                <img src="${qrUrl}" alt="QR" class="w-12 h-12 rounded border border-slate-100 bg-white p-1 shadow-sm cursor-zoom-in" onclick="zoomQRCode('${b.qr_code}', '${b.judul}')">
+                <div>
+                  <div class="font-semibold text-slate-800">${b.qr_code}</div>
+                  <div class="text-[10px] text-slate-400 mt-0.5">S-ID: ${b.id}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-4 px-4">
+              <div class="font-bold text-slate-800">${b.judul}</div>
+              <div class="text-xs text-slate-500 mt-0.5">${b.pengarang} | <span class="text-slate-400">${b.penerbit}</span></div>
+            </td>
+            <td class="py-4 px-4">
+              <span class="px-2 py-1 bg-slate-100 text-slate-600 rounded-md font-medium text-xs">${b.kategori}</span>
+            </td>
+            <td class="py-4 px-4 text-slate-600 font-medium">
+              <i class="fas fa-map-marker-alt text-indigo-500 mr-1.5 text-xs"></i>${b.lokasi_rak}
+            </td>
+            <td class="py-4 px-4 text-center">
+              <span class="font-bold text-slate-800">${b.stok_tersedia}</span>
+              <span class="text-slate-400"> / ${b.stok_total}</span>
+            </td>
+            <td class="py-4 px-4 text-right">
+              <div class="flex justify-end gap-1.5">
+                <button onclick="zoomQRCode('${b.qr_code}', '${b.judul}')" class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Tampilkan QR Code">
+                  <i class="fas fa-qrcode"></i>
+                </button>
+                <button onclick="openFormBuku('${b.id}')" class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Edit Buku">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="confirmHapusBuku('${b.id}')" class="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Hapus Buku">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // MODULE 2.1: CRU FORM BUKU (MODAL)
+    // ==========================================
+    function openFormBuku(bookId = null) {
+      const isEdit = bookId !== null;
+      let bookObj = { qr_code: '', judul: '', pengarang: '', penerbit: '', kategori: '', stok_total: 1, stok_tersedia: 1, lokasi_rak: '' };
+
+      if (isEdit) {
+        bookObj = state.books.find(b => b.id === bookId);
+        if (!bookObj) return;
+      }
+
+      const html = `
+        <h3 class="text-lg font-bold text-slate-800 mb-4">${isEdit ? 'Ubah Informasi Buku' : 'Tambah Buku Baru'}</h3>
+        <form id="form-buku" onsubmit="saveBuku(event, '${bookId || ''}')" class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="col-span-2">
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">QR Code / Barcode Buku (ISBN/ID Fisik)</label>
+              <div class="flex gap-2">
+                <input type="text" id="fb-qrcode" required value="${bookObj.qr_code}" placeholder="Scan atau input manual kode unik..."
+                  class="flex-grow px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                <button type="button" onclick="startQRReader('fb-qrcode')" class="px-3.5 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition flex items-center justify-center">
+                  <i class="fas fa-qrcode"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="col-span-2">
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Judul Buku</label>
+              <input type="text" id="fb-judul" required value="${bookObj.judul}" placeholder="Judul lengkap..."
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Pengarang</label>
+              <input type="text" id="fb-pengarang" required value="${bookObj.pengarang}" placeholder="Nama pengarang..."
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Penerbit</label>
+              <input type="text" id="fb-penerbit" required value="${bookObj.penerbit}" placeholder="Nama penerbit..."
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Kategori / Genre</label>
+              <input type="text" id="fb-kategori" required value="${bookObj.kategori}" placeholder="Novel, Komik, Sejarah..."
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Lokasi Rak</label>
+              <input type="text" id="fb-rak" required value="${bookObj.lokasi_rak}" placeholder="Rak A-1, dsb..."
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Total Stok Buku Fisik</label>
+              <input type="number" id="fb-total" required min="1" value="${bookObj.stok_total}" oninput="adjustStokTersedia(${isEdit})"
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Stok Tersedia Saat Ini</label>
+              <input type="number" id="fb-tersedia" required min="0" max="${bookObj.stok_total}" value="${bookObj.stok_tersedia}"
+                class="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm outline-none text-slate-600" ${isEdit ? '' : 'readonly'}>
+            </div>
+          </div>
+
+          <div class="flex gap-2 pt-4">
+            <button type="button" onclick="closeModal()" class="flex-1 py-3 border border-slate-200 text-slate-600 rounded-xl font-semibold text-sm hover:bg-slate-50 transition">
+              Batal
+            </button>
+            <button type="submit" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm shadow-lg shadow-indigo-100 hover:shadow-indigo-200 transition">
+              Simpan Data
+            </button>
+          </div>
+        </form>
+      `;
+
+      openModal(html);
+    }
+
+    function adjustStokTersedia(isEdit) {
+      if (!isEdit) {
+        document.getElementById('fb-tersedia').value = document.getElementById('fb-total').value;
+      }
+    }
+
+    async function saveBuku(e, id) {
+      e.preventDefault();
+      
+      const payload = {
+        qr_code: document.getElementById('fb-qrcode').value,
+        judul: document.getElementById('fb-judul').value,
+        pengarang: document.getElementById('fb-pengarang').value,
+        penerbit: document.getElementById('fb-penerbit').value,
+        kategori: document.getElementById('fb-kategori').value,
+        lokasi_rak: document.getElementById('fb-rak').value,
+        stok_total: parseInt(document.getElementById('fb-total').value),
+        stok_tersedia: parseInt(document.getElementById('fb-tersedia').value)
+      };
+
+      closeModal();
+      showLoading(true);
+
+      if (IS_PREVIEW) {
+        if (id) {
+          // Update
+          const index = DUMMY_DATA.books.findIndex(b => b.id === id);
+          DUMMY_DATA.books[index] = { ...DUMMY_DATA.books[index], ...payload };
+          toast('Data buku berhasil diupdate!', 'success');
+        } else {
+          // Create
+          payload.id = 'BOK-' + Math.floor(Math.random() * 900 + 100);
+          payload.timestamp = '2026-05-18 08:30:00';
+          DUMMY_DATA.books.push(payload);
+          toast('Buku baru berhasil ditambahkan!', 'success');
+        }
+        showLoading(false);
+        navigateTo('books');
+      } else {
+        try {
+          let res;
+          if (id) {
+            res = await callGAS('updateData', ['books', id, payload]);
+          } else {
+            res = await callGAS('addData', ['books', payload]);
+          }
+          
+          if (res.success) {
+            toast('Berhasil menyimpan data buku!', 'success');
+          } else {
+            toast(res.message || 'Gagal menyimpan.', 'error');
+          }
+          showLoading(false);
+          navigateTo('books');
+        } catch (err) {
+          toast('Koneksi Gagal!', 'error');
+          showLoading(false);
+        }
+      }
+    }
+
+    function confirmHapusBuku(id) {
+      const modalConfirm = document.getElementById('modal-confirm');
+      const btnOk = document.getElementById('btn-hapus-ok');
+      modalConfirm.classList.remove('hidden');
+
+      btnOk.onclick = async function() {
+        modalConfirm.classList.add('hidden');
+        showLoading(true);
+
+        if (IS_PREVIEW) {
+          DUMMY_DATA.books = DUMMY_DATA.books.filter(b => b.id !== id);
+          toast('Buku berhasil terhapus!', 'success');
+          showLoading(false);
+          navigateTo('books');
+        } else {
+          try {
+            const res = await callGAS('deleteData', ['books', id]);
+            if (res.success) {
+              toast('Buku berhasil dihapus dari sistem.', 'success');
+            } else {
+              toast(res.message, 'error');
+            }
+            showLoading(false);
+            navigateTo('books');
+          } catch (e) {
+            toast('Gagal menghapus buku.', 'error');
+            showLoading(false);
+          }
+        }
+      };
+    }
+
+    function zoomQRCode(data, label) {
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${data}`;
+      const html = `
+        <div class="text-center p-4">
+          <h3 class="font-bold text-slate-800 text-base mb-1">Cetak Label QR Code</h3>
+          <p class="text-xs text-slate-400 mb-6">${label}</p>
+          <div class="w-48 h-48 bg-white border border-slate-200 rounded-2xl flex items-center justify-center p-4 mx-auto mb-6 shadow-md">
+            <img src="${qrUrl}" alt="QR Zoom" class="w-full h-full">
+          </div>
+          <div class="bg-slate-50 rounded-xl p-3 text-xs text-slate-600 font-semibold mb-6 flex justify-between">
+            <span>Kode QR:</span> <strong class="text-indigo-600">${data}</strong>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="window.print()" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition flex items-center justify-center gap-2">
+              <i class="fas fa-print"></i> Cetak Label
+            </button>
+            <button onclick="closeModal()" class="flex-1 py-3 border border-slate-200 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-50 transition">
+              Tutup
+            </button>
+          </div>
+        </div>
+      `;
+      openModal(html);
+    }
+
+    // ==========================================
+    // MODULE 3: QR CODE SCANNER (INTEGRASI KAMERA)
+    // ==========================================
+    let html5QrcodeScanner = null;
+
+    function renderScanner(container) {
+      container.innerHTML = `
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <!-- SCANNER VIEWER -->
+          <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
+            <h3 class="font-bold text-slate-800 text-base mb-2 w-full text-left">Pindai Kode QR</h3>
+            <p class="text-xs text-slate-400 mb-6 w-full text-left">Gunakan kamera perangkat Anda untuk memindai QR Code Buku atau QR Anggota secara langsung.</p>
+
+            <div id="reader" class="w-full bg-slate-900 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center border border-slate-800 min-h-[250px]">
+              <!-- Scanner akan dimuat disini oleh html5-qrcode -->
+            </div>
+
+            <!-- SIMULASI INPUT QR MANUAL (PREVIEW ONLY) -->
+            <div class="w-full mt-6 pt-6 border-t border-slate-100">
+              <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Gunakan Pilihan Cepat (Mode Simulasi)</h4>
+              <div class="flex flex-col gap-2">
+                <select id="simulasi-qr" onchange="simulateScan(this.value)" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+                  <option value="">-- Simulasi Pindai Kode --</option>
+                  <optgroup label="Barcode Buku (Untuk Pinjam/Kembali)">
+                    ${state.books.map(b => `<option value="${b.qr_code}">Buku: ${b.judul} (${b.qr_code})</option>`).join('')}
+                  </optgroup>
+                  <optgroup label="ID Anggota (Untuk Verifikasi)">
+                    ${state.users.filter(u => u.role === 'anggota').map(u => `<option value="${u.id}">Anggota: ${u.nama} (${u.id})</option>`).join('')}
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIRKULASI WORKBENCH FORM -->
+          <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h3 class="font-bold text-slate-800 text-base mb-4">Sirkulasi Hub</h3>
+
+            <!-- NAV TABS PINJAM / KEMBALI -->
+            <div class="flex bg-slate-50 p-1.5 rounded-xl border border-slate-100 mb-6">
+              <button onclick="switchScannerTab('pinjam')" id="tab-pinjam" class="flex-1 py-2 rounded-lg font-bold text-xs transition bg-indigo-600 text-white shadow-sm">
+                PEMINJAMAN BARU
+              </button>
+              <button onclick="switchScannerTab('kembali')" id="tab-kembali" class="flex-1 py-2 rounded-lg font-bold text-xs transition text-slate-600 hover:text-slate-800">
+                PENGEMBALIAN CEPAT
+              </button>
+            </div>
+
+            <!-- WORKSPACE TAB PEMINJAMAN -->
+            <div id="sw-tab-pinjam" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">ID Kartu Anggota</label>
+                <input type="text" id="loan-member-id" placeholder="Scan kartu anggota atau ketik ID/Username..."
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                <div id="member-verify-box" class="hidden mt-2 p-3 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center gap-2">
+                  <i class="fas fa-check-circle text-emerald-500 text-base"></i>
+                  <div class="text-xs">
+                    <span class="font-bold text-slate-800" id="verified-member-name">Nama Anggota</span>
+                    <p class="text-[10px] text-slate-400">ID Anggota Terverifikasi</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">QR Code / Barcode Buku</label>
+                <input type="text" id="loan-book-id" placeholder="Scan QR Code buku fisik atau ketik kode..."
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                <div id="book-verify-box" class="hidden mt-2 p-3 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-2">
+                  <i class="fas fa-book-open text-indigo-500 text-base"></i>
+                  <div class="text-xs">
+                    <span class="font-bold text-slate-800" id="verified-book-title">Judul Buku</span>
+                    <p class="text-[10px] text-slate-400">Tersedia <span id="verified-book-stock">0</span> Salinan</p>
+                  </div>
+                </div>
+              </div>
+
+              <button onclick="executePeminjaman()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 hover:shadow-indigo-200 text-sm transition">
+                Konfirmasi Peminjaman Buku
+              </button>
+            </div>
+
+            <!-- WORKSPACE TAB PENGEMBALIAN -->
+            <div id="sw-tab-kembali" class="hidden space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">QR Code / Barcode Buku yang Dikembalikan</label>
+                <input type="text" id="return-book-id" placeholder="Scan QR Code Buku untuk memproses pengembalian otomatis..."
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+              </div>
+
+              <div id="return-info-box" class="hidden p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <h4 class="font-bold text-xs text-slate-700 uppercase tracking-wider">Deteksi Informasi Transaksi</h4>
+                <div class="grid grid-cols-2 gap-2 text-xs text-slate-600">
+                  <div>Buku: <strong class="text-slate-800 block" id="ret-buku">-</strong></div>
+                  <div>Peminjam: <strong class="text-slate-800 block" id="ret-member">-</strong></div>
+                  <div>Tanggal Pinjam: <strong class="text-slate-800 block" id="ret-tgl-pinjam">-</strong></div>
+                  <div>Batas Pengembalian: <strong class="text-slate-800 block text-indigo-600" id="ret-tgl-limit">-</strong></div>
+                </div>
+                <div id="ret-denda-alert" class="p-3 rounded-lg text-xs font-semibold flex items-center gap-2"></div>
+              </div>
+
+              <button onclick="executePengembalian()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-100 hover:shadow-emerald-200 text-sm transition">
+                Konfirmasi Pengembalian Buku
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+      // Inisialisasi HTML5 QR Code Scanner dari Kamera
+      initHtml5Scanner();
+    }
+
+    let activeScanTarget = 'loan-member-id'; // Target default scan input
+    let activeTab = 'pinjam';
+
+    function initHtml5Scanner() {
+      // Tunggu DOM dimuat sepenuhnya
+      setTimeout(() => {
+        try {
+          html5QrcodeScanner = new Html5QrcodeScanner("reader", { 
+            fps: 15, 
+            qrbox: { width: 200, height: 200 } 
+          }, false);
+          
+          html5QrcodeScanner.render((decodedText, decodedResult) => {
+            // Suara klik / notifikasi sukses scan
+            simulateScan(decodedText);
+          }, (errorMessage) => {
+            // Error log biasa saat tidak mendeteksi kode di frame kamera
+          });
+        } catch (e) {
+          console.warn('Gagal memuat camera scanner:', e);
+        }
+      }, 300);
+    }
+
+    // Melakukan Simulasi Scanner QR (Sangat menolong saat mencoba di browser desktop biasa)
+    function simulateScan(code) {
+      if (!code) return;
+      
+      if (activeTab === 'pinjam') {
+        // Cari apakah code berupa user id
+        const user = state.users.find(u => u.id === code || u.username === code);
+        const book = state.books.find(b => b.qr_code === code || b.id === code);
+
+        if (user && user.role === 'anggota') {
+          document.getElementById('loan-member-id').value = user.id;
+          document.getElementById('verified-member-name').innerText = user.nama;
+          document.getElementById('member-verify-box').classList.remove('hidden');
+          toast(`Kartu Anggota ${user.nama} berhasil dipindai!`, 'success');
+        } else if (book) {
+          document.getElementById('loan-book-id').value = book.qr_code;
+          document.getElementById('verified-book-title').innerText = book.judul;
+          document.getElementById('verified-book-stock').innerText = book.stok_tersedia;
+          document.getElementById('book-verify-box').classList.remove('hidden');
+          toast(`Barcode Buku "${book.judul}" berhasil dipindai!`, 'success');
+        } else {
+          toast('Format Kode tidak terdaftar!', 'error');
+        }
+      } else {
+        // Mode pengembalian
+        document.getElementById('return-book-id').value = code;
+        toast('QR Buku berhasil dipindai untuk pengembalian.', 'success');
+        
+        // Cek data transaksi aktif untuk buku tersebut
+        const book = state.books.find(b => b.qr_code === code || b.id === code);
+        if (book) {
+          const activeLoan = state.loans.find(l => l.book_id === book.id && l.status === 'DIPINJAM');
+          if (activeLoan) {
+            const mem = state.users.find(u => u.id === activeLoan.user_id) || { nama: 'Anggota Umum' };
+            document.getElementById('ret-buku').innerText = book.judul;
+            document.getElementById('ret-member').innerText = mem.nama;
+            document.getElementById('ret-tgl-pinjam').innerText = activeLoan.tanggal_pinjam;
+            document.getElementById('ret-tgl-limit').innerText = activeLoan.batas_kembali;
+            
+            // Hitung denda
+            const today = new Date();
+            const limit = new Date(activeLoan.batas_kembali);
+            today.setHours(0,0,0,0);
+            limit.setHours(0,0,0,0);
+            
+            const dendaRate = parseInt(state.settings.find(s => s.key === 'denda_per_hari')?.value || 2000);
+            const dendaAlert = document.getElementById('ret-denda-alert');
+            
+            if (today > limit) {
+              const days = Math.ceil((today.getTime() - limit.getTime()) / (1000 * 60 * 60 * 24));
+              const totalDenda = days * dendaRate;
+              dendaAlert.className = 'p-3 rounded-lg text-xs font-semibold flex items-center gap-2 bg-rose-50 border border-rose-100 text-rose-700';
+              dendaAlert.innerHTML = `<i class="fas fa-hand-holding-usd text-base"></i> Terlambat ${days} hari. Denda wajib bayar: Rp ${totalDenda.toLocaleString('id-ID')}`;
+            } else {
+              dendaAlert.className = 'p-3 rounded-lg text-xs font-semibold flex items-center gap-2 bg-emerald-50 border border-emerald-100 text-emerald-700';
+              dendaAlert.innerHTML = `<i class="fas fa-check-circle text-base"></i> Tepat Waktu. Bebas denda keterlambatan!`;
+            }
+            
+            document.getElementById('return-info-box').classList.remove('hidden');
+          } else {
+            toast('Buku ini tidak dalam status sirkulasi dipinjam!', 'info');
+            document.getElementById('return-info-box').classList.add('hidden');
+          }
+        }
+      }
+    }
+
+    function switchScannerTab(tab) {
+      activeTab = tab;
+      const tabPinjam = document.getElementById('tab-pinjam');
+      const tabKembali = document.getElementById('tab-kembali');
+      const swPinjam = document.getElementById('sw-tab-pinjam');
+      const swKembali = document.getElementById('sw-tab-kembali');
+
+      if (tab === 'pinjam') {
+        tabPinjam.className = 'flex-grow py-2 rounded-lg font-bold text-xs transition bg-indigo-600 text-white shadow-sm';
+        tabKembali.className = 'flex-grow py-2 rounded-lg font-bold text-xs transition text-slate-600 hover:text-slate-800';
+        swPinjam.classList.remove('hidden');
+        swKembali.classList.add('hidden');
+      } else {
+        tabKembali.className = 'flex-grow py-2 rounded-lg font-bold text-xs transition bg-indigo-600 text-white shadow-sm';
+        tabPinjam.className = 'flex-grow py-2 rounded-lg font-bold text-xs transition text-slate-600 hover:text-slate-800';
+        swKembali.classList.remove('hidden');
+        swPinjam.classList.add('hidden');
+      }
+    }
+
+    // Eksekusi Peminjaman
+    async function executePeminjaman() {
+      const memberId = document.getElementById('loan-member-id').value;
+      const bookId = document.getElementById('loan-book-id').value;
+
+      if (!memberId || !bookId) {
+        toast('Harap pindai ID Anggota dan QR Buku terlebih dahulu!', 'error');
+        return;
+      }
+
+      showLoading(true);
+
+      if (IS_PREVIEW) {
+        // Simulasi di preview
+        const book = DUMMY_DATA.books.find(b => b.qr_code === bookId || b.id === bookId);
+        const user = DUMMY_DATA.users.find(u => u.id === memberId || u.username === memberId);
+        
+        if (!book) { toast('Buku tidak ditemukan!', 'error'); showLoading(false); return; }
+        if (book.stok_tersedia <= 0) { toast('Stok buku kosong!', 'error'); showLoading(false); return; }
+        if (!user || user.role !== 'anggota') { toast('Anggota tidak valid!', 'error'); showLoading(false); return; }
+
+        // Aturan pinjam
+        const maxDays = parseInt(DUMMY_DATA.settings.find(s => s.key === 'maksimal_hari_pinjam')?.value || 7);
+        const today = new Date();
+        const limit = new Date();
+        limit.setDate(today.getDate() + maxDays);
+
+        const formatDateString = (date) => date.toISOString().split('T')[0];
+
+        DUMMY_DATA.loans.push({
+          id: 'TX-' + Math.floor(Math.random() * 9000 + 1000),
+          book_id: book.id,
+          user_id: user.id,
+          tanggal_pinjam: formatDateString(today),
+          batas_kembali: formatDateString(limit),
+          tanggal_kembali: '',
+          denda_terakumulasi: 0,
+          status: 'DIPINJAM',
+          diproses_oleh: currentUser.nama
+        });
+
+        book.stok_tersedia -= 1;
+        
+        toast('Peminjaman buku sukses dicatat!', 'success');
+        showLoading(false);
+        navigateTo('loans');
+      } else {
+        try {
+          const res = await callGAS('pinjamBuku', [bookId, memberId, currentUser.nama]);
+          if (res.success) {
+            toast(res.message, 'success');
+            navigateTo('loans');
+          } else {
+            toast(res.message, 'error');
+          }
+          showLoading(false);
+        } catch (e) {
+          toast('Terjadi kesalahan koneksi!', 'error');
+          showLoading(false);
+        }
+      }
+    }
+
+    // Eksekusi Pengembalian
+    async function executePengembalian() {
+      const bookId = document.getElementById('return-book-id').value;
+      if (!bookId) {
+        toast('Harap masukkan atau pindai QR Code Buku!', 'error');
+        return;
+      }
+
+      showLoading(true);
+
+      if (IS_PREVIEW) {
+        // Simulasi di preview
+        const book = DUMMY_DATA.books.find(b => b.qr_code === bookId || b.id === bookId);
+        if (!book) { toast('Buku tidak terdaftar!', 'error'); showLoading(false); return; }
+
+        const activeLoan = DUMMY_DATA.loans.find(l => l.book_id === book.id && l.status === 'DIPINJAM');
+        if (!activeLoan) { toast('Buku ini tidak sedang dipinjam!', 'error'); showLoading(false); return; }
+
+        // Hitung denda
+        const dendaRate = parseInt(DUMMY_DATA.settings.find(s => s.key === 'denda_per_hari')?.value || 2000);
+        const today = new Date();
+        const limit = new Date(activeLoan.batas_kembali);
+        today.setHours(0,0,0,0);
+        limit.setHours(0,0,0,0);
+
+        let denda = 0;
+        if (today > limit) {
+          const days = Math.ceil((today.getTime() - limit.getTime()) / (1000 * 60 * 60 * 24));
+          denda = days * dendaRate;
+        }
+
+        activeLoan.tanggal_kembali = today.toISOString().split('T')[0];
+        activeLoan.denda_terakumulasi = denda;
+        activeLoan.status = 'KEMBALI';
+        activeLoan.diproses_oleh = currentUser.nama;
+
+        book.stok_tersedia += 1;
+
+        if (denda > 0) {
+          toast(`Buku berhasil dikembalikan! Anggota terlambat & didenda Rp ${denda.toLocaleString('id-ID')}`, 'info');
+        } else {
+          toast('Buku berhasil dikembalikan dengan tepat waktu!', 'success');
+        }
+        showLoading(false);
+        navigateTo('loans');
+      } else {
+        try {
+          const res = await callGAS('kembalikanBuku', [bookId, currentUser.nama]);
+          if (res.success) {
+            if (res.denda > 0) {
+              toast(`Sukses! Keterlambatan didenda Rp ${res.denda.toLocaleString('id-ID')}`, 'info');
+            } else {
+              toast(res.message, 'success');
+            }
+            navigateTo('loans');
+          } else {
+            toast(res.message, 'error');
+          }
+          showLoading(false);
+        } catch (e) {
+          toast('Gagal memproses ke database cloud!', 'error');
+          showLoading(false);
+        }
+      }
+    }
+
+    // Pemicu Scan QR Form Helper
+    function startQRReader(targetInputId) {
+      activeScanTarget = targetInputId;
+      const html = `
+        <h3 class="font-bold text-slate-800 text-sm mb-4">Arahkan QR Buku ke Kamera</h3>
+        <div id="modal-qr-reader" class="w-full bg-slate-950 rounded-xl overflow-hidden min-h-[220px]"></div>
+        <div class="mt-4 flex gap-2">
+          <button onclick="closeModal()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">
+            Tutup Kamera
+          </button>
+        </div>
+      `;
+      openModal(html);
+
+      setTimeout(() => {
+        const modalScanner = new Html5QrcodeScanner("modal-qr-reader", { fps: 10, qrbox: 180 });
+        modalScanner.render((text) => {
+          document.getElementById(targetInputId).value = text;
+          modalScanner.clear();
+          closeModal();
+          toast('Berhasil memindai kode QR!', 'success');
+        });
+      }, 300);
+    }
+
+    // ==========================================
+    // MODULE 4: LOANS / SIRKULASI HISTORY
+    // ==========================================
+    function renderLoans(container) {
+      container.innerHTML = `
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 mb-6">
+            <div class="relative flex-grow max-w-md">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fas fa-filter"></i>
+              </span>
+              <input type="text" id="search-loan" oninput="filterLoansTable()" placeholder="Cari ID Transaksi, Buku, atau Anggota..."
+                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm">
+            </div>
+
+            <div class="flex gap-2">
+              <button onclick="exportLaporanPDF()" 
+                class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition flex items-center gap-2 shadow-lg shadow-indigo-100">
+                <i class="fas fa-file-download"></i> Cetak Laporan
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm" id="table-loans">
+              <thead>
+                <tr class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 text-xs">
+                  <th class="py-4 px-4">ID Transaksi</th>
+                  <th class="py-4 px-4">Katalog Buku</th>
+                  <th class="py-4 px-4">Nama Anggota</th>
+                  <th class="py-4 px-4">Tanggal Pinjam</th>
+                  <th class="py-4 px-4">Batas Kembali</th>
+                  <th class="py-4 px-4">Tanggal Kembali</th>
+                  <th class="py-4 px-4 text-right">Denda</th>
+                  <th class="py-4 px-4 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      filterLoansTable();
+    }
+
+    function filterLoansTable() {
+      const q = document.getElementById('search-loan')?.value.toLowerCase() || '';
+      const tbody = document.querySelector('#table-loans tbody');
+
+      const filtered = state.loans.filter(l => {
+        const book = state.books.find(b => b.id === l.book_id) || { judul: '' };
+        const user = state.users.find(u => u.id === l.user_id) || { nama: '' };
+        
+        return l.id.toLowerCase().includes(q) ||
+               book.judul.toLowerCase().includes(q) ||
+               user.nama.toLowerCase().includes(q) ||
+               l.status.toLowerCase().includes(q);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">Tidak ada riwayat sirkulasi terekam</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.reverse().map(l => {
+        const book = state.books.find(b => b.id === l.book_id) || { judul: '<Buku Terhapus>' };
+        const user = state.users.find(u => u.id === l.user_id) || { nama: '<Anggota Terhapus>' };
+        return `
+          <tr class="hover:bg-slate-50 transition text-xs">
+            <td class="py-4 px-4 font-bold text-indigo-600">${l.id}</td>
+            <td class="py-4 px-4 font-semibold text-slate-800">${book.judul}</td>
+            <td class="py-4 px-4 text-slate-600">${user.nama}</td>
+            <td class="py-4 px-4 text-slate-500 font-medium">${l.tanggal_pinjam}</td>
+            <td class="py-4 px-4 text-indigo-500 font-semibold">${l.batas_kembali}</td>
+            <td class="py-4 px-4 text-slate-500">${l.tanggal_kembali || '-'}</td>
+            <td class="py-4 px-4 text-right font-bold ${l.denda_terakumulasi > 0 ? 'text-rose-600' : 'text-slate-400'}">
+              ${l.denda_terakumulasi > 0 ? 'Rp ' + parseInt(l.denda_terakumulasi).toLocaleString('id-ID') : '-'}
+            </td>
+            <td class="py-4 px-4 text-center">
+              <span class="status-badge status-${l.status.toLowerCase()}">${l.status}</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // MODULE 5: USERS & MEMBERS
+    // ==========================================
+    function renderUsers(container) {
+      container.innerHTML = `
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 mb-6">
+            <div class="relative flex-grow max-w-md">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fas fa-search"></i>
+              </span>
+              <input type="text" id="search-user" oninput="filterUsersTable()" placeholder="Cari ID, nama, username..."
+                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-sm">
+            </div>
+
+            <button onclick="openFormUser()" 
+              class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-sm transition flex items-center gap-2">
+              <i class="fas fa-user-plus"></i> Tambah User / Anggota
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm" id="table-users">
+              <thead>
+                <tr class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100 text-xs">
+                  <th class="py-4 px-4">ID Anggota / Kartu QR</th>
+                  <th class="py-4 px-4">Nama Lengkap</th>
+                  <th class="py-4 px-4">Username</th>
+                  <th class="py-4 px-4">Role Hak Akses</th>
+                  <th class="py-4 px-4">Kontak / Email</th>
+                  <th class="py-4 px-4 text-center">Status</th>
+                  <th class="py-4 px-4 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      filterUsersTable();
+    }
+
+    function filterUsersTable() {
+      const q = document.getElementById('search-user')?.value.toLowerCase() || '';
+      const tbody = document.querySelector('#table-users tbody');
+
+      const filtered = state.users.filter(u => 
+        u.id.toLowerCase().includes(q) ||
+        u.nama.toLowerCase().includes(q) ||
+        u.username.toLowerCase().includes(q) ||
+        u.role.toLowerCase().includes(q)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">User tidak ditemukan</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(u => {
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${u.id}`;
+        return `
+          <tr class="hover:bg-slate-50 transition text-xs sm:text-sm">
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-2">
+                <img src="${qrUrl}" alt="Card QR" class="w-10 h-10 border border-slate-100 bg-white p-1 rounded cursor-zoom-in" onclick="zoomMemberCard('${u.id}', '${u.nama}')">
+                <span class="font-bold text-slate-800 text-xs">${u.id}</span>
+              </div>
+            </td>
+            <td class="py-4 px-4 font-semibold text-slate-800">${u.nama}</td>
+            <td class="py-4 px-4 text-slate-600">${u.username}</td>
+            <td class="py-4 px-4 capitalize">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'super_admin' ? 'bg-indigo-50 text-indigo-600' : (u.role === 'operator' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600')}">
+                ${u.role.replace('_', ' ')}
+              </span>
+            </td>
+            <td class="py-4 px-4 text-slate-500">${u.email_telepon}</td>
+            <td class="py-4 px-4 text-center">
+              <span class="status-badge status-${u.status}">${u.status}</span>
+            </td>
+            <td class="py-4 px-4 text-right">
+              <div class="flex justify-end gap-1.5">
+                <button onclick="zoomMemberCard('${u.id}', '${u.nama}')" class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Kartu Anggota">
+                  <i class="fas fa-id-card"></i>
+                </button>
+                <button onclick="openFormUser('${u.id}')" class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Edit">
+                  <i class="fas fa-user-edit"></i>
+                </button>
+                <button onclick="confirmHapusUser('${u.id}')" class="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Hapus">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Modal dialog cetak kartu anggota eksklusif
+    function zoomMemberCard(id, nama) {
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${id}`;
+      const html = `
+        <div class="text-center p-4">
+          <h3 class="font-bold text-slate-800 text-base mb-4">Kartu Anggota Perpustakaan</h3>
+          
+          <!-- DESAIN KARTU FISIK -->
+          <div class="w-full max-w-sm mx-auto bg-gradient-to-br from-indigo-700 via-indigo-800 to-indigo-950 text-white rounded-2xl p-6 text-left relative overflow-hidden shadow-xl shadow-indigo-100 mb-6">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl"></div>
+            <div class="flex justify-between items-start mb-6">
+              <div>
+                <h4 class="font-bold text-sm tracking-wide">KARTU ANGGOTA PERPUS</h4>
+                <p class="text-[9px] text-indigo-300">Sistem Pintar Digital E-Library</p>
+              </div>
+              <i class="fas fa-book-reader text-2xl text-indigo-400"></i>
+            </div>
+            
+            <div class="flex gap-4 items-center">
+              <div class="w-24 h-24 bg-white rounded-xl p-2 shrink-0 shadow-lg">
+                <img src="${qrUrl}" alt="QR Member" class="w-full h-full">
+              </div>
+              <div class="overflow-hidden">
+                <span class="text-[9px] uppercase tracking-widest text-indigo-300">Nama Anggota</span>
+                <h3 class="font-bold text-sm truncate leading-tight mt-0.5">${nama}</h3>
+                <div class="mt-3">
+                  <span class="text-[9px] uppercase tracking-widest text-indigo-300">Nomor ID</span>
+                  <p class="font-mono text-xs font-semibold mt-0.5">${id}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <button onclick="window.print()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-100">
+              <i class="fas fa-print"></i> Cetak Kartu
+            </button>
+            <button onclick="closeModal()" class="flex-1 py-3 border border-slate-200 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-50 transition">
+              Tutup
+            </button>
+          </div>
+        </div>
+      `;
+      openModal(html);
+    }
+
+    // FORM TAMBAH / EDIT USER
+    function openFormUser(userId = null) {
+      const isEdit = userId !== null;
+      let userObj = { username: '', password: '', nama: '', role: 'anggota', email_telepon: '', status: 'aktif' };
+
+      if (isEdit) {
+        userObj = state.users.find(u => u.id === userId);
+        if (!userObj) return;
+      }
+
+      const html = `
+        <h3 class="text-lg font-bold text-slate-800 mb-4">${isEdit ? 'Ubah Akun / Anggota' : 'Daftarkan User Baru'}</h3>
+        <form id="form-user" onsubmit="saveUser(event, '${userId || ''}')" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Nama Lengkap</label>
+            <input type="text" id="fu-nama" required value="${userObj.nama}" placeholder="Nama lengkap..."
+              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Username Login</label>
+              <input type="text" id="fu-username" required value="${userObj.username}" placeholder="Username..."
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Password</label>
+              <input type="text" id="fu-password" required value="${userObj.password}" placeholder="Password..."
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Role Akses</label>
+              <select id="fu-role" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                <option value="anggota" ${userObj.role === 'anggota' ? 'selected' : ''}>Anggota (Siswa/Pembaca)</option>
+                <option value="operator" ${userObj.role === 'operator' ? 'selected' : ''}>Operator (Staf)</option>
+                <option value="super_admin" ${userObj.role === 'super_admin' ? 'selected' : ''}>Super Admin</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Status Keanggotaan</label>
+              <select id="fu-status" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                <option value="aktif" ${userObj.status === 'aktif' ? 'selected' : ''}>Aktif</option>
+                <option value="nonaktif" ${userObj.status === 'nonaktif' ? 'selected' : ''}>Non-Aktif</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Email atau Telepon</label>
+            <input type="text" id="fu-kontak" required value="${userObj.email_telepon}" placeholder="Email / Telepon WhatsApp..."
+              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+          </div>
+
+          <div class="flex gap-2 pt-4">
+            <button type="button" onclick="closeModal()" class="flex-1 py-3 border border-slate-200 text-slate-600 rounded-xl font-semibold text-sm hover:bg-slate-50 transition">
+              Batal
+            </button>
+            <button type="submit" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm shadow-lg shadow-indigo-100 hover:shadow-indigo-200 transition">
+              Simpan Akun
+            </button>
+          </div>
+        </form>
+      `;
+
+      openModal(html);
+    }
+
+    async function saveUser(e, id) {
+      e.preventDefault();
+
+      const payload = {
+        nama: document.getElementById('fu-nama').value,
+        username: document.getElementById('fu-username').value,
+        password: document.getElementById('fu-password').value,
+        role: document.getElementById('fu-role').value,
+        status: document.getElementById('fu-status').value,
+        email_telepon: document.getElementById('fu-kontak').value
+      };
+
+      closeModal();
+      showLoading(true);
+
+      if (IS_PREVIEW) {
+        if (id) {
+          const index = DUMMY_DATA.users.findIndex(u => u.id === id);
+          DUMMY_DATA.users[index] = { ...DUMMY_DATA.users[index], ...payload };
+          toast('Data user berhasil diperbarui!', 'success');
+        } else {
+          payload.id = 'USR-M' + Math.floor(Math.random() * 9000 + 1000);
+          DUMMY_DATA.users.push(payload);
+          toast('Anggota baru berhasil didaftarkan!', 'success');
+        }
+        showLoading(false);
+        navigateTo('users');
+      } else {
+        try {
+          let res;
+          if (id) {
+            res = await callGAS('updateData', ['users', id, payload]);
+          } else {
+            res = await callGAS('addData', ['users', payload]);
+          }
+
+          if (res.success) {
+            toast('User berhasil disimpan!', 'success');
+          } else {
+            toast(res.message, 'error');
+          }
+          showLoading(false);
+          navigateTo('users');
+        } catch (err) {
+          toast('Gagal terhubung dengan server!', 'error');
+          showLoading(false);
+        }
+      }
+    }
+
+    function confirmHapusUser(id) {
+      const modalConfirm = document.getElementById('modal-confirm');
+      const btnOk = document.getElementById('btn-hapus-ok');
+      modalConfirm.classList.remove('hidden');
+
+      btnOk.onclick = async function() {
+        modalConfirm.classList.add('hidden');
+        showLoading(true);
+
+        if (IS_PREVIEW) {
+          DUMMY_DATA.users = DUMMY_DATA.users.filter(u => u.id !== id);
+          toast('User berhasil dihapus!', 'success');
+          showLoading(false);
+          navigateTo('users');
+        } else {
+          try {
+            const res = await callGAS('deleteData', ['users', id]);
+            if (res.success) {
+              toast('Akun user terhapus.', 'success');
+            } else {
+              toast(res.message, 'error');
+            }
+            showLoading(false);
+            navigateTo('users');
+          } catch (e) {
+            toast('Terjadi error.', 'error');
+            showLoading(false);
+          }
+        }
+      };
+    }
+
+    // ==========================================
+    // MODULE 6: SETTINGS
+    // ==========================================
+    function renderSettings(container) {
+      const namaPerpus = state.settings.find(s => s.key === 'nama_perpustakaan')?.value || '';
+      const dendaRate = state.settings.find(s => s.key === 'denda_per_hari')?.value || '2000';
+      const limitDays = state.settings.find(s => s.key === 'maksimal_hari_pinjam')?.value || '7';
+
+      container.innerHTML = `
+        <div class="max-w-2xl bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+          <h3 class="font-bold text-slate-800 text-lg mb-6"><i class="fas fa-cog text-indigo-500 mr-2"></i> Pengaturan Global Perpustakaan</h3>
+          
+          <form onsubmit="saveSettings(event)" class="space-y-5">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Nama Perpustakaan (Instansi)</label>
+              <input type="text" id="set-nama" required value="${namaPerpus}" placeholder="Contoh: Perpustakaan SDN 01..."
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Denda Keterlambatan (Per Hari)</label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-xs font-semibold text-slate-400">Rp</span>
+                  <input type="number" id="set-denda" required value="${dendaRate}" placeholder="2000"
+                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">Batas Maksimal Hari Peminjaman</label>
+                <div class="relative">
+                  <input type="number" id="set-limit" required value="${limitDays}" placeholder="7"
+                    class="w-full pr-14 pl-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                  <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-xs font-semibold text-slate-400">Hari</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-indigo-100 hover:shadow-indigo-200 transition">
+              Simpan Aturan Baru
+            </button>
+          </form>
+        </div>
+      `;
+    }
+
+    async function saveSettings(e) {
+      e.preventDefault();
+      showLoading(true);
+
+      const nVal = document.getElementById('set-nama').value;
+      const dVal = document.getElementById('set-denda').value;
+      const lVal = document.getElementById('set-limit').value;
+
+      if (IS_PREVIEW) {
+        DUMMY_DATA.settings.find(s => s.key === 'nama_perpustakaan').value = nVal;
+        DUMMY_DATA.settings.find(s => s.key === 'denda_per_hari').value = dVal;
+        DUMMY_DATA.settings.find(s => s.key === 'maksimal_hari_pinjam').value = lVal;
+        toast('Pengaturan berhasil disimpan di sistem simulasi!', 'success');
+        showLoading(false);
+        navigateTo('dashboard');
+      } else {
+        try {
+          // Cari ID baris untuk masing-masing setting key atau update via script
+          const ss = state.settings;
+          await Promise.all([
+            callGAS('updateData', ['settings', 'nama_perpustakaan', { value: nVal }]),
+            callGAS('updateData', ['settings', 'denda_per_hari', { value: dVal }]),
+            callGAS('updateData', ['settings', 'maksimal_hari_pinjam', { value: lVal }])
+          ]);
+          toast('Aturan perpustakaan berhasil diselaraskan!', 'success');
+          showLoading(false);
+          navigateTo('dashboard');
+        } catch (err) {
+          toast('Gagal memperbarui pengaturan!', 'error');
+          showLoading(false);
+        }
+      }
+    }
+
+    // ==========================================
+    // EXPORT PDF RECOVERY (jsPDF IMPLEMENTATION)
+    // ==========================================
+    function exportKatalogPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFont('Helvetica', 'bold');
+      doc.text("LAPORAN KATALOG BUKU AKTIF", 14, 16);
+      doc.setFontSize(10);
+      doc.setFont('Helvetica', 'normal');
+      doc.text("Sistem Manajemen Perpustakaan Digital Berbasis QR Code", 14, 22);
+
+      const headers = [["ID Buku", "QR Code / ISBN", "Judul Buku", "Pengarang", "Penerbit", "Rak", "Sisa Stok"]];
+      const data = state.books.map(b => [
+        b.id, b.qr_code, b.judul, b.pengarang, b.penerbit, b.lokasi_rak, `${b.stok_tersedia}/${b.stok_total}`
+      ]);
+
+      doc.autoTable({
+        startY: 28,
+        head: headers,
+        body: data,
+        theme: 'grid',
+        headStyles: { fillColor: [79, 70, 229] } // Indigo Blue
+      });
+
+      doc.save(`Katalog-Buku-${new Date().toISOString().split('T')[0]}.pdf`);
+      toast('Katalog berhasil diekspor ke PDF!', 'success');
+    }
+
+    function exportLaporanPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFont('Helvetica', 'bold');
+      doc.text("LAPORAN BULANAN SIRKULASI PERPUSTAKAAN", 14, 16);
+      doc.setFontSize(10);
+      doc.setFont('Helvetica', 'normal');
+      doc.text("Log Transaksi Peminjaman & Pengembalian Buku", 14, 22);
+
+      const headers = [["TX ID", "Buku", "Peminjam", "Tgl Pinjam", "Batas Kembali", "Tgl Kembali", "Denda", "Status"]];
+      const data = state.loans.map(l => {
+        const book = state.books.find(b => b.id === l.book_id) || { judul: '' };
+        const user = state.users.find(u => u.id === l.user_id) || { nama: '' };
+        return [
+          l.id, book.judul, user.nama, l.tanggal_pinjam, l.batas_kembali, l.tanggal_kembali || '-', `Rp ${parseInt(l.denda_terakumulasi || 0).toLocaleString('id-ID')}`, l.status
+        ];
+      });
+
+      doc.autoTable({
+        startY: 28,
+        head: headers,
+        body: data,
+        theme: 'striped',
+        headStyles: { fillColor: [79, 70, 229] }
+      });
+
+      doc.save(`Sirkulasi-Perpustakaan-${new Date().toISOString().split('T')[0]}.pdf`);
+      toast('Laporan sirkulasi berhasil diunduh!', 'success');
+    }
+
+    function toggleMobileSidebar() {
+      const sidebar = document.querySelector('aside');
+      sidebar.classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>
