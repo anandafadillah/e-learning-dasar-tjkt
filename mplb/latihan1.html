@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="CBT Informatika Kelas X MPLB — Perangkat Keras Komputer dan Sistem Operasi. 40 soal pilihan ganda, auto-scoring dan pembahasan.">
+<title>CBT Informatika X MPLB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:JetBrains Mono,ui-monospace,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-1\.5{margin-bottom:.375rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mt-1{margin-top:.25rem}.mt-12{margin-top:3rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-1{height:.25rem}.h-2{height:.5rem}.h-3{height:.75rem}.h-9{height:2.25rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-3{width:.75rem}.w-9{width:2.25rem}.w-full{width:100%}.min-w-0{min-width:0}.max-w-4xl{max-width:56rem}.max-w-6xl{max-width:72rem}.shrink-0{flex-shrink:0}.grow{flex-grow:1}.cursor-pointer{cursor:pointer}.list-decimal{list-style-type:decimal}.grid-cols-5{grid-template-columns:repeat(5,minmax(0,1fr))}.flex-wrap{flex-wrap:wrap}.place-items-center{place-items:center}.items-start{align-items:flex-start}.items-center{align-items:center}.items-baseline{align-items:baseline}.justify-between{justify-content:space-between}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-2\.5{gap:.625rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.gap-px{gap:1px}.gap-x-4{-moz-column-gap:1rem;column-gap:1rem}.gap-y-1{row-gap:.25rem}.space-y-1\.5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.375rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.375rem*var(--tw-space-y-reverse))}.space-y-2>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.5rem*var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem*var(--tw-space-y-reverse))}.overflow-hidden,.truncate{overflow:hidden}.truncate{text-overflow:ellipsis;white-space:nowrap}.text-wrap{text-wrap:wrap}.rounded-sm{border-radius:.125rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-copper{border-color:var(--copper)}.border-line{border-color:var(--line)}.bg-accent{background-color:var(--accent)}.bg-coppersoft{background-color:var(--copper-soft)}.bg-ink{background-color:var(--ink)}.bg-line{background-color:var(--line)}.bg-sunken{background-color:var(--sunken)}.bg-surface{background-color:var(--surface)}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pl-5{padding-left:1.25rem}.pt-0\.5{padding-top:.125rem}.text-center{text-align:center}.text-right{text-align:right}.font-display{font-family:Archivo,system-ui,sans-serif}.font-mono{font-family:JetBrains Mono,ui-monospace,monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.text-accent{color:var(--accent)}.text-copper{color:var(--copper)}.text-danger{color:var(--danger)}.text-ground{color:var(--ground)}.text-ink{color:var(--ink)}.text-muted{color:var(--muted)}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.accent-accent{accent-color:var(--accent)}.outline{outline-style:solid}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}@media (min-width:640px){.sm\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.sm\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.sm\:p-7{padding:1.75rem}.sm\:p-8{padding:2rem}.sm\:text-4xl{font-size:2.25rem;line-height:2.5rem}}@media (min-width:1024px){.lg\:sticky{position:sticky}.lg\:top-6{top:1.5rem}.lg\:grid-cols-\[1\.15fr_1fr\]{grid-template-columns:1.15fr 1fr}.lg\:grid-cols-\[1fr_270px\]{grid-template-columns:1fr 270px}}
+  /* ---- Token: tema terang (default) ---- */
+  :root {
+    --ground:#EFF2EE; --surface:#FFFFFF; --sunken:#E5EAE4; --line:#D3DAD1;
+    --ink:#152019; --muted:#5B6B60;
+    --accent:#0E6B4E; --accent-soft:#DCEBE2;
+    --copper:#A2662A; --copper-soft:#F5E7D5;
+    --danger:#A63428; --danger-soft:#F6DEDA;
+    --term-bg:#152019; --term-ink:#8FE3BE;
+    color-scheme: light;
+  }
+  /* ---- Tema gelap: ikut sistem, kecuali user memilih terang ---- */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:#0C1512; --surface:#141F1B; --sunken:#1C2A25; --line:#2A3A33;
+      --ink:#E6EEE9; --muted:#93A69B;
+      --accent:#43BA92; --accent-soft:#123328;
+      --copper:#D9964F; --copper-soft:#33261A;
+      --danger:#E8776A; --danger-soft:#3A1F1B;
+      --term-bg:#0A100D; --term-ink:#7FE0B8;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#0C1512; --surface:#141F1B; --sunken:#1C2A25; --line:#2A3A33;
+    --ink:#E6EEE9; --muted:#93A69B;
+    --accent:#43BA92; --accent-soft:#123328;
+    --copper:#D9964F; --copper-soft:#33261A;
+    --danger:#E8776A; --danger-soft:#3A1F1B;
+    --term-bg:#0A100D; --term-ink:#7FE0B8;
+    color-scheme: dark;
+  }
+
+  body { background: var(--ground); color: var(--ink); font-family: 'Source Sans 3', system-ui, sans-serif; }
+  h1,h2,h3,.font-display { font-family: 'Archivo', system-ui, sans-serif; text-wrap: balance; }
+  [hidden] { display: none !important; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tnum { font-variant-numeric: tabular-nums; }
+  .eyebrow { letter-spacing: .14em; text-transform: uppercase; font-size: .68rem; font-weight: 600; }
+
+  /* Baris command prompt — konteks nyata materi Windows CMD */
+  .term { background: var(--term-bg); color: var(--term-ink); font-family: 'JetBrains Mono', ui-monospace, monospace;
+          font-size: .82rem; padding: .55rem .8rem; border-radius: 3px; overflow-x: auto; white-space: pre; }
+  code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .88em;
+         background: var(--sunken); padding: .08em .35em; border-radius: 3px; }
+
+  /* Kartu opsi jawaban */
+  .opt { display:flex; gap:.75rem; align-items:flex-start; padding:.7rem .85rem; border:1px solid var(--line);
+         background: var(--surface); border-radius:4px; cursor:pointer; transition: border-color .12s, background .12s; }
+  .opt:hover { border-color: var(--accent); }
+  .opt input { position:absolute; opacity:0; width:0; height:0; }
+  .opt .bullet { flex:0 0 auto; width:1.6rem; height:1.6rem; display:grid; place-items:center; border-radius:50%;
+         border:1px solid var(--line); font-family:'JetBrains Mono',monospace; font-size:.75rem; font-weight:700;
+         color: var(--muted); background: var(--ground); }
+  .opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+  .opt.sel .bullet { background: var(--accent); border-color: var(--accent); color:#fff; }
+
+  /* Grid navigasi nomor */
+  .navbtn { height:2.15rem; border:1px solid var(--line); border-radius:3px; background:var(--surface); color:var(--muted);
+            font-family:'JetBrains Mono',monospace; font-size:.75rem; font-weight:700; transition: all .1s; }
+  .navbtn:hover { border-color: var(--accent); color: var(--ink); }
+  .navbtn.done { background: var(--accent); border-color: var(--accent); color:#fff; }
+  .navbtn.flag { border-color: var(--copper); background: var(--copper-soft); color: var(--copper); }
+  .navbtn.flag.done { background: var(--copper); border-color: var(--copper); color:#fff; }
+  .navbtn.now { box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px var(--ink); }
+
+  .btn { font-family:'Archivo',sans-serif; font-weight:600; border-radius:3px; padding:.6rem 1.1rem;
+         border:1px solid var(--line); background:var(--surface); color:var(--ink); transition: all .12s; }
+  .btn:hover { border-color: var(--ink); }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color:#fff; }
+  .btn-primary:hover { filter: brightness(1.08); border-color: var(--accent); }
+  .field { width:100%; background:var(--surface); border:1px solid var(--line); border-radius:3px;
+           padding:.55rem .7rem; color:var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media print {
+    .no-print { display:none !important; }
+    body { background:#fff; color:#000; }
+    #screen-result { max-width:none; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="min-h-screen">
+
+  <!-- ============ HEADER ============ -->
+  <header class="border-b border-line bg-surface no-print">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-sm bg-accent text-white grid place-items-center font-mono font-bold text-sm shrink-0">CBT</div>
+        <div class="min-w-0">
+          <div class="eyebrow text-muted">SMK Cyber Media Jakarta</div>
+          <div class="font-display font-semibold text-sm truncate">Informatika · Kelas X MPLB</div>
+        </div>
+      </div>
+      <button id="theme-btn" class="btn text-xs px-3 py-1.5" type="button" aria-label="Ganti tema">Tema</button>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 py-8">
+
+    <!-- ============ LAYAR 1: MULAI ============ -->
+    <section id="screen-start">
+      <div class="grid lg:grid-cols-[1.15fr_1fr] gap-8 items-start">
+
+        <div>
+          <p class="eyebrow text-accent mb-3">Sumatif Harian · Kurikulum Merdeka</p>
+          <h1 class="font-display font-bold text-3xl sm:text-4xl leading-tight mb-4">
+            Perangkat Keras Komputer &amp; Sistem Operasi
+          </h1>
+          <p class="text-muted text-lg leading-relaxed mb-6" style="max-width:60ch">
+            Ujian ini berisi 40 soal pilihan ganda. Kerjakan sendiri, jawaban langsung dinilai
+            begitu kamu klik kumpulkan, dan pembahasannya bisa kamu baca setelah selesai.
+          </p>
+
+          <div class="grid sm:grid-cols-3 gap-px bg-line border border-line rounded-sm overflow-hidden mb-6">
+            <div class="bg-surface p-4">
+              <div class="eyebrow text-muted mb-1">Hardware Internal</div>
+              <div class="font-display font-bold text-2xl tnum">14 <span class="text-sm font-normal text-muted">soal</span></div>
+              <div class="text-xs text-muted mt-1">RAM · Mainboard · Prosesor · Harddisk · VGA</div>
+            </div>
+            <div class="bg-surface p-4">
+              <div class="eyebrow text-muted mb-1">Hardware Eksternal</div>
+              <div class="font-display font-bold text-2xl tnum">13 <span class="text-sm font-normal text-muted">soal</span></div>
+              <div class="text-xs text-muted mt-1">Flashdisk · Monitor · Mouse · Keyboard · Printer</div>
+            </div>
+            <div class="bg-surface p-4">
+              <div class="eyebrow text-muted mb-1">Sistem Operasi</div>
+              <div class="font-display font-bold text-2xl tnum">13 <span class="text-sm font-normal text-muted">soal</span></div>
+              <div class="text-xs text-muted mt-1">Pengertian · CMD · Jenis OS</div>
+            </div>
+          </div>
+
+          <div class="border border-line rounded-sm bg-surface p-5">
+            <h2 class="font-display font-semibold mb-3">Petunjuk pengerjaan</h2>
+            <ol class="text-sm text-muted space-y-2 list-decimal pl-5 leading-relaxed">
+              <li>Isi nama dan kelas dulu, baru klik <b class="text-ink">Mulai Ujian</b>.</li>
+              <li>Pilih satu jawaban yang paling tepat. Jawaban bisa diganti selama waktu belum habis.</li>
+              <li>Nomor yang masih ragu bisa kamu tandai, nanti muncul warna oranye di daftar nomor.</li>
+              <li>Jawabanmu tersimpan otomatis di browser ini, jadi aman kalau halaman tidak sengaja tertutup.</li>
+              <li>Waktu habis = jawaban otomatis dikumpulkan.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="border border-line rounded-sm bg-surface p-6 lg:sticky lg:top-6">
+          <h2 class="font-display font-semibold text-lg mb-1">Identitas Peserta</h2>
+          <p class="text-sm text-muted mb-5">Tulis sesuai daftar hadir ya.</p>
+
+          <div id="resume-box" hidden class="mb-5 border border-copper bg-coppersoft rounded-sm p-3">
+            <p class="text-sm mb-2">Ada pekerjaan yang belum selesai atas nama <b id="resume-name"></b>.</p>
+            <div class="flex gap-2">
+              <button id="resume-yes" class="btn btn-primary text-xs px-3 py-1.5" type="button">Lanjutkan</button>
+              <button id="resume-no" class="btn text-xs px-3 py-1.5" type="button">Mulai baru</button>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label for="f-nama" class="eyebrow text-muted block mb-1.5">Nama lengkap</label>
+              <input id="f-nama" class="field" type="text" autocomplete="name" placeholder="Contoh: Siti Nurhaliza">
+            </div>
+            <div>
+              <label for="f-kelas" class="eyebrow text-muted block mb-1.5">Kelas</label>
+              <input id="f-kelas" class="field" type="text" value="X MPLB 1" placeholder="X MPLB 1">
+            </div>
+            <div>
+              <label for="f-durasi" class="eyebrow text-muted block mb-1.5">Alokasi waktu</label>
+              <select id="f-durasi" class="field">
+                <option value="45">45 menit</option>
+                <option value="60" selected>60 menit</option>
+                <option value="90">90 menit</option>
+                <option value="0">Tanpa batas waktu (latihan)</option>
+              </select>
+            </div>
+            <label class="flex items-start gap-2.5 text-sm cursor-pointer">
+              <input id="f-acak" type="checkbox" class="mt-1 accent-accent" checked>
+              <span>Acak urutan soal <span class="text-muted">— supaya urutannya beda tiap siswa</span></span>
+            </label>
+          </div>
+
+          <p id="start-err" hidden class="text-sm text-danger mt-4"></p>
+          <button id="start-btn" class="btn btn-primary w-full mt-5 py-3" type="button">Mulai Ujian</button>
+          <p class="text-xs text-muted mt-3 text-center">40 soal · pilihan ganda A–E</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LAYAR 2: UJIAN ============ -->
+    <section id="screen-exam" hidden>
+      <div class="grid lg:grid-cols-[1fr_270px] gap-6 items-start">
+
+        <div>
+          <!-- status bar -->
+          <div class="border border-line rounded-sm bg-surface mb-4">
+            <div class="flex items-center justify-between gap-4 px-4 py-3">
+              <div class="min-w-0">
+                <div class="eyebrow text-muted">Peserta</div>
+                <div class="font-display font-semibold text-sm truncate" id="bar-nama">—</div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="eyebrow text-muted">Sisa waktu</div>
+                <div id="bar-timer" class="font-display font-bold text-xl tnum">--:--</div>
+              </div>
+            </div>
+            <div class="h-1 bg-sunken"><div id="bar-progress" class="h-full bg-accent transition-all" style="width:0%"></div></div>
+          </div>
+
+          <!-- kartu soal -->
+          <article class="border border-line rounded-sm bg-surface p-5 sm:p-7">
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+              <span class="font-mono text-xs font-bold bg-ink text-ground px-2 py-1 rounded-sm" id="q-num">01</span>
+              <span class="eyebrow text-muted" id="q-materi">—</span>
+              <span class="eyebrow px-2 py-0.5 rounded-sm border border-line text-muted" id="q-level">C1</span>
+              <span id="q-flagged" hidden class="eyebrow px-2 py-0.5 rounded-sm bg-coppersoft text-copper border border-copper">Ragu-ragu</span>
+            </div>
+
+            <p id="q-text" class="text-lg leading-relaxed mb-4" style="max-width:66ch"></p>
+            <div id="q-term" hidden class="term mb-5" style="max-width:66ch"></div>
+
+            <div id="q-opts" class="grid gap-2.5" style="max-width:66ch"></div>
+          </article>
+
+          <!-- kontrol -->
+          <div class="flex flex-wrap items-center gap-2 mt-4">
+            <button id="prev-btn" class="btn" type="button">← Sebelumnya</button>
+            <button id="flag-btn" class="btn" type="button">Tandai ragu-ragu</button>
+            <button id="clear-btn" class="btn" type="button">Hapus jawaban</button>
+            <div class="grow"></div>
+            <button id="next-btn" class="btn btn-primary" type="button">Berikutnya →</button>
+          </div>
+        </div>
+
+        <!-- sidebar navigasi -->
+        <aside class="border border-line rounded-sm bg-surface p-4 lg:sticky lg:top-6">
+          <h2 class="eyebrow text-muted mb-3">Daftar nomor</h2>
+          <div id="nav-grid" class="grid grid-cols-5 gap-1.5 mb-4"></div>
+
+          <dl class="text-xs space-y-1.5 mb-4">
+            <div class="flex items-center justify-between">
+              <dt class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm bg-accent inline-block"></span>Terjawab</dt>
+              <dd class="tnum font-mono font-bold" id="stat-done">0</dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm border border-copper bg-coppersoft inline-block"></span>Ragu-ragu</dt>
+              <dd class="tnum font-mono font-bold" id="stat-flag">0</dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm border border-line bg-surface inline-block"></span>Belum diisi</dt>
+              <dd class="tnum font-mono font-bold" id="stat-empty">40</dd>
+            </div>
+          </dl>
+
+          <button id="submit-btn" class="btn btn-primary w-full" type="button">Kumpulkan Jawaban</button>
+
+          <div id="confirm-box" hidden class="mt-3 border border-copper bg-coppersoft rounded-sm p-3">
+            <p class="text-sm mb-2" id="confirm-msg"></p>
+            <div class="flex gap-2">
+              <button id="confirm-yes" class="btn btn-primary text-xs px-3 py-1.5" type="button">Ya, kumpulkan</button>
+              <button id="confirm-no" class="btn text-xs px-3 py-1.5" type="button">Batal</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ LAYAR 3: HASIL ============ -->
+    <section id="screen-result" hidden class="max-w-4xl mx-auto">
+      <div class="border border-line rounded-sm bg-surface overflow-hidden mb-5">
+        <div class="p-6 sm:p-8 border-b border-line">
+          <p class="eyebrow text-accent mb-2">Hasil Ujian</p>
+          <h1 class="font-display font-bold text-2xl mb-1" id="r-nama">—</h1>
+          <p class="text-muted text-sm" id="r-meta">—</p>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-px bg-line">
+          <div class="bg-surface p-5">
+            <div class="eyebrow text-muted mb-1">Nilai</div>
+            <div class="font-display font-bold text-4xl tnum" id="r-nilai">0</div>
+            <div class="eyebrow mt-1" id="r-status">—</div>
+          </div>
+          <div class="bg-surface p-5">
+            <div class="eyebrow text-muted mb-1">Benar</div>
+            <div class="font-display font-bold text-4xl tnum text-accent" id="r-benar">0</div>
+          </div>
+          <div class="bg-surface p-5">
+            <div class="eyebrow text-muted mb-1">Salah</div>
+            <div class="font-display font-bold text-4xl tnum text-danger" id="r-salah">0</div>
+          </div>
+          <div class="bg-surface p-5">
+            <div class="eyebrow text-muted mb-1">Waktu pakai</div>
+            <div class="font-display font-bold text-4xl tnum" id="r-waktu">0'</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border border-line rounded-sm bg-surface p-6 mb-5">
+        <h2 class="font-display font-semibold mb-4">Penguasaan per materi</h2>
+        <div id="r-materi" class="space-y-4"></div>
+      </div>
+
+      <div class="flex flex-wrap gap-2 mb-5 no-print">
+        <button id="r-toggle" class="btn btn-primary" type="button">Lihat pembahasan</button>
+        <button id="r-copy" class="btn" type="button">Salin ringkasan</button>
+        <button id="r-print" class="btn" type="button">Cetak hasil</button>
+        <button id="r-again" class="btn" type="button">Kerjakan ulang</button>
+      </div>
+
+      <div id="r-review" hidden class="space-y-3"></div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-line mt-12 no-print">
+    <div class="mx-auto max-w-6xl px-4 py-6 text-xs text-muted flex flex-wrap gap-x-4 gap-y-1 justify-between">
+      <span>Informatika Fase E · Perangkat Keras &amp; Sistem Operasi</span>
+      <span>Disusun oleh Ananda Rizki Fadillah, S.Kom.</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* Bank soal — Ujian Informatika Kelas X MPLB
+   m : materi -> in = hardware internal | ex = hardware eksternal | os = sistem operasi
+   lv: level kognitif  |  k: index kunci (0=A .. 4=E)  |  c: tampilan baris command prompt (opsional)
+*/
+const SOAL = [
+  {"m":"in","lv":"C1","t":"Perangkat keras (hardware) komputer adalah ...","o":["Kumpulan program yang mengatur cara kerja komputer","Bagian komputer yang bisa dilihat dan disentuh secara fisik","Data digital yang tersimpan di dalam komputer","Orang yang bertugas mengoperasikan komputer","Jaringan yang menghubungkan beberapa komputer"],"k":1,"p":"Hardware adalah bagian fisik komputer — bisa dilihat dan dipegang. Kalau berupa program, itu software."},
+  {"m":"in","lv":"C2","t":"Yang dimaksud perangkat keras <b>internal</b> adalah perangkat yang ...","o":["Dibeli terpisah dari paket komputer","Diletakkan di atas meja kerja","Terpasang di dalam casing komputer","Dicolokkan lewat port USB","Hanya digunakan untuk mencetak dokumen"],"k":2,"p":"Internal berarti berada di dalam casing, misalnya prosesor, RAM, mainboard, harddisk, dan VGA."},
+  {"m":"in","lv":"C1","t":"Komponen yang berperan sebagai \"otak\" komputer, bertugas mengolah data dan menjalankan seluruh perintah adalah ...","o":["Mainboard","RAM","Prosesor","Harddisk","VGA"],"k":2,"p":"Prosesor (CPU) adalah pusat pengolah data. Semua perintah diproses di sini."},
+  {"m":"in","lv":"C1","t":"Fungsi utama RAM adalah ...","o":["Mencetak dokumen ke media kertas","Menyimpan data secara permanen","Menampilkan gambar ke layar monitor","Menyimpan data sementara dari program yang sedang berjalan","Menghubungkan seluruh komponen komputer"],"k":3,"p":"RAM adalah memori kerja. Program yang sedang aktif ditampung di RAM supaya prosesor bisa cepat mengaksesnya."},
+  {"m":"in","lv":"C1","t":"Papan sirkuit utama tempat prosesor, RAM, dan komponen lain dipasang serta saling terhubung disebut ...","o":["Power supply","Harddisk","Mainboard (motherboard)","Casing","VGA card"],"k":2,"p":"Mainboard adalah papan induk yang menyatukan dan menghubungkan semua komponen komputer."},
+  {"m":"in","lv":"C2","t":"Berikut ini yang merupakan fungsi harddisk adalah ...","o":["Menyimpan sistem operasi, aplikasi, dan file secara permanen","Mempercepat proses perhitungan data","Mengatur tampilan warna pada monitor","Menyalurkan daya listrik ke seluruh komponen","Menerima ketikan dari pengguna"],"k":0,"p":"Harddisk adalah media penyimpanan permanen. Datanya tetap ada walaupun komputer dimatikan."},
+  {"m":"in","lv":"C1","t":"VGA (Video Graphics Adapter) berfungsi untuk ...","o":["Mengolah data grafis lalu menampilkannya ke monitor","Menghubungkan komputer ke jaringan internet","Membaca kepingan CD dan DVD","Mendinginkan suhu prosesor","Menyimpan file gambar dan video"],"k":0,"p":"VGA mengolah data grafis sebelum dikirim ke monitor, sehingga gambar bisa tampil di layar."},
+  {"m":"in","lv":"C2","t":"Jenis RAM yang umum dipakai pada komputer dan laptop keluaran sekarang adalah ...","o":["DDR4 dan DDR5","EDO RAM","SDRAM","DDR1","DDR2"],"k":0,"p":"Urutan perkembangan RAM: SDRAM → DDR1 → DDR2 → DDR3 → DDR4 → DDR5. Yang beredar saat ini DDR4 dan DDR5."},
+  {"m":"in","lv":"C2","t":"Data yang ada di dalam RAM akan hilang ketika komputer dimatikan. Sifat RAM yang seperti ini disebut ...","o":["Permanen","Sementara (volatile)","Otomatis","Statis","Analog"],"k":1,"p":"RAM bersifat volatile alias sementara — isinya hilang begitu aliran listrik terputus."},
+  {"m":"in","lv":"C2","t":"Perbedaan paling utama antara SSD dan harddisk (HDD) adalah ...","o":["SSD dan HDD sama persis, hanya berbeda merek","SSD memakai piringan berputar, HDD memakai chip memori","SSD tidak memakai piringan berputar sehingga proses baca-tulis datanya lebih cepat","SSD hanya bisa dipasang pada komputer server","HDD tidak bisa dipakai untuk menyimpan sistem operasi"],"k":2,"p":"HDD menyimpan data pada piringan yang berputar, sedangkan SSD memakai chip memori tanpa bagian bergerak — hasilnya lebih cepat dan lebih tahan guncangan."},
+  {"m":"ex","lv":"C2","t":"Yang dimaksud perangkat keras <b>eksternal</b> adalah perangkat yang ...","o":["Terpasang langsung pada mainboard","Berbentuk program aplikasi","Hanya tersedia di komputer perkantoran","Tidak bisa dilepas dari komputer","Berada di luar casing dan dihubungkan melalui kabel atau port"],"k":4,"p":"Perangkat eksternal berada di luar casing, misalnya monitor, keyboard, mouse, printer, dan flashdisk."},
+  {"m":"ex","lv":"C1","t":"Flashdisk berfungsi untuk ...","o":["Mencetak dokumen ke kertas","Mengetik naskah surat","Mengatur volume suara komputer","Menampilkan hasil pekerjaan ke layar","Menyimpan dan memindahkan data dari satu komputer ke komputer lain"],"k":4,"p":"Flashdisk adalah media penyimpanan portabel — praktis untuk membawa data ke mana-mana."},
+  {"m":"ex","lv":"C1","t":"Perangkat yang berfungsi menampilkan hasil kerja komputer berupa gambar dan tulisan di layar adalah ...","o":["Speaker","Scanner","Flashdisk","Printer","Monitor"],"k":4,"p":"Monitor adalah perangkat keluaran (output) yang menampilkan hasil kerja komputer secara visual."},
+  {"m":"ex","lv":"C1","t":"Fungsi utama mouse adalah ...","o":["Menggerakkan kursor serta memilih objek di layar","Mencetak dokumen ke kertas","Menyimpan file pekerjaan","Menyalakan komputer","Mengetik huruf dan angka"],"k":0,"p":"Mouse dipakai untuk mengarahkan kursor, mengeklik, dan memilih objek pada layar."},
+  {"m":"ex","lv":"C1","t":"Perangkat yang dipakai untuk memasukkan huruf, angka, dan perintah dengan cara diketik adalah ...","o":["Printer","Flashdisk","Mouse","Monitor","Keyboard"],"k":4,"p":"Keyboard adalah perangkat masukan (input) utama untuk mengetik teks dan perintah."},
+  {"m":"ex","lv":"C1","t":"Printer berfungsi untuk ...","o":["Memindai dokumen kertas menjadi file digital","Mencetak dokumen dari komputer ke media kertas","Menyimpan dokumen dalam jumlah besar","Menghubungkan komputer ke jaringan","Menampilkan dokumen di layar"],"k":1,"p":"Printer mengubah dokumen digital menjadi hasil cetak di atas kertas. Yang memindai kertas jadi digital itu scanner."},
+  {"m":"ex","lv":"C2","t":"Kelompok perangkat berikut yang semuanya termasuk perangkat <b>masukan (input)</b> adalah ...","o":["Flashdisk dan monitor","Printer dan speaker","Mouse dan monitor","Monitor dan printer","Keyboard dan mouse"],"k":4,"p":"Keyboard dan mouse sama-sama memasukkan perintah dari pengguna ke komputer, jadi keduanya perangkat input."},
+  {"m":"ex","lv":"C2","t":"Monitor dan printer sama-sama dikelompokkan sebagai perangkat ...","o":["Pemroses (process)","Jaringan (network)","Masukan (input)","Keluaran (output)","Penyimpanan (storage)"],"k":3,"p":"Keduanya menyajikan hasil kerja komputer kepada pengguna — monitor lewat layar, printer lewat kertas."},
+  {"m":"ex","lv":"C2","t":"Di antara perangkat eksternal berikut, yang termasuk perangkat <b>penyimpanan</b> adalah ...","o":["Printer","Keyboard","Mouse","Flashdisk","Monitor"],"k":3,"p":"Flashdisk menyimpan data, sedangkan keyboard dan mouse adalah input, monitor dan printer adalah output."},
+  {"m":"ex","lv":"C2","t":"Port yang paling umum dipakai untuk menghubungkan flashdisk, mouse, dan keyboard ke komputer adalah port ...","o":["USB","LAN","Audio","VGA","HDMI"],"k":0,"p":"USB (Universal Serial Bus) adalah port serbaguna yang dipakai hampir semua perangkat eksternal masa kini."},
+  {"m":"os","lv":"C1","t":"Sistem operasi adalah ...","o":["Aplikasi yang khusus dipakai untuk mengetik dokumen","Alat untuk menyimpan file berukuran besar","Jaringan yang menghubungkan beberapa komputer","Perangkat keras yang mengatur aliran listrik komputer","Perangkat lunak utama yang mengatur kerja hardware dan menjalankan aplikasi"],"k":4,"p":"Sistem operasi adalah software utama yang harus ada lebih dulu supaya hardware bisa bekerja dan aplikasi bisa dijalankan."},
+  {"m":"os","lv":"C2","t":"Berikut ini yang termasuk sistem operasi adalah ...","o":["Microsoft Word","Google Chrome","Windows 11","Adobe Photoshop","WinRAR"],"k":2,"p":"Windows 11 adalah sistem operasi. Word, Chrome, Photoshop, dan WinRAR hanyalah aplikasi yang berjalan di atasnya."},
+  {"m":"os","lv":"C1","t":"Perintah pada Command Prompt Windows untuk <b>membuat folder baru</b> adalah ...","c":"C:\\Users\\TU&gt; _","o":["cd","dir","mkdir","rmdir","del"],"k":2,"p":"mkdir = make directory, yaitu perintah untuk membuat folder baru."},
+  {"m":"os","lv":"C1","t":"Perintah <code>cd</code> pada Command Prompt digunakan untuk ...","o":["Menghapus folder","Berpindah dari satu folder ke folder lain","Mengganti nama file","Menutup jendela Command Prompt","Membuat folder baru"],"k":1,"p":"cd = change directory, yaitu berpindah lokasi folder yang sedang aktif."},
+  {"m":"os","lv":"C1","t":"Perintah <code>rmdir</code> pada Command Prompt digunakan untuk ...","o":["Mengubah nama folder","Menghapus folder","Membuat folder","Menyalin folder","Menampilkan isi folder"],"k":1,"p":"rmdir = remove directory, yaitu perintah untuk menghapus folder."},
+  {"m":"os","lv":"C2","t":"Pada Command Prompt, perintah <code>cd ..</code> berfungsi untuk ...","c":"C:\\Users\\TU\\ARSIP&gt; cd ..","o":["Kembali ke folder satu tingkat di atasnya","Kembali ke tampilan desktop","Membuat dua folder sekaligus","Menghapus seluruh isi folder","Masuk ke folder yang ada di dalamnya"],"k":0,"p":"Tanda dua titik (..) menunjuk ke folder induk, jadi cd .. artinya mundur satu tingkat."},
+  {"m":"os","lv":"C2","t":"Salah satu cara membuka Command Prompt di Windows adalah ...","o":["Klik kanan pada desktop lalu pilih Refresh","Tekan Alt + F4","Buka Control Panel lalu pilih Display","Tekan Windows + R, ketik <code>cmd</code>, lalu tekan Enter","Tekan Ctrl + P lalu pilih Print"],"k":3,"p":"Windows + R membuka kotak Run. Ketik cmd lalu Enter, maka Command Prompt terbuka."},
+  {"m":"os","lv":"C2","t":"Kelompok sistem operasi berikut yang termasuk sistem operasi <b>berbayar</b> (membutuhkan lisensi) adalah ...","o":["Ubuntu dan Debian","Windows dan macOS","Linux Mint dan Fedora","Android dan Ubuntu","Debian dan Linux Mint"],"k":1,"p":"Windows dan macOS adalah sistem operasi komersial yang lisensinya harus dibeli."},
+  {"m":"os","lv":"C2","t":"Contoh sistem operasi yang bisa digunakan secara <b>gratis</b> dan bersifat open source adalah ...","o":["Linux Ubuntu","Windows Server","Windows 11 Pro","Windows 10","macOS"],"k":0,"p":"Linux Ubuntu bisa diunduh, dipasang, dan dipakai gratis secara legal karena bersifat open source."},
+  {"m":"os","lv":"C2","t":"Salah satu fungsi sistem operasi adalah menjadi penghubung antara pengguna dengan perangkat keras. Maksud pernyataan tersebut adalah ...","o":["Pengguna harus mengetik kode mesin untuk memakai komputer","Hardware bekerja sendiri tanpa perlu perintah","Sistem operasi menggantikan seluruh tugas hardware","Perintah pengguna diterjemahkan oleh sistem operasi agar bisa dikerjakan oleh hardware","Sistem operasi menyimpan seluruh data pengguna di internet"],"k":3,"p":"Pengguna cukup mengeklik atau mengetik perintah, lalu sistem operasi yang menerjemahkannya menjadi instruksi untuk hardware."},
+  {"m":"in","lv":"C4","t":"Bu Rina, staf tata usaha, setiap hari membuka Excel berisi data siswa, browser dengan banyak tab, dan aplikasi surat secara bersamaan. Belakangan komputernya sering lambat dan muncul <i>not responding</i>, padahal ruang penyimpanan masih longgar. Komponen yang paling tepat untuk ditingkatkan adalah ...","o":["Printer, supaya proses cetak lebih cepat","Keyboard, supaya mengetik lebih nyaman","Flashdisk berkapasitas besar","Monitor, supaya tampilan lebih luas","RAM, karena banyak program berjalan bersamaan"],"k":4,"p":"Banyak program aktif berarti kebutuhan memori kerja tinggi. Karena penyimpanan masih longgar, masalahnya bukan di harddisk melainkan di RAM."},
+  {"m":"in","lv":"C4","t":"Panitia acara sekolah membutuhkan satu unit komputer untuk mengedit video dokumentasi dan membuat desain poster beresolusi tinggi. Komponen yang paling menentukan kelancaran pekerjaan grafis tersebut adalah ...","o":["Printer","Mouse","Flashdisk","VGA","Keyboard"],"k":3,"p":"Pekerjaan grafis dan video sangat bergantung pada kemampuan VGA dalam mengolah data gambar."},
+  {"m":"in","lv":"C4","t":"Sekolah akan membeli laptop untuk siswa MPLB yang sering dibawa berpindah ruangan. Syaratnya: tahan guncangan dan proses menyalakan komputer harus cepat. Media penyimpanan yang paling sesuai adalah ...","o":["RAM, karena bisa menyimpan file permanen","HDD, karena memiliki piringan berputar","SSD, karena tanpa piringan berputar sehingga lebih tahan guncangan dan lebih cepat","Flashdisk, karena ukurannya kecil","CD-ROM, karena harganya murah"],"k":2,"p":"SSD tidak punya bagian yang berputar, jadi lebih aman saat laptop sering dipindah, sekaligus mempercepat proses booting."},
+  {"m":"in","lv":"C4","t":"Dimas sedang mengetik laporan di Word dan belum sempat menyimpannya. Tiba-tiba listrik padam, dan setelah komputer menyala kembali laporannya hilang. Penjelasan yang paling tepat adalah ...","o":["Harddisk rusak akibat listrik padam","Dokumen masih berada di RAM yang bersifat sementara, sehingga hilang saat komputer mati","VGA gagal menampilkan dokumen","Mainboard menghapus file tersebut secara otomatis","Word memang tidak bisa menyimpan file"],"k":1,"p":"Selama belum di-save, dokumen hanya ada di RAM. Karena RAM bersifat volatile, isinya hilang begitu listrik terputus."},
+  {"m":"ex","lv":"C4","t":"Bagian administrasi harus menyerahkan berkas surat keluar dalam bentuk kertas kepada kepala sekolah untuk ditandatangani. Perangkat eksternal yang wajib tersedia adalah ...","o":["Webcam","Scanner","Printer","Speaker","Flashdisk"],"k":2,"p":"Untuk mengubah dokumen digital menjadi lembar kertas yang bisa ditandatangani, dibutuhkan printer."},
+  {"m":"ex","lv":"C4","t":"Sinta harus membawa file materi presentasi berukuran 2 GB dari komputer sekolah ke rumah, sementara koneksi internet di sekolah tidak memadai untuk mengunggah file sebesar itu. Solusi yang paling praktis adalah ...","o":["Mencetak seluruh file dengan printer","Menyalin file ke flashdisk","Memotret layar monitor dengan HP","Mengetik ulang seluruh file di rumah","Menyimpan file di dalam RAM"],"k":1,"p":"Flashdisk adalah media penyimpanan portabel yang paling praktis untuk memindahkan file besar tanpa internet."},
+  {"m":"ex","lv":"C4","t":"Keyboard komputer di ruang tata usaha rusak total, sedangkan mouse, monitor, dan printer masih berfungsi normal. Dampak yang paling tepat dari kondisi tersebut adalah ...","o":["Seluruh file di harddisk otomatis terhapus","Printer ikut tidak bisa mencetak","Komputer tidak bisa dinyalakan sama sekali","Layar monitor menjadi gelap","Pekerjaan mengetik surat terhambat karena perangkat input teks tidak berfungsi"],"k":4,"p":"Keyboard adalah perangkat input teks. Kerusakannya tidak mematikan komputer, tetapi pekerjaan mengetik jadi terhambat."},
+  {"m":"os","lv":"C4","t":"Pak Ali ingin membuat folder <b>ARSIP</b> di drive D, lalu masuk ke folder tersebut dan membuat sub-folder <b>SURAT</b> di dalamnya. Urutan perintah Command Prompt yang benar adalah ...","c":"D:\\&gt; _","o":["rmdir ARSIP → cd ARSIP → mkdir SURAT","cd SURAT → mkdir ARSIP → cd ARSIP","cd ARSIP → mkdir ARSIP → mkdir SURAT","mkdir ARSIP → cd ARSIP → mkdir SURAT","mkdir SURAT → mkdir ARSIP → cd ARSIP"],"k":3,"p":"Foldernya dibuat dulu (mkdir ARSIP), baru bisa dimasuki (cd ARSIP), setelah berada di dalamnya baru dibuat sub-folder (mkdir SURAT)."},
+  {"m":"os","lv":"C4","t":"Nadia mengetik perintah <code>rmdir TUGAS</code> di Command Prompt, tetapi folder tersebut tidak terhapus dan malah muncul pesan error. Setelah dicek, di dalam folder TUGAS masih tersimpan beberapa file. Kesimpulan yang paling tepat adalah ...","c":"C:\\Users\\Nadia&gt; rmdir TUGAS","o":["Nama folder tidak boleh menggunakan huruf kapital","Folder hanya bisa dihapus melalui printer","Perintah rmdir hanya bisa dipakai di sistem operasi Linux","Folder yang masih berisi file tidak bisa langsung dihapus dengan rmdir biasa, isinya harus dikosongkan lebih dulu","Command Prompt tidak bisa menghapus folder sama sekali"],"k":3,"p":"rmdir hanya menghapus folder yang sudah kosong. Kalau masih ada isinya, file di dalamnya harus dihapus atau dipindahkan lebih dulu."},
+  {"m":"os","lv":"C4","t":"Sebuah SMK ingin memasang sistem operasi yang legal pada 40 unit komputer laboratorium, tetapi anggaran untuk pembelian lisensi sangat terbatas. Pilihan yang paling tepat adalah ...","o":["Memakai sistem operasi open source seperti Linux Ubuntu yang bisa digunakan gratis dan legal","Tidak memasang sistem operasi sama sekali","Membeli lisensi macOS untuk seluruh unit","Meminjam lisensi milik sekolah lain","Memakai Windows tanpa lisensi resmi"],"k":0,"p":"Linux Ubuntu gratis sekaligus legal, jadi cocok untuk lab sekolah dengan anggaran terbatas. Memakai Windows bajakan tetap melanggar hukum."}
+];
+
+(function () {
+  'use strict';
+
+  var MATERI = { in: 'Hardware Internal', ex: 'Hardware Eksternal', os: 'Sistem Operasi' };
+  var HURUF = ['A', 'B', 'C', 'D', 'E'];
+  var KEY = 'cbt-informatika-x-mplb-v1';
+  var $ = function (id) { return document.getElementById(id); };
+
+  var S = null;      // state ujian
+  var tick = null;   // interval timer
+
+  /* ---------- penyimpanan lokal (aman kalau browser memblokir) ---------- */
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      var d = JSON.parse(raw);
+      if (!d || !d.order || d.order.length !== SOAL.length || d.selesai) return null;
+      return d;
+    } catch (e) { return null; }
+  }
+  function wipe() { try { localStorage.removeItem(KEY); } catch (e) {} }
+
+  /* ---------- tema ---------- */
+  $('theme-btn').addEventListener('click', function () {
+    var el = document.documentElement;
+    var gelap = el.getAttribute('data-theme') === 'dark' ||
+      (!el.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    el.setAttribute('data-theme', gelap ? 'light' : 'dark');
+  });
+
+  /* ---------- layar ---------- */
+  function tampil(nama) {
+    ['screen-start', 'screen-exam', 'screen-result'].forEach(function (id) {
+      $(id).hidden = (id !== nama);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- mulai ujian ---------- */
+  function urutanAcak(n) {
+    var a = []; for (var i = 0; i < n; i++) a.push(i);
+    for (var j = a.length - 1; j > 0; j--) {
+      var k = Math.floor(Math.random() * (j + 1));
+      var t = a[j]; a[j] = a[k]; a[k] = t;
+    }
+    return a;
+  }
+
+  $('start-btn').addEventListener('click', function () {
+    var nama = $('f-nama').value.trim();
+    var kelas = $('f-kelas').value.trim();
+    if (!nama || !kelas) {
+      $('start-err').textContent = 'Nama dan kelas harus diisi dulu sebelum ujian dimulai.';
+      $('start-err').hidden = false;
+      (!nama ? $('f-nama') : $('f-kelas')).focus();
+      return;
+    }
+    $('start-err').hidden = true;
+    var menit = parseInt($('f-durasi').value, 10);
+    var urut = []; for (var i = 0; i < SOAL.length; i++) urut.push(i);
+    S = {
+      nama: nama, kelas: kelas,
+      durasi: menit * 60,
+      sisa: menit * 60,
+      order: $('f-acak').checked ? urutanAcak(SOAL.length) : urut,
+      jawab: new Array(SOAL.length).fill(null),
+      ragu: new Array(SOAL.length).fill(false),
+      idx: 0, mulai: Date.now(), selesai: false
+    };
+    save();
+    mulaiUjian();
+  });
+
+  function mulaiUjian() {
+    $('bar-nama').textContent = S.nama + ' · ' + S.kelas;
+    buatNav();
+    render();
+    tampil('screen-exam');
+    jalankanTimer();
+  }
+
+  function jalankanTimer() {
+    if (tick) clearInterval(tick);
+    if (!S.durasi) { $('bar-timer').textContent = '∞'; return; }
+    gambarTimer();
+    tick = setInterval(function () {
+      S.sisa--;
+      if (S.sisa <= 0) { S.sisa = 0; gambarTimer(); clearInterval(tick); kumpulkan(true); return; }
+      gambarTimer();
+      if (S.sisa % 10 === 0) save();
+    }, 1000);
+  }
+  function gambarTimer() {
+    var m = Math.floor(S.sisa / 60), d = S.sisa % 60;
+    var el = $('bar-timer');
+    el.textContent = (m < 10 ? '0' : '') + m + ':' + (d < 10 ? '0' : '') + d;
+    el.style.color = S.sisa <= 300 ? 'var(--danger)' : '';
+  }
+
+  /* ---------- navigasi nomor ---------- */
+  function buatNav() {
+    var g = $('nav-grid');
+    g.innerHTML = '';
+    for (var i = 0; i < S.order.length; i++) {
+      (function (pos) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'navbtn';
+        b.textContent = pos + 1;
+        b.setAttribute('aria-label', 'Ke soal nomor ' + (pos + 1));
+        b.addEventListener('click', function () { S.idx = pos; render(); });
+        g.appendChild(b);
+      })(i);
+    }
+  }
+
+  function perbaruiNav() {
+    var btns = $('nav-grid').children, done = 0, flag = 0;
+    for (var i = 0; i < S.order.length; i++) {
+      var id = S.order[i], b = btns[i], cls = 'navbtn';
+      if (S.jawab[id] !== null) { cls += ' done'; done++; }
+      if (S.ragu[id]) { cls += ' flag'; flag++; }
+      if (i === S.idx) cls += ' now';
+      b.className = cls;
+    }
+    $('stat-done').textContent = done;
+    $('stat-flag').textContent = flag;
+    $('stat-empty').textContent = S.order.length - done;
+    $('bar-progress').style.width = (done / S.order.length * 100) + '%';
+  }
+
+  /* ---------- render soal ---------- */
+  function render() {
+    var id = S.order[S.idx], s = SOAL[id];
+    $('q-num').textContent = (S.idx + 1 < 10 ? '0' : '') + (S.idx + 1) + ' / ' + S.order.length;
+    $('q-materi').textContent = MATERI[s.m];
+    $('q-level').textContent = s.lv === 'C4' ? 'HOTS · C4' : s.lv;
+    $('q-flagged').hidden = !S.ragu[id];
+    $('q-text').innerHTML = s.t;
+    if (s.c) { $('q-term').innerHTML = s.c; $('q-term').hidden = false; }
+    else { $('q-term').hidden = true; }
+
+    var box = $('q-opts');
+    box.innerHTML = '';
+    s.o.forEach(function (teks, i) {
+      var lab = document.createElement('label');
+      lab.className = 'opt' + (S.jawab[id] === i ? ' sel' : '');
+      lab.innerHTML = '<input type="radio" name="opt" value="' + i + '"' +
+        (S.jawab[id] === i ? ' checked' : '') + '>' +
+        '<span class="bullet">' + HURUF[i] + '</span>' +
+        '<span class="pt-0.5">' + teks + '</span>';
+      lab.querySelector('input').addEventListener('change', function () {
+        S.jawab[id] = i; save(); render();
+      });
+      box.appendChild(lab);
+    });
+
+    $('prev-btn').disabled = S.idx === 0;
+    $('flag-btn').textContent = S.ragu[id] ? 'Batal tandai' : 'Tandai ragu-ragu';
+    $('clear-btn').disabled = S.jawab[id] === null;
+    $('next-btn').textContent = S.idx === S.order.length - 1 ? 'Ke nomor 1 ↺' : 'Berikutnya →';
+    perbaruiNav();
+  }
+
+  $('prev-btn').addEventListener('click', function () { if (S.idx > 0) { S.idx--; render(); } });
+  $('next-btn').addEventListener('click', function () {
+    S.idx = (S.idx + 1) % S.order.length; render();
+  });
+  $('flag-btn').addEventListener('click', function () {
+    var id = S.order[S.idx]; S.ragu[id] = !S.ragu[id]; save(); render();
+  });
+  $('clear-btn').addEventListener('click', function () {
+    var id = S.order[S.idx]; S.jawab[id] = null; save(); render();
+  });
+  document.addEventListener('keydown', function (e) {
+    if ($('screen-exam').hidden || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (e.key === 'ArrowLeft' && S.idx > 0) { S.idx--; render(); }
+    else if (e.key === 'ArrowRight') { S.idx = (S.idx + 1) % S.order.length; render(); }
+    else if (/^[1-5]$/.test(e.key)) { S.jawab[S.order[S.idx]] = +e.key - 1; save(); render(); }
+    else if (/^[a-eA-E]$/.test(e.key)) { S.jawab[S.order[S.idx]] = HURUF.indexOf(e.key.toUpperCase()); save(); render(); }
+  });
+
+  /* ---------- kumpulkan ---------- */
+  $('submit-btn').addEventListener('click', function () {
+    var kosong = S.jawab.filter(function (v) { return v === null; }).length;
+    var ragu = S.ragu.filter(Boolean).length;
+    var pesan = kosong ? 'Masih ada ' + kosong + ' soal yang belum dijawab' : 'Semua soal sudah dijawab';
+    if (ragu) pesan += ', ' + ragu + ' ditandai ragu-ragu';
+    $('confirm-msg').textContent = pesan + '. Kumpulkan sekarang?';
+    $('confirm-box').hidden = false;
+  });
+  $('confirm-no').addEventListener('click', function () { $('confirm-box').hidden = true; });
+  $('confirm-yes').addEventListener('click', function () { kumpulkan(false); });
+
+  function kumpulkan(otomatis) {
+    if (tick) clearInterval(tick);
+    S.selesai = true;
+    wipe();
+    $('confirm-box').hidden = true;
+
+    var benar = 0, perMateri = { in: [0, 0], ex: [0, 0], os: [0, 0] };
+    SOAL.forEach(function (s, i) {
+      perMateri[s.m][1]++;
+      if (S.jawab[i] === s.k) { benar++; perMateri[s.m][0]++; }
+    });
+    var salah = SOAL.length - benar;
+    var nilai = Math.round(benar / SOAL.length * 100);
+    var pakai = Math.max(1, Math.round((Date.now() - S.mulai) / 60000));
+
+    $('r-nama').textContent = S.nama;
+    $('r-meta').textContent = S.kelas + ' · Informatika · ' +
+      new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) +
+      (otomatis ? ' · dikumpulkan otomatis karena waktu habis' : '');
+    $('r-nilai').textContent = nilai;
+    var tuntas = nilai >= 75; // KKTP / KKM 75
+    $('r-status').textContent = tuntas ? 'Tuntas · KKTP 75' : 'Belum tuntas · KKTP 75';
+    $('r-status').style.color = tuntas ? 'var(--accent)' : 'var(--copper)';
+    $('r-benar').textContent = benar;
+    $('r-salah').textContent = salah;
+    $('r-waktu').textContent = pakai + "'";
+
+    var mb = $('r-materi');
+    mb.innerHTML = '';
+    Object.keys(MATERI).forEach(function (m) {
+      var b = perMateri[m][0], t = perMateri[m][1], pct = Math.round(b / t * 100);
+      var d = document.createElement('div');
+      d.innerHTML =
+        '<div class="flex justify-between items-baseline mb-1.5">' +
+          '<span class="font-display font-semibold text-sm">' + MATERI[m] + '</span>' +
+          '<span class="text-sm text-muted tnum font-mono">' + b + '/' + t + ' · ' + pct + '%</span>' +
+        '</div>' +
+        '<div class="h-2 bg-sunken rounded-sm overflow-hidden">' +
+          '<div class="h-full" style="width:' + pct + '%;background:' +
+            (pct >= 75 ? 'var(--accent)' : pct >= 50 ? 'var(--copper)' : 'var(--danger)') + '"></div>' +
+        '</div>';
+      mb.appendChild(d);
+    });
+
+    var rv = $('r-review');
+    rv.innerHTML = '';
+    S.order.forEach(function (id, pos) {
+      var s = SOAL[id], ja = S.jawab[id], ok = ja === s.k;
+      var d = document.createElement('div');
+      d.className = 'border rounded-sm p-4 bg-surface';
+      d.style.borderColor = ok ? 'var(--accent)' : 'var(--danger)';
+      d.innerHTML =
+        '<div class="flex items-center gap-2 mb-2 flex-wrap">' +
+          '<span class="font-mono text-xs font-bold px-2 py-0.5 rounded-sm" style="background:' +
+            (ok ? 'var(--accent)' : 'var(--danger)') + ';color:#fff">' + (pos + 1) + '</span>' +
+          '<span class="eyebrow text-muted">' + MATERI[s.m] + '</span>' +
+          '<span class="eyebrow" style="color:' + (ok ? 'var(--accent)' : 'var(--danger)') + '">' +
+            (ok ? 'Benar' : 'Salah') + '</span>' +
+        '</div>' +
+        '<p class="mb-3 leading-relaxed">' + s.t + '</p>' +
+        (s.c ? '<div class="term mb-3">' + s.c + '</div>' : '') +
+        '<p class="text-sm mb-1"><span class="text-muted">Jawabanmu:</span> ' +
+          (ja === null ? '<i class="text-muted">tidak dijawab</i>' : '<b>' + HURUF[ja] + '.</b> ' + s.o[ja]) + '</p>' +
+        '<p class="text-sm mb-3"><span class="text-muted">Kunci:</span> <b>' + HURUF[s.k] + '.</b> ' + s.o[s.k] + '</p>' +
+        '<p class="text-sm p-3 rounded-sm" style="background:var(--sunken)"><b>Pembahasan:</b> ' + s.p + '</p>';
+      rv.appendChild(d);
+    });
+
+    tampil('screen-result');
+  }
+
+  $('r-toggle').addEventListener('click', function () {
+    var r = $('r-review');
+    r.hidden = !r.hidden;
+    this.textContent = r.hidden ? 'Lihat pembahasan' : 'Sembunyikan pembahasan';
+  });
+  $('r-print').addEventListener('click', function () { window.print(); });
+  $('r-again').addEventListener('click', function () {
+    wipe(); S = null; $('resume-box').hidden = true; tampil('screen-start');
+  });
+  $('r-copy').addEventListener('click', function () {
+    var teks = 'Hasil Ujian Informatika — Perangkat Keras & Sistem Operasi\n' +
+      'Nama  : ' + $('r-nama').textContent + '\n' +
+      'Kelas : ' + S.kelas + '\n' +
+      'Nilai : ' + $('r-nilai').textContent + ' (benar ' + $('r-benar').textContent +
+      ', salah ' + $('r-salah').textContent + ' dari 40)';
+    var btn = this;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(teks).then(function () {
+        btn.textContent = 'Tersalin';
+        setTimeout(function () { btn.textContent = 'Salin ringkasan'; }, 1800);
+      }, function () { btn.textContent = 'Gagal menyalin'; });
+    } else { btn.textContent = 'Browser ini tidak mendukung salin'; }
+  });
+
+  /* ---------- lanjutkan pekerjaan yang tersimpan ---------- */
+  var simpanan = load();
+  if (simpanan) {
+    $('resume-name').textContent = simpanan.nama;
+    $('resume-box').hidden = false;
+    $('resume-yes').addEventListener('click', function () { S = simpanan; mulaiUjian(); });
+    $('resume-no').addEventListener('click', function () { wipe(); $('resume-box').hidden = true; });
+  }
+
+  window.addEventListener('beforeunload', function (e) {
+    if (S && !S.selesai) { e.preventDefault(); e.returnValue = ''; }
+  });
+})();
+</script>
+
+</body>
+</html>
