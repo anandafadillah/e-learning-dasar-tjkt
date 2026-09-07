@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBT Konfigurasi Jaringan - SMKS Cyber Media Jakarta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F7FC;
+    --surface:#FFFFFF;
+    --surface-alt:#EDF0FA;
+    --surface-raised:#FFFFFF;
+    --border:#DCE1F0;
+    --border-strong:#C4CBE3;
+    --text:#1B2340;
+    --text-muted:#5C6584;
+    --text-faint:#8890AC;
+    --accent:#2A4FD6;
+    --accent-strong:#1B37A6;
+    --accent-soft:#E4E9FC;
+    --success:#1B9D63;
+    --success-soft:#E1F6EB;
+    --danger:#D5473F;
+    --danger-soft:#FBE7E5;
+    --warning:#C97A15;
+    --warning-soft:#FBEDD9;
+    --shadow: 0 1px 2px rgba(20,26,58,0.04), 0 8px 24px -12px rgba(20,26,58,0.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0D1220;
+      --surface:#151B2E;
+      --surface-alt:#1B2338;
+      --surface-raised:#1D2540;
+      --border:#2A3350;
+      --border-strong:#3A4568;
+      --text:#E8EBF7;
+      --text-muted:#9CA5C7;
+      --text-faint:#6C7699;
+      --accent:#7C93FF;
+      --accent-strong:#9FB1FF;
+      --accent-soft:#212C52;
+      --success:#3FCC8C;
+      --success-soft:#122A22;
+      --danger:#FF7A72;
+      --danger-soft:#301A1C;
+      --warning:#F0A93E;
+      --warning-soft:#332510;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px -12px rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0D1220;
+    --surface:#151B2E;
+    --surface-alt:#1B2338;
+    --surface-raised:#1D2540;
+    --border:#2A3350;
+    --border-strong:#3A4568;
+    --text:#E8EBF7;
+    --text-muted:#9CA5C7;
+    --text-faint:#6C7699;
+    --accent:#7C93FF;
+    --accent-strong:#9FB1FF;
+    --accent-soft:#212C52;
+    --success:#3FCC8C;
+    --success-soft:#122A22;
+    --danger:#FF7A72;
+    --danger-soft:#301A1C;
+    --warning:#F0A93E;
+    --warning-soft:#332510;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 10px 30px -12px rgba(0,0,0,0.55);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3,.font-display{font-family:'Sora',system-ui,sans-serif; text-wrap:balance;}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace; font-variant-numeric:tabular-nums;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  .app{max-width:1180px; margin:0 auto; padding:20px 20px 64px;}
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:14px 20px; background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; box-shadow:var(--shadow); margin-bottom:20px;
+    flex-wrap:wrap;
+  }
+  .school-id{display:flex; align-items:center; gap:12px;}
+  .school-mark{
+    width:42px; height:42px; border-radius:11px; flex-shrink:0;
+    background:linear-gradient(155deg,var(--accent),var(--accent-strong));
+    display:flex; align-items:center; justify-content:center;
+    color:white; box-shadow:0 4px 14px -4px rgba(42,79,214,0.55);
+  }
+  .school-mark svg{width:22px;height:22px;}
+  .school-text .name{font-family:'Sora'; font-weight:700; font-size:14.5px; letter-spacing:.2px; line-height:1.25;}
+  .school-text .mapel{font-size:12.5px; color:var(--text-muted); font-weight:500;}
+  .topbar-right{display:flex; align-items:center; gap:14px;}
+  .student-chip{
+    text-align:right; line-height:1.25;
+  }
+  .student-chip .nm{font-weight:600; font-size:13.5px;}
+  .student-chip .kl{font-size:12px; color:var(--text-muted);}
+  .timer{
+    display:flex; align-items:center; gap:8px;
+    background:var(--accent-soft); border:1px solid var(--border);
+    padding:8px 14px; border-radius:12px;
+  }
+  .timer.low{background:var(--danger-soft); border-color:var(--danger); animation:pulse 1.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.55;}}
+  @media (prefers-reduced-motion: reduce){ .timer.low{animation:none;} }
+  .timer .clock{font-size:19px; font-weight:700; color:var(--accent-strong);}
+  .timer.low .clock{color:var(--danger);}
+  .timer .lbl{font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint); font-weight:600;}
+
+  /* ---------- Screens ---------- */
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  /* ---------- Login ---------- */
+  .login-wrap{
+    min-height:calc(100vh - 40px); display:flex; align-items:center; justify-content:center;
+    padding:20px;
+  }
+  .login-card{
+    width:100%; max-width:920px; background:var(--surface); border:1px solid var(--border);
+    border-radius:22px; box-shadow:var(--shadow); overflow:hidden;
+    display:grid; grid-template-columns:1.05fr 1fr;
+  }
+  @media (max-width:760px){ .login-card{grid-template-columns:1fr;} }
+  .login-brief{
+    padding:38px 34px; background:
+      radial-gradient(120% 140% at 0% 0%, var(--accent-soft), transparent 60%),
+      var(--surface-alt);
+    border-right:1px solid var(--border);
+    display:flex; flex-direction:column; gap:18px;
+  }
+  @media (max-width:760px){ .login-brief{border-right:none; border-bottom:1px solid var(--border);} }
+  .badge-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .badge{
+    font-size:11px; font-weight:600; letter-spacing:.03em; text-transform:uppercase;
+    padding:5px 10px; border-radius:999px; background:var(--surface); border:1px solid var(--border);
+    color:var(--text-muted);
+  }
+  .login-brief h1{font-size:23px; margin:2px 0 0; line-height:1.28;}
+  .login-brief .sub{color:var(--text-muted); font-size:13.5px; line-height:1.6; margin:0;}
+  .brief-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:6px;}
+  .stat-tile{background:var(--surface); border:1px solid var(--border); border-radius:13px; padding:12px 10px;}
+  .stat-tile .num{font-family:'Sora'; font-size:20px; font-weight:700; color:var(--accent-strong);}
+  .stat-tile .lb{font-size:10.5px; color:var(--text-faint); font-weight:600; text-transform:uppercase; letter-spacing:.04em; margin-top:2px;}
+  .materi-list{margin:2px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:6px;}
+  .materi-list li{
+    font-size:12.5px; color:var(--text-muted); display:flex; gap:8px; align-items:flex-start; line-height:1.5;
+  }
+  .materi-list li::before{
+    content:""; width:5px; height:5px; border-radius:50%; background:var(--accent); margin-top:6.5px; flex-shrink:0;
+  }
+
+  .login-form{padding:38px 34px; display:flex; flex-direction:column; gap:16px;}
+  .login-form .lead{font-family:'Sora'; font-weight:700; font-size:17px;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field label{font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:.04em;}
+  .field input, .field select{
+    padding:11px 13px; border-radius:11px; border:1.5px solid var(--border); background:var(--bg);
+    color:var(--text); font-size:14.5px; font-family:inherit; outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .field input:focus, .field select:focus{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+  .rules-box{
+    background:var(--warning-soft); border:1px solid var(--warning); border-radius:12px;
+    padding:12px 14px; font-size:12.5px; color:var(--text); line-height:1.6;
+  }
+  .rules-box b{color:var(--warning);}
+  .err-msg{color:var(--danger); font-size:12.5px; font-weight:600; display:none;}
+  .btn{
+    border:none; cursor:pointer; border-radius:12px; font-weight:700; font-size:14.5px;
+    padding:13px 20px; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    transition:transform .12s ease, filter .12s ease, opacity .12s ease;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background:var(--accent); color:#fff; box-shadow:0 6px 18px -6px rgba(42,79,214,0.55);}
+  .btn-primary:hover{filter:brightness(1.07);}
+  .btn-ghost{background:var(--surface-alt); color:var(--text); border:1.5px solid var(--border);}
+  .btn-ghost:hover{background:var(--accent-soft); border-color:var(--accent);}
+  .btn-danger{background:var(--danger); color:#fff;}
+  .btn:disabled{opacity:.5; cursor:not-allowed;}
+  .btn-block{width:100%;}
+
+  /* ---------- Exam layout ---------- */
+  .exam-grid{display:grid; grid-template-columns:1fr 268px; gap:20px; align-items:start;}
+  @media (max-width:880px){ .exam-grid{grid-template-columns:1fr;} }
+
+  .qcard{
+    background:var(--surface); border:1px solid var(--border); border-radius:18px;
+    box-shadow:var(--shadow); padding:26px 28px;
+  }
+  .qcard-head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap;}
+  .qnum-pill{
+    font-family:'Sora'; font-weight:700; font-size:13px; color:var(--accent-strong);
+    background:var(--accent-soft); padding:6px 12px; border-radius:999px;
+  }
+  .topic-chip{
+    font-size:11px; font-weight:600; color:var(--text-muted); background:var(--surface-alt);
+    border:1px solid var(--border); padding:5px 10px; border-radius:999px; text-transform:uppercase; letter-spacing:.03em;
+  }
+  .qtext{font-size:16.5px; line-height:1.65; font-weight:500; margin:0 0 20px; text-wrap:pretty;}
+  .qtext .mono{background:var(--surface-alt); padding:1px 6px; border-radius:6px; font-size:14px;}
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .opt{
+    display:flex; align-items:flex-start; gap:12px; padding:13px 15px; border-radius:13px;
+    border:1.5px solid var(--border); cursor:pointer; background:var(--bg);
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .opt:hover{border-color:var(--accent-strong);}
+  .opt.selected{border-color:var(--accent); background:var(--accent-soft);}
+  .opt .letter{
+    width:26px; height:26px; border-radius:8px; background:var(--surface); border:1.5px solid var(--border-strong);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12.5px; flex-shrink:0;
+    color:var(--text-muted); font-family:'Sora';
+  }
+  .opt.selected .letter{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .opt .otext{font-size:14.5px; line-height:1.55; padding-top:2px;}
+  .qnav{display:flex; justify-content:space-between; gap:10px; margin-top:24px;}
+
+  .side-panel{
+    background:var(--surface); border:1px solid var(--border); border-radius:18px;
+    box-shadow:var(--shadow); padding:20px; position:sticky; top:20px;
+  }
+  .side-title{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-faint); margin-bottom:12px;}
+  .progress-bar{height:7px; border-radius:999px; background:var(--surface-alt); overflow:hidden; margin-bottom:14px;}
+  .progress-bar .fill{height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-strong)); border-radius:999px; transition:width .2s ease;}
+  .progress-label{display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-bottom:16px;}
+  .palette{display:grid; grid-template-columns:repeat(6,1fr); gap:7px; margin-bottom:18px;}
+  @media (max-width:880px){ .palette{grid-template-columns:repeat(10,1fr);} }
+  .pnum{
+    aspect-ratio:1; border-radius:8px; border:1.5px solid var(--border); background:var(--bg);
+    font-size:12px; font-weight:600; color:var(--text-muted); cursor:pointer; font-family:'JetBrains Mono';
+    display:flex; align-items:center; justify-content:center;
+  }
+  .pnum.answered{background:var(--success-soft); border-color:var(--success); color:var(--success);}
+  .pnum.current{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .legend{display:flex; flex-direction:column; gap:7px; font-size:12px; color:var(--text-muted); margin-bottom:16px;}
+  .legend .lg-item{display:flex; align-items:center; gap:8px;}
+  .lg-dot{width:11px; height:11px; border-radius:4px; border:1.5px solid var(--border);}
+  .lg-dot.a{background:var(--success-soft); border-color:var(--success);}
+  .lg-dot.c{background:var(--accent); border-color:var(--accent);}
+  .lg-dot.u{background:var(--bg);}
+
+  /* ---------- Modal ---------- */
+  .modal-veil{
+    position:fixed; inset:0; background:rgba(10,14,26,0.55); backdrop-filter:blur(2px);
+    display:none; align-items:center; justify-content:center; padding:20px; z-index:50;
+  }
+  .modal-veil.show{display:flex;}
+  .modal-box{
+    background:var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow);
+    max-width:420px; width:100%; padding:26px;
+  }
+  .modal-box h3{margin:0 0 8px; font-size:17px;}
+  .modal-box p{margin:0 0 18px; font-size:13.5px; color:var(--text-muted); line-height:1.6;}
+  .modal-actions{display:flex; gap:10px; justify-content:flex-end;}
+
+  /* ---------- Result screen ---------- */
+  .result-head{
+    background:var(--surface); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow);
+    padding:30px 32px; margin-bottom:20px; display:grid; grid-template-columns:auto 1fr; gap:28px; align-items:center;
+  }
+  @media (max-width:700px){ .result-head{grid-template-columns:1fr;} }
+  .score-ring{
+    width:132px; height:132px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:conic-gradient(var(--accent) calc(var(--pct,0)*1%), var(--surface-alt) 0);
+    flex-shrink:0; margin:0 auto;
+  }
+  .score-ring .inner{
+    width:104px; height:104px; border-radius:50%; background:var(--surface);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .score-ring .inner .val{font-family:'Sora'; font-size:26px; font-weight:800; color:var(--accent-strong);}
+  .score-ring .inner .lb{font-size:10.5px; color:var(--text-faint); font-weight:600; text-transform:uppercase;}
+  .result-meta h2{margin:0 0 4px; font-size:20px;}
+  .result-meta .sub{color:var(--text-muted); font-size:13.5px; margin-bottom:16px;}
+  .meta-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  @media (max-width:560px){ .meta-stats{grid-template-columns:repeat(2,1fr);} }
+  .meta-stats .m-tile{background:var(--surface-alt); border:1px solid var(--border); border-radius:12px; padding:10px 12px;}
+  .meta-stats .m-tile .v{font-family:'JetBrains Mono'; font-weight:700; font-size:16px;}
+  .meta-stats .m-tile.good .v{color:var(--success);}
+  .meta-stats .m-tile.bad .v{color:var(--danger);}
+  .meta-stats .m-tile .l{font-size:10.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.04em; margin-top:2px;}
+
+  .review-item{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px 22px; margin-bottom:12px;
+  }
+  .review-item.wrong{border-left:4px solid var(--danger);}
+  .review-item.right{border-left:4px solid var(--success);}
+  .review-top{display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
+  .status-pill{font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; text-transform:uppercase; letter-spacing:.03em;}
+  .status-pill.right{background:var(--success-soft); color:var(--success);}
+  .status-pill.wrong{background:var(--danger-soft); color:var(--danger);}
+  .review-q{font-size:14.5px; font-weight:600; margin:0 0 12px; line-height:1.55;}
+  .review-opts{display:flex; flex-direction:column; gap:6px; margin-bottom:12px;}
+  .review-opt{
+    font-size:13px; padding:8px 12px; border-radius:9px; border:1px solid var(--border); display:flex; gap:8px; color:var(--text-muted);
+  }
+  .review-opt .letter{font-weight:700; font-family:'Sora'; color:var(--text-faint);}
+  .review-opt.is-correct{background:var(--success-soft); border-color:var(--success); color:var(--text);}
+  .review-opt.is-correct .letter{color:var(--success);}
+  .review-opt.is-picked-wrong{background:var(--danger-soft); border-color:var(--danger); color:var(--text);}
+  .review-opt.is-picked-wrong .letter{color:var(--danger);}
+  .review-expl{
+    background:var(--surface-alt); border-radius:10px; padding:12px 14px; font-size:13px; line-height:1.6; color:var(--text-muted);
+  }
+  .review-expl b{color:var(--text);}
+  .result-actions{display:flex; gap:10px; justify-content:center; margin:24px 0 8px; flex-wrap:wrap;}
+
+  .filter-tabs{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+  .ftab{
+    font-size:12.5px; font-weight:600; padding:7px 14px; border-radius:999px; border:1.5px solid var(--border);
+    background:var(--surface); color:var(--text-muted); cursor:pointer;
+  }
+  .ftab.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+
+  footer.foot{text-align:center; font-size:11.5px; color:var(--text-faint); margin-top:30px;}
+
+  @media print{
+    .side-panel,.result-actions,.topbar .timer,.qnav{display:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ TOPBAR ============ -->
+  <div class="topbar" id="topbar" style="display:none;">
+    <div class="school-id">
+      <div class="school-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z"/></svg>
+      </div>
+      <div class="school-text">
+        <div class="name">SMKS CYBER MEDIA JAKARTA</div>
+        <div class="mapel">Konfigurasi Perangkat Jaringan &middot; CBT MikroTik</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="student-chip">
+        <div class="nm" id="tb-name">-</div>
+        <div class="kl" id="tb-kelas">-</div>
+      </div>
+      <div class="timer" id="timer-box">
+        <div>
+          <div class="lbl">Sisa Waktu</div>
+          <div class="clock mono" id="clock">02:00:00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCREEN 1: LOGIN ============ -->
+  <section class="screen active" id="screen-login">
+    <div class="login-wrap">
+      <div class="login-card">
+        <div class="login-brief">
+          <div class="badge-row">
+            <span class="badge">CBT &middot; Online</span>
+            <span class="badge">120 Menit</span>
+            <span class="badge">40 Soal PG</span>
+          </div>
+          <h1 class="font-display">Ujian Konfigurasi Perangkat Jaringan</h1>
+          <p class="sub">SMKS Cyber Media Jakarta &mdash; Computer Based Test materi konfigurasi MikroTik RouterOS. Isi identitas kamu dulu di samping untuk mulai mengerjakan.</p>
+          <div class="brief-stats">
+            <div class="stat-tile"><div class="num">40</div><div class="lb">Soal</div></div>
+            <div class="stat-tile"><div class="num">120</div><div class="lb">Menit</div></div>
+            <div class="stat-tile"><div class="num">A&ndash;E</div><div class="lb">Opsi</div></div>
+          </div>
+          <div>
+            <div class="side-title" style="margin-bottom:8px;">Cakupan Materi</div>
+            <ul class="materi-list">
+              <li>Konfigurasi DHCP Server</li>
+              <li>DHCP Static &mdash; berbasis IP Address</li>
+              <li>DHCP Static &mdash; berbasis MAC Address</li>
+              <li>IP Service (Winbox, SSH, Telnet, dll.)</li>
+              <li>Firewall &amp; Filter Rule</li>
+              <li>Membatasi akses ke Routerboard (pola drop few, accept any)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="login-form">
+          <div class="lead">Identitas Peserta</div>
+          <div class="field">
+            <label for="inp-nama">Nama Lengkap</label>
+            <input type="text" id="inp-nama" placeholder="Contoh: Ananda Rizki Fadillah" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="inp-kelas">Kelas</label>
+            <input type="text" id="inp-kelas" placeholder="Contoh: XI TJKT 1" autocomplete="off">
+          </div>
+          <div class="rules-box">
+            <b>Sebelum mulai:</b> pastikan koneksi stabil dan jangan menutup/refresh tab selama ujian. Waktu berjalan otomatis selama 120 menit dan sistem akan submit sendiri saat waktu habis.
+          </div>
+          <div class="err-msg" id="login-err">Nama dan kelas wajib diisi ya.</div>
+          <button class="btn btn-primary btn-block" id="btn-start">Mulai Ujian &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 2: EXAM ============ -->
+  <section class="screen" id="screen-exam">
+    <div class="exam-grid">
+      <div class="qcard">
+        <div class="qcard-head">
+          <span class="qnum-pill" id="q-pill">Soal 1 / 40</span>
+          <span class="topic-chip" id="q-topic">DHCP Server</span>
+        </div>
+        <p class="qtext" id="q-text">...</p>
+        <div class="options" id="q-options"></div>
+        <div class="qnav">
+          <button class="btn btn-ghost" id="btn-prev">&larr; Sebelumnya</button>
+          <button class="btn btn-ghost" id="btn-next">Selanjutnya &rarr;</button>
+        </div>
+      </div>
+
+      <div class="side-panel">
+        <div class="side-title">Progres Pengerjaan</div>
+        <div class="progress-bar"><div class="fill" id="progress-fill" style="width:0%;"></div></div>
+        <div class="progress-label"><span id="answered-count">0/40 terjawab</span><span id="progress-pct">0%</span></div>
+
+        <div class="side-title">Navigasi Soal</div>
+        <div class="palette" id="palette"></div>
+
+        <div class="legend">
+          <div class="lg-item"><span class="lg-dot c"></span> Sedang dikerjakan</div>
+          <div class="lg-item"><span class="lg-dot a"></span> Sudah dijawab</div>
+          <div class="lg-item"><span class="lg-dot u"></span> Belum dijawab</div>
+        </div>
+
+        <button class="btn btn-danger btn-block" id="btn-submit">Selesai &amp; Kumpulkan</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3: RESULT ============ -->
+  <section class="screen" id="screen-result">
+    <div class="result-head">
+      <div class="score-ring" id="score-ring" style="--pct:0;">
+        <div class="inner">
+          <div class="val" id="res-score">0</div>
+          <div class="lb">Nilai</div>
+        </div>
+      </div>
+      <div class="result-meta">
+        <h2 id="res-name">-</h2>
+        <div class="sub" id="res-kelas">-</div>
+        <div class="meta-stats">
+          <div class="m-tile good"><div class="v" id="res-correct">0</div><div class="l">Benar</div></div>
+          <div class="m-tile bad"><div class="v" id="res-wrong">0</div><div class="l">Salah</div></div>
+          <div class="m-tile"><div class="v" id="res-empty">0</div><div class="l">Kosong</div></div>
+          <div class="m-tile"><div class="v mono" id="res-time">00:00:00</div><div class="l">Waktu Pakai</div></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; font-size:12.5px; color:var(--text-muted); margin:-6px 0 18px;">
+      Screenshot halaman ini (skor + pembahasan) untuk dikirimkan ke guru sebagai bukti hasil ujian.
+    </p>
+
+    <div class="filter-tabs">
+      <button class="ftab active" data-f="all">Semua Soal</button>
+      <button class="ftab" data-f="wrong">Hanya yang Salah</button>
+      <button class="ftab" data-f="right">Hanya yang Benar</button>
+    </div>
+
+    <div id="review-list"></div>
+
+    <div class="result-actions">
+      <button class="btn btn-ghost" onclick="window.print()">Cetak / Simpan sebagai PDF</button>
+    </div>
+    <footer class="foot">SMKS Cyber Media Jakarta &middot; Konfigurasi Perangkat Jaringan &middot; CBT MikroTik</footer>
+  </section>
+
+</div>
+
+<!-- ============ MODAL: CONFIRM SUBMIT ============ -->
+<div class="modal-veil" id="modal-confirm">
+  <div class="modal-box">
+    <h3>Kumpulkan jawaban sekarang?</h3>
+    <p id="modal-confirm-text">Kamu masih punya soal yang belum dijawab. Yakin mau menyelesaikan ujian sekarang? Jawaban yang sudah dipilih tidak bisa diubah lagi setelah dikumpulkan.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="modal-cancel">Kembali Mengerjakan</button>
+      <button class="btn btn-danger" id="modal-confirm-btn">Ya, Kumpulkan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     DATA SOAL — 40 soal, materi MikroTik RouterOS
+     ========================================================= */
+  var QUESTIONS = [
+    {t:"DHCP Server", q:"Apa fungsi utama DHCP Server pada MikroTik RouterOS?", o:["Mengatur routing antar VLAN","Memberikan alamat IP secara otomatis kepada client di jaringan","Memblokir akses internet client tertentu","Mengatur bandwidth tiap client","Menyimpan cache DNS"], a:1, e:"DHCP Server bertugas menyewakan IP address, subnet mask, gateway, dan DNS secara otomatis ke client agar tidak perlu setting manual satu-satu."},
+    {t:"DHCP Server", q:"Di Winbox, menu untuk membuat dan mengatur DHCP Server terletak di...", o:["IP > Addresses","IP > Firewall","IP > DHCP Server","Interfaces > DHCP","System > DHCP"], a:2, e:"Semua pengaturan DHCP Server, termasuk Networks dan Leases, ada di menu IP > DHCP Server."},
+    {t:"DHCP Server", q:"Saat menjalankan wizard 'DHCP Setup', salah satu hal yang wajib ditentukan adalah...", o:["Nama admin router","Address Pool (rentang IP yang akan disewakan)","Jenis antenna wireless","Versi RouterOS","Nomor seri routerboard"], a:1, e:"Wizard DHCP Setup meminta interface, network, gateway, address pool, DNS, dan lease time — Address Pool adalah bagian intinya."},
+    {t:"DHCP Server", q:"Yang dimaksud dengan 'Address Pool' dalam DHCP Server adalah...", o:["Daftar MAC address yang diblokir","Kumpulan rentang IP address yang akan disewakan ke client","Daftar DNS server cadangan","Kumpulan port yang dibuka untuk service","Daftar interface yang aktif"], a:1, e:"Address Pool adalah rentang IP (misal 192.168.10.10-192.168.10.254) yang siap dibagikan DHCP Server ke client."},
+    {t:"DHCP Server", q:"Parameter 'Lease Time' pada DHCP Server berfungsi untuk...", o:["Menentukan kecepatan koneksi client","Menentukan berapa lama sebuah IP address boleh dipakai client sebelum harus diperbarui (renew)","Menentukan jumlah maksimal client yang boleh terhubung","Menentukan port DHCP yang digunakan","Menentukan prioritas client dalam antrian bandwidth"], a:1, e:"Lease time adalah masa berlaku sebuah IP yang disewakan; setelah habis, client harus renew agar tetap memakai IP tersebut."},
+    {t:"DHCP Server", q:"Jika DHCP Server tidak diaktifkan pada interface tempat sebuah client terhubung, yang akan terjadi pada client tersebut adalah...", o:["Client otomatis mendapat IP static dari router","Client akan gagal mendapatkan IP secara otomatis (bisa muncul IP APIPA 169.254.x.x)","Client akan terhubung ke DHCP Server interface lain secara otomatis","Router akan mati","Client mendapat IP dari ISP langsung"], a:1, e:"Tanpa DHCP Server di interface tersebut, permintaan DHCP client tidak akan dijawab sehingga client gagal mendapat IP otomatis."},
+
+    {t:"DHCP Static (IP)", q:"Fitur 'Make Static' pada halaman DHCP Server > Leases digunakan untuk...", o:["Menghapus lease yang sudah kadaluarsa","Mengubah lease dinamis menjadi lease tetap agar IP tidak berubah-ubah","Mengatur ulang seluruh address pool","Memblokir client dari mendapatkan IP","Membuat interface baru"], a:1, e:"'Make Static' mengunci sebuah lease dinamis menjadi permanen sehingga client tersebut selalu mendapat IP yang sama."},
+    {t:"DHCP Static (IP)", q:"Salah satu keuntungan menggunakan DHCP Static dibandingkan DHCP dinamis biasa adalah...", o:["Proses instalasi routerboard jadi lebih cepat","Client selalu mendapat IP address yang sama setiap saat, memudahkan manajemen jaringan","Bandwidth internet otomatis bertambah","Tidak perlu konfigurasi DHCP Server sama sekali","Router menjadi lebih hemat daya"], a:1, e:"IP yang konsisten memudahkan admin memantau perangkat, membuat rule firewall, atau port forwarding berdasarkan IP tertentu."},
+    {t:"DHCP Static (IP)", q:"Untuk mengubah sebuah lease dinamis menjadi static di Winbox, langkah yang dilakukan admin adalah...", o:["Restart router","Klik kanan pada lease yang dipilih, lalu pilih 'Make Static'","Hapus DHCP Server lalu buat ulang","Ubah IP Address interface","Disable lalu enable interface"], a:1, e:"Cukup klik kanan pada baris lease di tab Leases, lalu pilih opsi Make Static — tidak perlu membuat ulang server."},
+    {t:"DHCP Static (IP)", q:"Pada konfigurasi static lease, agar sebuah IP tertentu selalu diberikan ke perangkat yang sama, kolom yang harus diisi selain Address adalah...", o:["Gateway","DNS Server","MAC Address perangkat client","Nama interface WAN","Netmask jaringan lain"], a:2, e:"Pasangan Address + MAC Address inilah yang mengunci sebuah IP hanya untuk perangkat dengan MAC tersebut."},
+    {t:"DHCP Static (IP)", q:"Apa yang akan terjadi jika dua static lease dikonfigurasi dengan Address (IP) yang sama tetapi MAC Address berbeda?", o:["Kedua client akan berbagi IP tanpa masalah","Akan terjadi konflik IP address dan salah satu/kedua lease tidak akan berfungsi dengan benar","Router otomatis membuat IP baru untuk keduanya","DHCP Server akan otomatis nonaktif","Tidak ada pengaruh apapun"], a:1, e:"Satu IP hanya boleh dipasangkan ke satu MAC; jika dipaksa sama, akan terjadi IP conflict di jaringan."},
+
+    {t:"DHCP Static (MAC)", q:"Static lease berbasis MAC Address bertujuan untuk...", o:["Memblokir semua perangkat baru yang belum terdaftar","Mengikat sebuah alamat IP tertentu ke perangkat berdasarkan MAC Address fisiknya","Mengubah kecepatan interface secara otomatis","Menyembunyikan SSID wireless","Menonaktifkan firewall sementara"], a:1, e:"MAC Address bersifat unik per perangkat, sehingga mengikat IP ke MAC memastikan perangkat itu saja yang mendapat IP tersebut."},
+    {t:"DHCP Static (MAC)", q:"Mengapa mengikat IP berdasarkan MAC Address dianggap lebih stabil dibanding hanya berdasarkan IP saja?", o:["Karena MAC Address bisa berubah setiap detik","Karena MAC Address bersifat unik pada tiap perangkat fisik dan jarang berubah","Karena MAC Address ditentukan oleh ISP","Karena MAC Address sama untuk semua perangkat dalam satu jaringan","Karena MAC Address hanya berlaku untuk perangkat wireless"], a:1, e:"MAC Address tertanam di hardware (NIC) sehingga jauh lebih stabil sebagai acuan dibanding sekadar alamat IP yang diminta client."},
+    {t:"DHCP Static (MAC)", q:"Untuk mengetahui MAC Address sebuah client yang akan dijadikan static lease, admin dapat melihatnya pada...", o:["System > License","IP > DHCP Server > Leases (kolom MAC Address)","Files > Backup","System > Scheduler","Interface > VLAN"], a:1, e:"Daftar lease aktif di IP > DHCP Server > Leases menampilkan MAC Address tiap client yang sedang tersambung."},
+    {t:"DHCP Static (MAC)", q:"Studi kasus: Printer kantor harus selalu mendapat IP address yang sama meskipun router pernah restart, agar konfigurasi jaringan printer di komputer lain tidak perlu diubah. Metode DHCP yang paling tepat digunakan adalah...", o:["DHCP dinamis biasa tanpa perubahan","Menonaktifkan DHCP Server sepenuhnya","Static lease berdasarkan MAC Address printer tersebut","Mengganti lease time menjadi 1 menit","Menambah jumlah address pool"], a:2, e:"Static lease berbasis MAC memastikan printer selalu mendapat IP yang sama, apapun yang terjadi pada router."},
+    {t:"DHCP Static (MAC)", q:"Jika admin salah mengetik MAC Address saat membuat static lease, kemungkinan yang terjadi adalah...", o:["Router akan otomatis memperbaiki kesalahan ketik","Perangkat dengan MAC Address asli tidak akan mendapat IP sesuai rencana (bisa dapat IP dinamis lain atau tidak dapat IP jika pool habis)","Semua client lain di jaringan ikut terputus","DHCP Server otomatis nonaktif permanen","IP tersebut akan diberikan ke router itu sendiri"], a:1, e:"Static lease hanya cocok untuk MAC yang persis sama; salah ketik membuat perangkat asli tidak mendapat lease yang dimaksud."},
+
+    {t:"IP Service", q:"Menu 'IP > Services' pada MikroTik digunakan untuk...", o:["Mengatur kecepatan port ethernet","Mengatur dan mengelola layanan akses ke router seperti Winbox, Telnet, SSH, FTP, dan Web","Membuat VLAN baru","Mengatur jadwal backup otomatis","Menentukan rute statis"], a:1, e:"IP Service adalah pusat pengaturan layanan manajemen router: bisa diaktifkan/dinonaktifkan, diganti port-nya, dan dibatasi sumber aksesnya."},
+    {t:"IP Service", q:"Layanan yang digunakan untuk mengakses router menggunakan aplikasi GUI khas MikroTik (bukan browser) disebut...", o:["Telnet","FTP","Winbox","API-SSL","www-ssl"], a:2, e:"Winbox adalah aplikasi konfigurasi grafis khas MikroTik yang berjalan lewat port 8291 secara default."},
+    {t:"IP Service", q:"Mengapa disarankan menonaktifkan (disable) service yang tidak digunakan seperti Telnet dan FTP pada IP Service?", o:["Agar router terlihat lebih rapi di menu","Karena kedua service tersebut tidak terenkripsi sehingga rawan disadap/disusupi, menonaktifkannya mengurangi celah keamanan","Karena keduanya memakan banyak bandwidth","Agar DHCP Server berjalan lebih cepat","Karena keduanya wajib dinonaktifkan oleh ISP"], a:1, e:"Telnet dan FTP mengirim data (termasuk password) dalam bentuk teks polos, jadi lebih aman dimatikan bila tidak dipakai."},
+    {t:"IP Service", q:"Fitur 'Available From' pada IP Service digunakan untuk...", o:["Menentukan waktu aktif service dalam sehari","Membatasi service tersebut hanya bisa diakses dari IP address atau network tertentu","Menentukan jumlah maksimal user yang login","Mengatur kecepatan akses service","Menentukan bahasa antarmuka router"], a:1, e:"'Available From' membatasi sumber IP/network yang boleh mengakses service tersebut, misalnya hanya dari jaringan admin."},
+    {t:"IP Service", q:"Port default yang digunakan layanan SSH pada MikroTik adalah...", o:["21","23","22","80","8291"], a:2, e:"Port 22 adalah port standar SSH; port 21 untuk FTP, 23 untuk Telnet, dan 8291 untuk Winbox."},
+    {t:"IP Service", q:"Tujuan utama admin mengganti port default Winbox (8291) ke port lain adalah...", o:["Agar kecepatan akses Winbox meningkat drastis","Menyulitkan percobaan akses tidak sah otomatis (scanning/brute force) ke router","Agar DHCP Server berjalan otomatis","Karena port 8291 sudah dihapus dari RouterOS terbaru","Agar bisa diakses tanpa password"], a:1, e:"Mengganti port default adalah salah satu langkah hardening dasar agar router tidak mudah ditemukan oleh scanning otomatis."},
+
+    {t:"Firewall", q:"Fungsi utama Firewall pada MikroTik RouterOS adalah...", o:["Mempercepat koneksi internet","Mengontrol dan mengamankan lalu lintas data yang masuk, keluar, maupun melewati router","Memberikan IP address ke client","Menyimpan konfigurasi backup","Mengatur tampilan Winbox"], a:1, e:"Firewall menyaring traffic berdasarkan aturan yang dibuat admin, untuk melindungi router dan jaringan dari traffic yang tidak diinginkan."},
+    {t:"Firewall", q:"Menu firewall pada MikroTik terdiri dari beberapa bagian, salah satunya yang berfungsi mengubah alamat/port sebuah paket data adalah...", o:["Filter Rules","NAT","Layer7 Protocol saja","Address List saja","Connection Tracking saja"], a:1, e:"NAT (Network Address Translation) bertugas mengubah alamat/port paket, misalnya untuk berbagi satu IP publik ke banyak client (masquerade)."},
+    {t:"Firewall", q:"Perbedaan mendasar antara Firewall Filter dan NAT adalah...", o:["Filter mengubah IP address, NAT memblokir paket","Filter menentukan sebuah paket diteruskan atau diblokir, sedangkan NAT mengubah alamat/port sumber atau tujuan paket","Filter hanya bekerja untuk traffic keluar, NAT untuk traffic masuk","Filter dan NAT sebenarnya fitur yang persis sama","NAT hanya digunakan untuk DHCP Server"], a:1, e:"Filter untuk izin/blokir, NAT untuk translasi alamat — dua fungsi yang berbeda meski sama-sama bagian dari Firewall."},
+    {t:"Firewall", q:"Chain 'forward' pada firewall filter digunakan untuk mengontrol traffic yang...", o:["Ditujukan langsung ke router itu sendiri","Berasal dari router itu sendiri","Melewati/routing router, misalnya dari jaringan LAN menuju Internet","Hanya terjadi di dalam DHCP Server","Hanya terjadi pada interface wireless"], a:2, e:"Chain forward menangani paket yang hanya lewat/di-routing melalui router, bukan yang ditujukan ke router itu sendiri."},
+    {t:"Firewall", q:"Chain 'input' pada firewall filter mengatur traffic yang...", o:["Melewati router menuju jaringan lain","Ditujukan langsung ke router itu sendiri (misalnya akses Winbox/SSH ke router)","Berasal dari luar dan tidak menyentuh router sama sekali","Hanya berlaku untuk protokol DHCP","Hanya berlaku untuk VPN"], a:1, e:"Chain input relevan untuk mengamankan akses manajemen ke router itu sendiri, seperti Winbox, SSH, atau Telnet."},
+    {t:"Firewall", q:"Chain 'output' pada firewall filter mengatur traffic yang...", o:["Ditujukan ke router dari client","Berasal dari router itu sendiri menuju ke luar","Hanya melewati router tanpa diproses","Berasal dari DNS server eksternal","Hanya untuk traffic broadcast"], a:1, e:"Chain output menyaring paket yang dibuat/dikirim oleh router itu sendiri, misalnya saat router melakukan ping ke luar."},
+
+    {t:"Filter Rule", q:"Urutan pemrosesan rule pada Firewall Filter berjalan berdasarkan...", o:["Rule dengan action 'accept' selalu diproses lebih dulu","Rule diproses dari atas ke bawah (top-down) secara berurutan","Rule diproses secara acak setiap request","Rule dengan nomor comment terkecil diproses terakhir","Semua rule diproses bersamaan tanpa urutan"], a:1, e:"Setiap paket dicocokkan mulai dari rule paling atas; begitu ada rule yang match dengan action final, proses berhenti di situ."},
+    {t:"Filter Rule", q:"Action 'drop' pada filter rule berfungsi untuk...", o:["Meneruskan paket ke tujuan dengan enkripsi tambahan","Membuang paket data tanpa memberi tahu (notifikasi) apapun ke pengirim","Mengirim paket ke DHCP Server","Menyimpan paket untuk diproses nanti","Mempercepat pengiriman paket"], a:1, e:"Drop membuang paket secara diam-diam sehingga pengirim tidak tahu apakah paketnya diterima atau ditolak."},
+    {t:"Filter Rule", q:"Perbedaan action 'reject' dengan 'drop' adalah...", o:["Reject dan drop memiliki fungsi yang persis sama","Reject mengirimkan pesan penolakan (misalnya ICMP unreachable) ke pengirim, sedangkan drop membuang paket secara diam-diam","Reject hanya berlaku untuk chain output","Drop hanya berlaku untuk protokol UDP","Reject membuat koneksi menjadi lebih cepat"], a:1, e:"Reject memberi tahu pengirim bahwa paketnya ditolak, sedangkan drop tidak memberi respons apapun (lebih 'diam')."},
+    {t:"Filter Rule", q:"Action 'accept' pada filter rule berfungsi untuk...", o:["Memblokir paket secara permanen","Mengizinkan paket untuk lewat dan menghentikan pengecekan ke rule-rule berikutnya","Mengirim notifikasi ke admin","Mengubah source IP paket","Mengarahkan paket ke DHCP Server"], a:1, e:"Accept meloloskan paket dan menghentikan pencocokan rule selanjutnya untuk paket tersebut."},
+    {t:"Filter Rule", q:"Parameter 'Src. Address' pada sebuah filter rule digunakan untuk mencocokkan...", o:["Alamat IP tujuan paket","Alamat IP sumber (pengirim) paket","Jenis protokol yang digunakan","Nama interface WAN","Kecepatan koneksi"], a:1, e:"Src. Address mencocokkan IP asal/pengirim paket, berbeda dengan Dst. Address yang mencocokkan IP tujuan."},
+    {t:"Filter Rule", q:"Mengapa urutan/posisi rule dalam Firewall Filter sangat penting?", o:["Karena rule diproses top-down; jika rule yang lebih umum diletakkan di atas, rule yang lebih spesifik di bawahnya bisa tidak pernah tereksekusi","Karena router hanya bisa membaca maksimal 5 rule","Urutan rule sebenarnya tidak berpengaruh sama sekali","Karena rule dengan comment terpanjang selalu diproses lebih dulu","Karena setiap rule membutuhkan interface yang berbeda"], a:0, e:"Rule yang match lebih dulu (dari atas) yang menentukan nasib paket, jadi rule spesifik idealnya diletakkan sebelum rule umum."},
+
+    {t:"Akses Router", q:"Teknik membatasi akses ke router dengan pola 'drop few, accept any' berarti...", o:["Memblokir semua IP lalu mengizinkan satu per satu secara manual","Membuat rule drop untuk beberapa IP/network tertentu yang ingin diblokir, lalu diikuti rule accept untuk seluruh traffic lainnya","Menghapus seluruh rule firewall yang ada","Mengizinkan hanya satu IP admin dan memblokir semua sisanya","Mengganti seluruh IP address router"], a:1, e:"Polanya: drop beberapa (few) IP/network spesifik yang dicurigai, lalu accept untuk semua (any) traffic lainnya."},
+    {t:"Akses Router", q:"Pola 'drop few, accept any' dalam mengelola akses router tergolong pendekatan keamanan berbasis...", o:["Whitelist (daftar putih)","Blacklist (daftar hitam)","Enkripsi end-to-end","Autentikasi dua faktor","Load balancing"], a:1, e:"Karena yang didaftar adalah pihak yang diblokir (bukan yang diizinkan), pola ini adalah pendekatan blacklist."},
+    {t:"Akses Router", q:"Kelemahan utama pendekatan 'drop few, accept any' dibanding 'accept few, drop any' adalah...", o:["Konfigurasinya jauh lebih rumit untuk dibuat","Kurang aman, karena IP yang belum terdaftar di daftar blokir tetap bisa mengakses router","Tidak bisa diterapkan pada chain input","Membutuhkan lisensi RouterOS khusus","Hanya bisa digunakan pada Router wireless"], a:1, e:"Pendekatan blacklist hanya menutup pintu yang sudah diketahui bermasalah; IP baru yang belum masuk daftar tetap bisa masuk."},
+    {t:"Akses Router", q:"Diberikan dua rule berurutan pada chain=input: (1) action=drop, src-address=192.168.88.100/32, dan (2) action=accept, src-address=0.0.0.0/0. Artinya...", o:["Hanya IP 192.168.88.100 yang boleh mengakses router","Semua IP diizinkan mengakses router KECUALI IP 192.168.88.100","Semua IP termasuk 192.168.88.100 diblokir total","Router akan mati karena rule bertentangan","Rule kedua akan mengganti rule pertama secara otomatis"], a:1, e:"Rule pertama memblokir satu IP spesifik lebih dulu, rule kedua meloloskan semua IP lain — persis pola drop few, accept any."},
+    {t:"Akses Router", q:"Pola 'drop few, accept any' cocok digunakan pada kondisi jaringan seperti...", o:["Jaringan yang butuh keamanan maksimal dan hanya beberapa admin yang boleh mengakses","Jaringan relatif terbuka/terpercaya, di mana admin hanya perlu memblokir beberapa host yang diketahui mencurigakan","Jaringan milik bank dengan data sangat rahasia","Jaringan yang tidak memiliki firewall sama sekali","Jaringan yang seluruhnya menggunakan VPN"], a:1, e:"Untuk kebutuhan keamanan tinggi, pola whitelist (accept few, drop any) lebih tepat; drop few, accept any cocok untuk jaringan yang relatif terbuka."},
+    {t:"Akses Router", q:"Agar rule 'accept any' pada pola drop few - accept any berjalan sesuai rencana, posisi rule tersebut harus diletakkan...", o:["Di paling atas, sebelum semua rule drop","Di tengah-tengah antara rule drop","Di bagian akhir/bawah, setelah semua rule drop untuk IP spesifik","Posisi tidak berpengaruh sama sekali","Harus di chain forward, bukan input"], a:2, e:"Karena rule diproses top-down, rule accept-any harus di paling bawah agar rule drop untuk IP tertentu sempat dieksekusi lebih dulu."}
+  ];
+
+  var TOTAL = QUESTIONS.length;
+  var DURATION_SEC = 120 * 60;
+
+  /* =========================================================
+     STATE
+     ========================================================= */
+  var state = {
+    name:"", kelas:"", answers:new Array(TOTAL).fill(null),
+    current:0, remaining:DURATION_SEC, startedAt:null, submitted:false
+  };
+  var timerId = null;
+
+  function saveState(){
+    try{
+      localStorage.setItem("cbt_mikrotik_state", JSON.stringify(state));
+    }catch(e){ /* private mode / storage blocked — continue in-memory only */ }
+  }
+  function loadState(){
+    try{
+      var raw = localStorage.getItem("cbt_mikrotik_state");
+      if(!raw) return false;
+      var parsed = JSON.parse(raw);
+      if(!parsed || !Array.isArray(parsed.answers) || parsed.answers.length !== TOTAL) return false;
+      state = parsed;
+      return true;
+    }catch(e){ return false; }
+  }
+  function clearState(){
+    try{ localStorage.removeItem("cbt_mikrotik_state"); }catch(e){}
+  }
+
+  /* =========================================================
+     HELPERS
+     ========================================================= */
+  function $(id){ return document.getElementById(id); }
+  function fmtClock(totalSec){
+    totalSec = Math.max(0, totalSec|0);
+    var h = Math.floor(totalSec/3600);
+    var m = Math.floor((totalSec%3600)/60);
+    var s = totalSec%60;
+    function p2(n){ return (n<10?"0":"")+n; }
+    return p2(h)+":"+p2(m)+":"+p2(s);
+  }
+  function showScreen(id){
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+    $(id).classList.add("active");
+  }
+
+  /* =========================================================
+     LOGIN
+     ========================================================= */
+  $("btn-start").addEventListener("click", function(){
+    var nama = $("inp-nama").value.trim();
+    var kelas = $("inp-kelas").value.trim();
+    if(!nama || !kelas){
+      $("login-err").style.display = "block";
+      return;
+    }
+    $("login-err").style.display = "none";
+    state.name = nama;
+    state.kelas = kelas;
+    state.startedAt = Date.now();
+    state.remaining = DURATION_SEC;
+    startExam();
+  });
+
+  function startExam(){
+    $("topbar").style.display = "flex";
+    $("tb-name").textContent = state.name;
+    $("tb-kelas").textContent = "Kelas " + state.kelas;
+    buildPalette();
+    renderQuestion();
+    showScreen("screen-exam");
+    saveState();
+    tick();
+    timerId = setInterval(tick, 1000);
+  }
+
+  function tick(){
+    state.remaining -= 1;
+    if(state.remaining <= 0){
+      state.remaining = 0;
+      $("clock").textContent = fmtClock(0);
+      finishExam();
+      return;
+    }
+    $("clock").textContent = fmtClock(state.remaining);
+    var box = $("timer-box");
+    if(state.remaining <= 300){ box.classList.add("low"); } else { box.classList.remove("low"); }
+    if(state.remaining % 5 === 0) saveState();
+  }
+
+  /* =========================================================
+     EXAM RENDERING
+     ========================================================= */
+  var letters = ["A","B","C","D","E"];
+
+  function renderQuestion(){
+    var idx = state.current;
+    var item = QUESTIONS[idx];
+    $("q-pill").textContent = "Soal " + (idx+1) + " / " + TOTAL;
+    $("q-topic").textContent = item.t;
+    $("q-text").textContent = (idx+1) + ". " + item.q;
+
+    var wrap = $("q-options");
+    wrap.innerHTML = "";
+    item.o.forEach(function(optText, i){
+      var div = document.createElement("div");
+      div.className = "opt" + (state.answers[idx] === i ? " selected" : "");
+      div.setAttribute("role","button");
+      div.setAttribute("tabindex","0");
+      div.innerHTML = '<span class="letter">'+letters[i]+'</span><span class="otext"></span>';
+      div.querySelector(".otext").textContent = optText;
+      div.addEventListener("click", function(){ selectAnswer(i); });
+      div.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); selectAnswer(i); }
+      });
+      wrap.appendChild(div);
+    });
+
+    $("btn-prev").disabled = (idx === 0);
+    $("btn-next").textContent = (idx === TOTAL-1) ? "Selesai" : "Selanjutnya →";
+    updatePalette();
+    updateProgress();
+  }
+
+  function selectAnswer(i){
+    state.answers[state.current] = i;
+    saveState();
+    renderQuestion();
+  }
+
+  $("btn-prev").addEventListener("click", function(){
+    if(state.current > 0){ state.current -= 1; renderQuestion(); }
+  });
+  $("btn-next").addEventListener("click", function(){
+    if(state.current < TOTAL-1){ state.current += 1; renderQuestion(); }
+    else { openConfirmModal(); }
+  });
+
+  function buildPalette(){
+    var wrap = $("palette");
+    wrap.innerHTML = "";
+    for(var i=0;i<TOTAL;i++){
+      (function(i){
+        var b = document.createElement("div");
+        b.className = "pnum";
+        b.textContent = (i+1);
+        b.addEventListener("click", function(){ state.current = i; renderQuestion(); });
+        wrap.appendChild(b);
+      })(i);
+    }
+  }
+  function updatePalette(){
+    var nodes = document.querySelectorAll("#palette .pnum");
+    nodes.forEach(function(node, i){
+      node.classList.remove("answered","current");
+      if(i === state.current) node.classList.add("current");
+      else if(state.answers[i] !== null) node.classList.add("answered");
+    });
+  }
+  function updateProgress(){
+    var answered = state.answers.filter(function(a){ return a !== null; }).length;
+    var pct = Math.round((answered/TOTAL)*100);
+    $("progress-fill").style.width = pct + "%";
+    $("answered-count").textContent = answered + "/" + TOTAL + " terjawab";
+    $("progress-pct").textContent = pct + "%";
+  }
+
+  /* =========================================================
+     SUBMIT FLOW
+     ========================================================= */
+  $("btn-submit").addEventListener("click", openConfirmModal);
+  $("modal-cancel").addEventListener("click", closeConfirmModal);
+  $("modal-confirm-btn").addEventListener("click", function(){
+    closeConfirmModal();
+    finishExam();
+  });
+
+  function openConfirmModal(){
+    var answered = state.answers.filter(function(a){ return a !== null; }).length;
+    var empty = TOTAL - answered;
+    $("modal-confirm-text").textContent = empty > 0
+      ? "Masih ada " + empty + " soal yang belum dijawab. Yakin mau menyelesaikan ujian sekarang? Jawaban tidak bisa diubah lagi setelah dikumpulkan."
+      : "Semua soal sudah kamu jawab. Yakin mau mengumpulkan jawaban sekarang?";
+    $("modal-confirm").classList.add("show");
+  }
+  function closeConfirmModal(){ $("modal-confirm").classList.remove("show"); }
+
+  function finishExam(){
+    if(state.submitted) return;
+    state.submitted = true;
+    clearInterval(timerId);
+    var usedSec = DURATION_SEC - state.remaining;
+    renderResult(usedSec);
+    clearState();
+    showScreen("screen-result");
+    $("topbar").style.display = "none";
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  /* =========================================================
+     RESULT RENDERING
+     ========================================================= */
+  var reviewFilter = "all";
+
+  function renderResult(usedSec){
+    var correct = 0, wrong = 0, empty = 0;
+    QUESTIONS.forEach(function(item, i){
+      if(state.answers[i] === null) empty++;
+      else if(state.answers[i] === item.a) correct++;
+      else wrong++;
+    });
+    var score = Math.round((correct/TOTAL)*100);
+
+    $("res-score").textContent = score;
+    $("score-ring").style.setProperty("--pct", score);
+    $("res-name").textContent = state.name;
+    $("res-kelas").textContent = "Kelas " + state.kelas + " — Konfigurasi Perangkat Jaringan";
+    $("res-correct").textContent = correct;
+    $("res-wrong").textContent = wrong;
+    $("res-empty").textContent = empty;
+    $("res-time").textContent = fmtClock(usedSec);
+
+    renderReviewList();
+  }
+
+  function renderReviewList(){
+    var wrap = $("review-list");
+    wrap.innerHTML = "";
+    QUESTIONS.forEach(function(item, i){
+      var picked = state.answers[i];
+      var isCorrect = picked === item.a;
+      if(reviewFilter === "wrong" && isCorrect) return;
+      if(reviewFilter === "right" && !isCorrect) return;
+
+      var card = document.createElement("div");
+      card.className = "review-item " + (isCorrect ? "right" : "wrong");
+
+      var top = document.createElement("div");
+      top.className = "review-top";
+      top.innerHTML = '<span class="qnum-pill">Soal '+(i+1)+'</span>'+
+                       '<span class="topic-chip">'+item.t+'</span>'+
+                       '<span class="status-pill '+(isCorrect?"right":"wrong")+'">'+
+                       (isCorrect ? "Benar" : (picked===null ? "Kosong" : "Salah")) +'</span>';
+      card.appendChild(top);
+
+      var qEl = document.createElement("p");
+      qEl.className = "review-q";
+      qEl.textContent = item.q;
+      card.appendChild(qEl);
+
+      var optsWrap = document.createElement("div");
+      optsWrap.className = "review-opts";
+      item.o.forEach(function(optText, oi){
+        var row = document.createElement("div");
+        var cls = "review-opt";
+        if(oi === item.a) cls += " is-correct";
+        else if(oi === picked) cls += " is-picked-wrong";
+        row.className = cls;
+        row.innerHTML = '<span class="letter">'+letters[oi]+'</span><span></span>';
+        row.querySelector("span:last-child").textContent = optText;
+        optsWrap.appendChild(row);
+      });
+      card.appendChild(optsWrap);
+
+      var expl = document.createElement("div");
+      expl.className = "review-expl";
+      expl.innerHTML = "<b>Pembahasan:</b> ";
+      expl.appendChild(document.createTextNode(item.e));
+      card.appendChild(expl);
+
+      wrap.appendChild(card);
+    });
+    if(wrap.children.length === 0){
+      var empty = document.createElement("p");
+      empty.style.textAlign = "center";
+      empty.style.color = "var(--text-muted)";
+      empty.style.fontSize = "13.5px";
+      empty.textContent = "Tidak ada soal pada kategori ini.";
+      wrap.appendChild(empty);
+    }
+  }
+
+  document.querySelectorAll(".ftab").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll(".ftab").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      reviewFilter = btn.getAttribute("data-f");
+      renderReviewList();
+    });
+  });
+
+  /* =========================================================
+     RESUME IN-PROGRESS ATTEMPT (per-viewer convenience)
+     ========================================================= */
+  (function tryResume(){
+    if(loadState() && !state.submitted && state.name && state.kelas){
+      $("inp-nama").value = state.name;
+      $("inp-kelas").value = state.kelas;
+      startExam();
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
