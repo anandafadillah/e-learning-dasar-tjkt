@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBT Koding &amp; KA XI — Bab 1</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .hide { display: none !important; }
+</style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+<!-- ================= START ================= -->
+<section id="screen-start" class="min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-lg bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+    <p class="text-xs font-semibold tracking-wider text-indigo-600 uppercase">SMK Cyber Media Jakarta</p>
+    <h1 class="mt-1 text-xl sm:text-2xl font-bold text-slate-900" id="s-judul"></h1>
+
+    <dl class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+      <div class="bg-slate-50 rounded-lg p-3">
+        <dt class="text-slate-500">Mata Pelajaran</dt>
+        <dd class="font-semibold" id="s-mapel"></dd>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <dt class="text-slate-500">Kelas</dt>
+        <dd class="font-semibold" id="s-kelas"></dd>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <dt class="text-slate-500">Jumlah Soal</dt>
+        <dd class="font-semibold" id="s-jumlah"></dd>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <dt class="text-slate-500">Waktu</dt>
+        <dd class="font-semibold" id="s-waktu"></dd>
+      </div>
+    </dl>
+
+    <div class="mt-4 bg-slate-50 rounded-lg p-3 text-sm">
+      <p class="text-slate-500">Materi</p>
+      <p class="font-medium" id="s-materi"></p>
+    </div>
+
+    <div class="mt-6 space-y-3">
+      <div>
+        <label for="in-nama" class="block text-sm font-medium mb-1">Nama Lengkap</label>
+        <input id="in-nama" type="text" autocomplete="name" placeholder="Tulis nama kamu"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+      </div>
+      <div>
+        <label for="in-kelas" class="block text-sm font-medium mb-1">Kelas / Absen</label>
+        <input id="in-kelas" type="text" placeholder="Contoh: XI TJKT 1 / 12"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+      </div>
+      <label class="flex items-start gap-2 text-sm text-slate-600 pt-1">
+        <input id="in-acak" type="checkbox" class="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600">
+        <span>Acak urutan soal</span>
+      </label>
+    </div>
+
+    <p id="start-error" class="hide mt-3 text-sm text-red-600"></p>
+
+    <button id="btn-mulai"
+      class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold rounded-lg py-3 transition">
+      Mulai Ujian
+    </button>
+
+    <p class="mt-4 text-xs text-slate-500 leading-relaxed">
+      Petunjuk: pilih satu jawaban paling tepat. Kamu bisa menandai soal yang ragu-ragu, lalu kembali sebelum waktu habis.
+      Ujian otomatis dikumpulkan ketika waktu berakhir.
+    </p>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="screen-quiz" class="hide min-h-screen">
+  <!-- top bar -->
+  <header class="sticky top-0 z-20 bg-white border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-semibold text-slate-900 truncate" id="q-nama"></p>
+        <p class="text-xs text-slate-500 truncate" id="q-kelas"></p>
+      </div>
+      <div id="timer" class="shrink-0 font-mono font-bold text-base sm:text-lg px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 tabular-nums">60:00</div>
+      <button id="btn-panel" class="shrink-0 lg:hidden rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium">
+        Nomor
+      </button>
+    </div>
+    <div class="h-1 bg-slate-200">
+      <div id="progress" class="h-1 bg-indigo-600 transition-all" style="width:0%"></div>
+    </div>
+  </header>
+
+  <div class="max-w-5xl mx-auto px-4 py-5 grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5">
+    <!-- soal -->
+    <div>
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-xs font-semibold text-indigo-600 uppercase tracking-wider" id="q-counter"></span>
+          <button id="btn-ragu" class="text-xs font-medium rounded-full border px-3 py-1.5 transition">Tandai ragu-ragu</button>
+        </div>
+        <p class="mt-3 text-base sm:text-lg leading-relaxed font-medium text-slate-900" id="q-text"></p>
+        <div id="q-opts" class="mt-5 space-y-2.5"></div>
+      </div>
+
+      <div class="mt-4 flex items-center gap-3">
+        <button id="btn-prev" class="flex-1 sm:flex-none sm:px-6 rounded-lg border border-slate-300 bg-white py-3 font-medium disabled:opacity-40">
+          &larr; Sebelumnya
+        </button>
+        <button id="btn-next" class="flex-1 sm:flex-none sm:px-6 rounded-lg border border-slate-300 bg-white py-3 font-medium disabled:opacity-40">
+          Berikutnya &rarr;
+        </button>
+        <button id="btn-selesai" class="ml-auto rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-3">
+          Selesai
+        </button>
+      </div>
+    </div>
+
+    <!-- panel nomor -->
+    <aside id="panel" class="hide lg:block">
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 lg:sticky lg:top-24">
+        <p class="text-sm font-semibold mb-3">Navigasi Soal</p>
+        <div id="grid-nomor" class="grid grid-cols-8 lg:grid-cols-5 gap-1.5"></div>
+        <div class="mt-4 space-y-1.5 text-xs text-slate-600">
+          <p><span class="inline-block w-3 h-3 rounded bg-indigo-600 align-middle mr-1.5"></span>Sudah dijawab</p>
+          <p><span class="inline-block w-3 h-3 rounded bg-amber-400 align-middle mr-1.5"></span>Ragu-ragu</p>
+          <p><span class="inline-block w-3 h-3 rounded bg-slate-200 align-middle mr-1.5"></span>Belum dijawab</p>
+        </div>
+        <p class="mt-4 text-sm"><span id="stat-jawab" class="font-bold">0</span> dari <span id="stat-total"></span> soal terjawab</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= HASIL ================= -->
+<section id="screen-hasil" class="hide min-h-screen p-4 sm:py-10">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 text-center">
+      <p class="text-sm text-slate-500">Hasil Ujian</p>
+      <h2 class="text-xl font-bold text-slate-900 mt-1" id="h-nama"></h2>
+      <p class="text-sm text-slate-500" id="h-kelas"></p>
+
+      <div class="mt-6 inline-flex flex-col items-center justify-center w-32 h-32 rounded-full border-8" id="h-lingkaran">
+        <span class="text-4xl font-extrabold leading-none" id="h-nilai">0</span>
+        <span class="text-xs text-slate-500 mt-1">NILAI</span>
+      </div>
+
+      <div class="mt-6 grid grid-cols-3 gap-3 text-center">
+        <div class="bg-emerald-50 rounded-lg py-3">
+          <p class="text-2xl font-bold text-emerald-700" id="h-benar">0</p>
+          <p class="text-xs text-emerald-700">Benar</p>
+        </div>
+        <div class="bg-red-50 rounded-lg py-3">
+          <p class="text-2xl font-bold text-red-700" id="h-salah">0</p>
+          <p class="text-xs text-red-700">Salah</p>
+        </div>
+        <div class="bg-slate-100 rounded-lg py-3">
+          <p class="text-2xl font-bold text-slate-700" id="h-kosong">0</p>
+          <p class="text-xs text-slate-600">Kosong</p>
+        </div>
+      </div>
+
+      <p class="mt-4 text-sm text-slate-600" id="h-pesan"></p>
+
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <button id="btn-review" class="flex-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3">Lihat Pembahasan</button>
+        <button id="btn-ulang" class="flex-1 rounded-lg border border-slate-300 bg-white font-medium py-3">Ulangi Ujian</button>
+      </div>
+    </div>
+
+    <div id="review" class="hide mt-5 space-y-4"></div>
+  </div>
+</section>
+
+<script>
+/* ====== DATA SOAL ====== */
+const DATA = {
+ "meta": {
+  "judul": "SUMATIF HARIAN BAB 1",
+  "mapel": "Koding dan Kecerdasan Artifisial",
+  "kelas": "XI",
+  "materi": "Kerja Kolaboratif Manusia dan KA · Lima Unsur Prompt Pembuatan Poster",
+  "jumlah": 40,
+  "waktu": 60
+ },
+ "soal": [
+  {
+   "no": 1,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan pengertian kolaborasi",
+   "q": "Kerja sama antara beberapa pihak yang memiliki tujuan sama, meskipun perannya berbeda-beda, disebut ...",
+   "opts": [
+    "Otomatisasi",
+    "Optimalisasi",
+    "Simulasi",
+    "Kompetisi",
+    "Kolaborasi"
+   ],
+   "ans": 4,
+   "bahas": "Kolaborasi adalah kerja sama beberapa pihak dengan tujuan yang sama walau perannya berbeda-beda, persis seperti kerja kelompok di kelas."
+  },
+  {
+   "no": 2,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat mengidentifikasi keunggulan manusia dibanding KA",
+   "q": "Berikut ini yang merupakan keunggulan manusia dibandingkan Kecerdasan Artifisial adalah ...",
+   "opts": [
+    "Kecepatan mengolah data dalam jumlah sangat besar",
+    "Ketelitian menghitung angka tanpa pernah lelah",
+    "Kreativitas, empati, dan pemahaman nilai budaya",
+    "Kemampuan bekerja terus-menerus selama 24 jam",
+    "Ketepatan teknis menjalankan perintah yang rutin"
+   ],
+   "ans": 2,
+   "bahas": "Manusia unggul dalam kreativitas, empati, pemahaman nilai budaya, dan kemampuan membaca situasi. Kecepatan dan pengolahan data besar justru keunggulan KA."
+  },
+  {
+   "no": 3,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat mengidentifikasi keunggulan KA",
+   "q": "Keunggulan utama Kecerdasan Artifisial (KA) dibandingkan manusia adalah ...",
+   "opts": [
+    "Kecepatan, ketepatan teknis, dan pengolahan data besar",
+    "Kemampuan merasakan nilai budaya masyarakat setempat",
+    "Ketegasan mengambil keputusan moral yang paling adil",
+    "Kemampuan memahami perasaan dan suasana hati orang",
+    "Kepekaan menentukan mana yang baik dan mana yang buruk"
+   ],
+   "ans": 0,
+   "bahas": "KA unggul dalam kecepatan, ketepatan teknis, dan kemampuan mengolah data berjumlah sangat besar. Urusan rasa, moral, dan budaya tetap wilayah manusia."
+  },
+  {
+   "no": 4,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan posisi KA terhadap manusia menurut Topol (2019)",
+   "q": "Menurut Topol (2019), kedudukan KA terhadap manusia yang paling tepat adalah ...",
+   "opts": [
+    "Pengganti seluruh pekerjaan manusia",
+    "Penguat kecerdasan manusia sendiri",
+    "Pesaing manusia dalam dunia kerja",
+    "Pengawas kinerja harian manusia",
+    "Pemegang keputusan akhir manusia"
+   ],
+   "ans": 1,
+   "bahas": "Topol (2019) menegaskan KA bukan pengganti manusia, melainkan penguat (amplifier) kecerdasan manusia itu sendiri."
+  },
+  {
+   "no": 5,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menafsirkan contoh kolaborasi KA di bidang kesehatan",
+   "q": "KA dapat membantu dokter membaca hasil MRI dengan cepat. Namun, keputusan akhir mengenai tindakan medis tetap berada di tangan dokter. Alasannya adalah ...",
+   "opts": [
+    "KA belum diizinkan digunakan di rumah sakit mana pun",
+    "Hasil pembacaan KA selalu salah dan tidak bisa dipakai",
+    "Dokter paling memahami kondisi pasien secara menyeluruh",
+    "KA sama sekali belum mampu membaca citra gambar medis",
+    "Dokter membaca hasil MRI jauh lebih cepat daripada KA"
+   ],
+   "ans": 2,
+   "bahas": "KA cepat membaca citra medis, tetapi dokterlah yang memahami kondisi pasien secara menyeluruh, sehingga keputusan tindakan tetap di tangan manusia."
+  },
+  {
+   "no": 6,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menyebutkan manfaat KA dalam kehidupan sehari-hari",
+   "q": "Berikut ini yang termasuk manfaat KA dalam pekerjaan sehari-hari, kecuali ...",
+   "opts": [
+    "Menampilkan data dalam bentuk visual yang mudah dibaca",
+    "Memprediksi munculnya masalah sebelum benar-benar terjadi",
+    "Memberi saran dan rekomendasi berdasarkan pola data",
+    "Menggantikan seluruh nilai kemanusiaan saat memutuskan",
+    "Mengotomatisasi tugas rutin seperti entri data barang"
+   ],
+   "ans": 3,
+   "bahas": "Empat opsi lainnya adalah manfaat nyata KA. Menggantikan nilai kemanusiaan bukan manfaat, justru itu yang harus dihindari."
+  },
+  {
+   "no": 7,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menyebutkan contoh pemanfaatan KA sebagai partner berkarya",
+   "q": "Contoh pemanfaatan KA sebagai partner dalam membuat konten digital adalah ...",
+   "opts": [
+    "Memperbaiki kerusakan perangkat keras komputer",
+    "Menyalakan dan mematikan komputer tiap harinya",
+    "Mengganti perangkat jaringan internet di sekolah",
+    "Mengambil alih seluruh peran wartawan di redaksi",
+    "Menulis artikel, mendesain poster, membuat video"
+   ],
+   "ans": 4,
+   "bahas": "Dalam pembuatan konten digital, KA bisa diajak berkolaborasi untuk menulis artikel, mendesain poster, dan membuat video pendek."
+  },
+  {
+   "no": 8,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan batas peran KA dalam dunia jurnalistik",
+   "q": "Dalam dunia jurnalistik, KA dapat menyusun berita dengan cepat berdasarkan data. Namun, peran yang tetap harus dipegang wartawan adalah ...",
+   "opts": [
+    "Menentukan berita yang penting dan layak disiarkan",
+    "Menghitung jumlah kata pada setiap naskah beritanya",
+    "Mengatur ukuran huruf pada halaman berita yang terbit",
+    "Mengetik ulang seluruh naskah yang dibuatkan oleh KA",
+    "Menyalakan komputer redaksi setiap pagi sebelum kerja"
+   ],
+   "ans": 0,
+   "bahas": "KA membantu kecepatan penyusunan, tetapi penilaian tentang berita mana yang penting dan layak siar tetap tanggung jawab wartawan sebagai manusia."
+  },
+  {
+   "no": 9,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menyebutkan pesan LIPI (2021) tentang KA di bidang media",
+   "q": "LIPI (2021) menegaskan bahwa KA membuat pekerjaan di bidang media menjadi lebih efisien, tetapi manusia tetap menjadi bagian terpenting untuk ...",
+   "opts": [
+    "Membeli perangkat komputer yang baru",
+    "Memperbanyak jumlah berita tiap hari",
+    "Mengatur jadwal tayang iklan di media",
+    "Memastikan kebenaran setiap informasi",
+    "Mempercepat proses pengetikan berita"
+   ],
+   "ans": 3,
+   "bahas": "Menurut LIPI (2021), efisiensi boleh datang dari KA, tetapi verifikasi kebenaran informasi tetap menjadi tanggung jawab manusia."
+  },
+  {
+   "no": 10,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menyebutkan pesan Kominfo (2022) tentang penggunaan KA",
+   "q": "Kominfo (2022) mengingatkan bahwa semakin banyak orang bisa membuat konten dengan bantuan KA, tetapi mereka tetap harus ...",
+   "opts": [
+    "Membeli lisensi layanan KA yang harganya mahal",
+    "Menggunakannya secara bijak dan bertanggung jawab",
+    "Menyembunyikan identitas asli pembuat kontennya",
+    "Menghindari penggunaan KA dalam bentuk apa pun",
+    "Membuat konten sebanyak-banyaknya setiap harinya"
+   ],
+   "ans": 1,
+   "bahas": "Pesan Kominfo (2022) menekankan penggunaan KA yang bijak dan bertanggung jawab, bukan sekadar memperbanyak konten."
+  },
+  {
+   "no": 11,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan ciri Model Factory",
+   "q": "Model kolaborasi manusia dan KA yang digunakan untuk menangani tugas berulang dan berskala besar, seperti mengisi data otomatis dan memantau sistem, disebut ...",
+   "opts": [
+    "Model Kuadran",
+    "Model Factory",
+    "Model Hybrid",
+    "Model Generatif",
+    "Model Artisan"
+   ],
+   "ans": 1,
+   "bahas": "Model Factory (McKinsey, 2025) cocok untuk pekerjaan teknis yang rutin dan berjumlah besar, misalnya pengisian data otomatis dan pemantauan sistem."
+  },
+  {
+   "no": 12,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan ciri Model Artisan",
+   "q": "Pada Model Artisan, peran KA adalah ...",
+   "opts": [
+    "Menentukan sendiri kebijakan penting kantor",
+    "Menggantikan seluruh tugas tenaga profesional",
+    "Mengerjakan tugas berulang dalam jumlah besar",
+    "Menjadi asisten yang mendukung keputusan",
+    "Mengawasi kinerja seluruh karyawan tiap hari"
+   ],
+   "ans": 3,
+   "bahas": "Model Artisan menempatkan KA sebagai asisten profesional (dokter, guru, desainer) untuk mendukung keputusan lewat data dan wawasan. Keputusan akhir tetap di tangan manusia."
+  },
+  {
+   "no": 13,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan alasan kombinasi Model Factory dan Artisan",
+   "q": "Kombinasi Model Factory dan Model Artisan dapat menghasilkan kerja tim yang hebat karena ...",
+   "opts": [
+    "Manusia tidak perlu lagi mempelajari keterampilan baru",
+    "Manusia dan KA sama-sama bisa bekerja tanpa aturan",
+    "KA unggul pada skala dan kecepatan, manusia pada etika",
+    "Manusia cukup bertugas mengawasi hasil kerja KA saja",
+    "KA dapat mengambil alih seluruh keputusan perusahaan"
+   ],
+   "ans": 2,
+   "bahas": "Dua model itu saling melengkapi: KA membawa skala dan kecepatan, manusia membawa empati, etika, dan kreativitas."
+  },
+  {
+   "no": 14,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menyebutkan tokoh pencetus pemetaan empat kuadran",
+   "q": "Tokoh yang memetakan hubungan manusia dan KA ke dalam empat kuadran adalah ...",
+   "opts": [
+    "Kai-Fu Lee",
+    "Alan Turing",
+    "Andrew Ng",
+    "Stuart Russell",
+    "Eric Topol"
+   ],
+   "ans": 0,
+   "bahas": "Dr. Kai-Fu Lee, Chairman dan CEO Sinovation Ventures, memetakan hubungan manusia dan KA ke dalam empat kuadran."
+  },
+  {
+   "no": 15,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan dasar pemetaan empat kuadran",
+   "q": "Pemetaan empat kuadran hubungan manusia dan KA disusun berdasarkan dua hal, yaitu ...",
+   "opts": [
+    "Lokasi tempat bekerja dan jenis perangkat yang digunakan",
+    "Besarnya gaji yang diterima dan lamanya jam kerja harian",
+    "Tingkat pendidikan pekerja dan jenis perusahaan tempatnya",
+    "Kebutuhan empati dan arah kerja (optimasi atau kreativitas)",
+    "Jumlah karyawan yang bekerja dan besarnya modal usahanya"
+   ],
+   "ans": 3,
+   "bahas": "Dua sumbunya adalah: apakah pekerjaan butuh empati/kompasi, dan apakah pekerjaan itu lebih ke optimasi atau kreativitas/strategi."
+  },
+  {
+   "no": 16,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat mengklasifikasikan pekerjaan ke dalam kuadran empati + optimasi",
+   "q": "Pekerjaan guru, perawat, dan konselor termasuk ke dalam kuadran ...",
+   "opts": [
+    "Tanpa empati + tanpa kreativitas",
+    "Empati + optimasi",
+    "Tanpa empati + optimasi",
+    "Tanpa empati + kreativitas",
+    "Empati + kreativitas"
+   ],
+   "ans": 1,
+   "bahas": "Guru, perawat, dan konselor berada di kuadran empati + optimasi. Butuh ide sekaligus perasaan; KA membantu mencari materi atau membuat soal."
+  },
+  {
+   "no": 17,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat mengklasifikasikan pekerjaan yang dapat dikerjakan KA secara mandiri",
+   "q": "Pekerjaan seperti analisis data besar, sistem rekomendasi, dan logistik otomatis berada pada kuadran tanpa empati + optimasi. Artinya pekerjaan tersebut ...",
+   "opts": [
+    "Selalu membutuhkan keputusan akhir seorang konselor",
+    "Hanya bisa dikerjakan oleh manusia secara langsung",
+    "Membutuhkan sentuhan perasaan manusia yang sangat kuat",
+    "Dapat dikerjakan KA secara efisien tanpa campur tangan",
+    "Tidak boleh dibantu oleh teknologi apa pun prosesnya"
+   ],
+   "ans": 3,
+   "bahas": "Kuadran ini murni optimasi tanpa empati, sehingga KA bisa bekerja sendiri dengan sangat efisien."
+  },
+  {
+   "no": 18,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menyebutkan judul buku dan penulis prinsip penggunaan KA yang aman",
+   "q": "Tiga prinsip agar kolaborasi dengan KA tetap aman dikemukakan oleh Stuart Russell dalam bukunya yang berjudul ...",
+   "opts": [
+    "AI Superpowers",
+    "Deep Medicine",
+    "Human Compatible",
+    "The Master Algorithm",
+    "Thinking Machines"
+   ],
+   "ans": 2,
+   "bahas": "Stuart Russell menuliskan tiga prinsip penggunaan KA yang aman dalam buku Human Compatible (2019)."
+  },
+  {
+   "no": 19,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menyebutkan prinsip penggunaan KA yang aman",
+   "q": "Berikut ini yang termasuk tiga prinsip penggunaan KA menurut Stuart Russell, kecuali ...",
+   "opts": [
+    "Diberi kebebasan penuh mengambil keputusan tanpa manusia",
+    "Dikembangkan dengan tetap mempertimbangkan nilai kemanusiaan",
+    "Selalu mengikuti dan menghormati tujuan yang dimiliki manusia",
+    "Tidak diberi otonomi berlebihan tanpa memperhatikan nilai kita",
+    "Tetap terbuka pada masukan serta terus belajar dari manusia"
+   ],
+   "ans": 0,
+   "bahas": "Justru sebaliknya: KA tidak boleh diberi otonomi berlebihan. Memberi kebebasan penuh kepada KA bertentangan dengan prinsip Russell."
+  },
+  {
+   "no": 20,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan risiko pengabaian prinsip penggunaan KA",
+   "q": "Salah satu risiko yang muncul jika prinsip penggunaan KA diabaikan adalah ...",
+   "opts": [
+    "Ketergantungan berlebihan membuat manusia kurang kreatif",
+    "Biaya kuota data internet menjadi jauh lebih murah lagi",
+    "Perangkat keras komputer menjadi cepat rusak dan aus",
+    "Jaringan internet di sekolah menjadi jauh lebih lambat",
+    "Perangkat komputer menjadi lebih cepat panas saat dipakai"
+   ],
+   "ans": 0,
+   "bahas": "Risikonya bersifat manusiawi: KA salah memahami keinginan manusia, dan ketergantungan berlebihan membuat kita kurang kreatif serta kurang mandiri."
+  },
+  {
+   "no": 21,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan potensi positif KA bila digunakan dengan benar",
+   "q": "Jika digunakan dengan benar, potensi positif KA bagi masyarakat antara lain ...",
+   "opts": [
+    "Memperluas akses pendidikan dan kesehatan ke daerah jauh",
+    "Menghilangkan kebutuhan terhadap tenaga guru di sekolah",
+    "Menggantikan peran keluarga dalam mendidik anak-anaknya",
+    "Menghapus seluruh lapangan pekerjaan yang tersedia kini",
+    "Membuat manusia berhenti belajar hal baru sepanjang hidup"
+   ],
+   "ans": 0,
+   "bahas": "Potensi positif KA di antaranya memperkuat kemampuan manusia menghadapi tantangan global dan memperluas akses pendidikan, kesehatan, serta layanan publik di daerah terpencil."
+  },
+  {
+   "no": 22,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menyebutkan jumlah unsur penting dalam prompt pembuatan poster",
+   "q": "Dalam menyusun prompt untuk membuat poster dengan bantuan KA, terdapat unsur penting sebanyak ...",
+   "opts": [
+    "4 unsur",
+    "5 unsur",
+    "6 unsur",
+    "7 unsur",
+    "3 unsur"
+   ],
+   "ans": 1,
+   "bahas": "Ada 5 unsur penting: subjek/objek utama, gaya visual, komposisi, warna dominan, dan teks pada poster."
+  },
+  {
+   "no": 23,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menyebutkan kelima unsur prompt poster",
+   "q": "Berikut ini yang termasuk lima unsur penting dalam prompt pembuatan poster, kecuali ...",
+   "opts": [
+    "Subjek atau objek utama",
+    "Gaya visual poster",
+    "Komposisi atau tata letak",
+    "Warna dominan poster",
+    "Harga cetak poster"
+   ],
+   "ans": 4,
+   "bahas": "Kelima unsurnya adalah subjek/objek utama, gaya visual, komposisi, warna dominan, dan teks pada poster. Harga cetak bukan bagian dari prompt."
+  },
+  {
+   "no": 24,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan pengertian unsur subjek/objek utama",
+   "q": "Unsur prompt yang menentukan apa yang menjadi fokus utama poster disebut ...",
+   "opts": [
+    "Gaya visual poster",
+    "Komposisi poster",
+    "Warna dominan poster",
+    "Teks pada poster",
+    "Subjek/objek utama"
+   ],
+   "ans": 4,
+   "bahas": "Subjek/objek utama adalah unsur yang menyatakan apa yang jadi fokus poster, misalnya “siswa membuang sampah pada tempatnya”."
+  },
+  {
+   "no": 25,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat mengidentifikasi contoh unsur gaya visual",
+   "q": "Realistis, kartun/ilustrasi, flat design, dan minimalis merupakan contoh dari unsur ...",
+   "opts": [
+    "Subjek utama",
+    "Teks pada poster",
+    "Komposisi",
+    "Gaya visual",
+    "Warna dominan"
+   ],
+   "ans": 3,
+   "bahas": "Gaya visual menentukan “rasa” tampilan poster: realistis, kartun/ilustrasi, flat design, minimalis, dan sebagainya."
+  },
+  {
+   "no": 26,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan pengertian unsur komposisi",
+   "q": "Unsur komposisi dalam prompt poster berkaitan dengan ...",
+   "opts": [
+    "Ukuran file gambar yang dibuat",
+    "Isi slogan yang ditampilkan",
+    "Pemilihan warna latar belakang",
+    "Jenis huruf yang akan dipakai",
+    "Tata letak objek pada poster"
+   ],
+   "ans": 4,
+   "bahas": "Komposisi adalah tata letak, misalnya objek diletakkan di tengah dengan ruang kosong di bagian atas untuk judul."
+  },
+  {
+   "no": 27,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat mengidentifikasi unsur warna dominan pada prompt",
+   "q": "Pada prompt poster bertema lingkungan sering digunakan kombinasi hijau-putih. Hal tersebut merupakan penerapan unsur ...",
+   "opts": [
+    "Komposisi",
+    "Subjek utama",
+    "Gaya visual",
+    "Warna dominan",
+    "Teks pada poster"
+   ],
+   "ans": 3,
+   "bahas": "Warna dominan dipilih agar sesuai dengan suasana pesan. Hijau-putih identik dengan tema lingkungan."
+  },
+  {
+   "no": 28,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C1",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat menjelaskan cakupan unsur teks pada poster",
+   "q": "Unsur “teks pada poster” dalam prompt mencakup ...",
+   "opts": [
+    "Jumlah objek yang ada di poster",
+    "Merek aplikasi KA yang digunakan",
+    "Judul/slogan dan gaya hurufnya",
+    "Nama pembuat poster dan kelasnya",
+    "Ukuran kertas untuk cetak poster"
+   ],
+   "ans": 2,
+   "bahas": "Unsur teks berisi judul atau slogan yang ingin ditampilkan, lengkap dengan gaya hurufnya."
+  },
+  {
+   "no": 29,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat mengidentifikasi unsur prompt dari potongan kalimat",
+   "q": "Perhatikan potongan prompt berikut: “... objek diletakkan di tengah, sisakan ruang kosong di bagian atas untuk judul ...”. Potongan tersebut termasuk unsur ...",
+   "opts": [
+    "Warna dominan",
+    "Teks pada poster",
+    "Subjek utama",
+    "Gaya visual",
+    "Komposisi"
+   ],
+   "ans": 4,
+   "bahas": "Kalimat tersebut mengatur tata letak objek dan ruang kosong, jadi termasuk unsur komposisi."
+  },
+  {
+   "no": 30,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C2",
+   "jenis": "PG Biasa",
+   "indikator": "Peserta didik dapat mengidentifikasi unsur subjek utama dari potongan prompt",
+   "q": "Perhatikan potongan prompt berikut: “Buatkan poster bergambar siswa membuang sampah pada tempatnya ...”. Bagian tersebut merupakan unsur ...",
+   "opts": [
+    "Subjek/objek utama",
+    "Komposisi poster",
+    "Warna dominan",
+    "Gaya visual",
+    "Teks dan slogan poster"
+   ],
+   "ans": 0,
+   "bahas": "Kalimat itu menyebutkan apa yang menjadi fokus gambar, sehingga termasuk unsur subjek/objek utama."
+  },
+  {
+   "no": 31,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat menganalisis kesalahan penggunaan KA dalam pembuatan konten",
+   "q": "Rina mendapat tugas membuat artikel tentang budaya daerahnya. Ia meminta KA membuatkan artikel, lalu langsung mengunggahnya tanpa membaca ulang. Ternyata ada nama tarian daerah yang keliru dan gaya bahasanya terasa kaku. Kesalahan utama Rina adalah ...",
+   "opts": [
+    "Tidak menggunakan aplikasi KA versi berbayar yang lengkap",
+    "Menggunakan KA untuk tugas sekolah yang seharusnya dilarang",
+    "Memilih topik budaya yang terlalu sulit dipahami oleh KA",
+    "Mengunggah artikelnya pada jam yang tidak tepat waktunya",
+    "Tidak memeriksa kebenaran dan menyempurnakan bahasa artikel"
+   ],
+   "ans": 4,
+   "bahas": "KA boleh membuat draf, tetapi manusia tetap wajib memverifikasi kebenaran informasi dan menyempurnakan bahasanya. Rina melewatkan peran itu."
+  },
+  {
+   "no": 32,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat menentukan model kolaborasi yang sesuai dengan sebuah kasus",
+   "q": "Sebuah gudang distribusi menerapkan sistem KA untuk mencatat barang masuk-keluar secara otomatis, memantau stok setiap jam, dan mengirim peringatan bila stok menipis. Model kolaborasi yang diterapkan gudang tersebut adalah ...",
+   "opts": [
+    "Bukan kolaborasi, karena sama sekali tidak melibatkan manusia",
+    "Model Factory, karena KA menggantikan seluruh pegawai gudangnya",
+    "Model Artisan, karena KA berperan sebagai asisten profesional",
+    "Model Factory, karena KA menangani tugas berulang berskala besar",
+    "Model Artisan, karena keputusan akhirnya tetap di tangan manusia"
+   ],
+   "ans": 3,
+   "bahas": "Pencatatan otomatis, pemantauan stok, dan peringatan rutin adalah tugas berulang berskala besar — ciri khas Model Factory. Bukan berarti pegawai digantikan seluruhnya."
+  },
+  {
+   "no": 33,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat menganalisis penerapan Model Artisan pada dunia pendidikan",
+   "q": "Pak Budi, guru TJKT, menggunakan KA untuk menyusun variasi soal latihan dan menganalisis nilai siswa. Namun, ia sendiri yang memutuskan siswa mana yang perlu remedial setelah melihat kondisi belajar mereka. Praktik Pak Budi paling tepat digambarkan sebagai ...",
+   "opts": [
+    "Penyerahan penuh keputusan penilaian siswa kepada mesin",
+    "Model Artisan, karena keputusan akhir tetap di tangan guru",
+    "Penggunaan KA yang melanggar prinsip dari Stuart Russell",
+    "Kuadran tanpa empati + optimasi yang dikerjakan oleh KA",
+    "Model Factory, karena KA bekerja sepenuhnya secara otomatis"
+   ],
+   "ans": 1,
+   "bahas": "KA berperan sebagai asisten profesional yang menyediakan data dan wawasan, sedangkan keputusan akhir tetap dipegang guru. Inilah ciri Model Artisan."
+  },
+  {
+   "no": 34,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat mengevaluasi dampak ketergantungan berlebihan pada KA",
+   "q": "Sekelompok siswa terbiasa menyerahkan seluruh tugas kepada KA tanpa pernah mencoba mengerjakan sendiri. Lama-kelamaan mereka kesulitan saat diminta berpendapat di depan kelas. Kondisi ini merupakan contoh nyata dari ...",
+   "opts": [
+    "Bentuk kolaborasi ideal antara manusia dan KA di sekolah",
+    "Risiko ketergantungan yang membuat manusia kurang mandiri",
+    "Penerapan Model Factory yang berhasil di dunia pendidikan",
+    "Keunggulan KA dalam mengolah data yang jumlahnya besar",
+    "Penerapan kuadran empati + optimasi yang sudah tepat guna"
+   ],
+   "ans": 1,
+   "bahas": "Ini persis risiko yang diperingatkan: bergantung berlebihan pada KA membuat kemampuan berpikir kreatif dan kemandirian manusia menurun."
+  },
+  {
+   "no": 35,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat menganalisis pekerjaan yang sulit digantikan KA beserta alasannya",
+   "q": "Di antara pekerjaan berikut, yang paling sulit digantikan sepenuhnya oleh KA beserta alasan yang paling tepat adalah ...",
+   "opts": [
+    "Petugas cek stok barang, karena pekerjaannya berulang",
+    "Analis data besar, karena datanya sangat banyak jumlahnya",
+    "Petugas sortir paket, karena harus bekerja dengan cepat",
+    "Operator entri data, karena butuh ketelitian angka tinggi",
+    "Konselor sekolah, karena membutuhkan empati pada siswa"
+   ],
+   "ans": 4,
+   "bahas": "Entri data, pengecekan stok, analisis data, dan sortir paket adalah pekerjaan optimasi yang justru mudah diambil alih KA. Konselor membutuhkan empati, sesuatu yang tidak dimiliki KA."
+  },
+  {
+   "no": 36,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat menempatkan sebuah kasus pada kuadran hubungan manusia dan KA",
+   "q": "Tim media sosial sebuah SMK memakai KA untuk mencari tren konten dan membuat sketsa awal desain, lalu siswa yang menentukan konsep akhir serta menambahkan sentuhan khas sekolah. Kasus ini paling sesuai dengan kuadran ...",
+   "opts": [
+    "Empati + kreativitas",
+    "Tanpa empati + kreativitas",
+    "Tanpa empati + optimasi",
+    "Tanpa empati + tanpa kreativitas",
+    "Empati + optimasi"
+   ],
+   "ans": 1,
+   "bahas": "Pekerjaan seperti digital marketing dan desain butuh ide, tetapi tidak menuntut empati. KA membantu riset tren dan sketsa awal, manusia memberi keputusan dan “rasa” pada hasil akhir."
+  },
+  {
+   "no": 37,
+   "topik": "Kerja Kolaboratif Manusia dan KA",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat mengevaluasi pelanggaran prinsip penggunaan KA yang aman",
+   "q": "Sebuah perusahaan memasang sistem KA yang boleh memecat karyawan secara otomatis hanya berdasarkan angka produktivitas, tanpa peninjauan manusia dan tanpa menerima keberatan. Prinsip Stuart Russell yang dilanggar adalah ...",
+   "opts": [
+    "KA hanya boleh dipakai pada bidang kesehatan dan pendidikan",
+    "KA harus mengolah data secepat mungkin supaya lebih efisien",
+    "KA tidak boleh diberi otonomi berlebihan tanpa nilai manusia",
+    "KA harus dijalankan pada perangkat berspesifikasi paling tinggi",
+    "KA hanya boleh dibuat oleh perusahaan teknologi yang besar"
+   ],
+   "ans": 2,
+   "bahas": "Memberi KA wewenang memutus nasib orang tanpa peninjauan manusia berarti memberi otonomi berlebihan dan mengabaikan nilai kemanusiaan, sekaligus menutup ruang masukan."
+  },
+  {
+   "no": 38,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat menganalisis kelemahan prompt yang tidak lengkap",
+   "q": "Doni mengetik prompt “buatkan poster” saja, lalu hasilnya sama sekali tidak sesuai dengan tema Hari Lingkungan Hidup yang ia inginkan. Penyebab utamanya adalah ...",
+   "opts": [
+    "Aplikasi KA yang dipakai Doni masih berupa versi gratis",
+    "Koneksi internet Doni terlalu lambat saat memprosesnya",
+    "Prompt tidak memuat unsur penting seperti subjek dan warna",
+    "Poster memang tidak mungkin dibuat dengan bantuan KA",
+    "Doni salah memilih ukuran kertas untuk poster yang dibuat"
+   ],
+   "ans": 2,
+   "bahas": "Prompt yang terlalu umum membuat KA menebak-nebak. Semakin lengkap kelima unsur diisi, semakin dekat hasilnya dengan yang diinginkan."
+  },
+  {
+   "no": 39,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat menganalisis unsur prompt yang belum terpenuhi",
+   "q": "Perhatikan prompt berikut: “Buat poster siswa menanam pohon di halaman sekolah, gaya ilustrasi kartun, objek di tengah dengan ruang kosong di atas, dominan warna hijau dan cokelat.” Unsur prompt yang belum dicantumkan adalah ...",
+   "opts": [
+    "Teks pada poster",
+    "Subjek/objek utama",
+    "Gaya visual",
+    "Komposisi",
+    "Warna dominan"
+   ],
+   "ans": 0,
+   "bahas": "Subjek (siswa menanam pohon), gaya visual (ilustrasi kartun), komposisi (objek di tengah, ruang kosong di atas), dan warna dominan (hijau-cokelat) sudah ada. Yang belum: judul/slogan beserta gaya hurufnya."
+  },
+  {
+   "no": 40,
+   "topik": "Lima Unsur Prompt Poster",
+   "level": "C4",
+   "jenis": "PG HOTs",
+   "indikator": "Peserta didik dapat memilih prompt paling efektif untuk kebutuhan tertentu",
+   "q": "OSIS diminta membuat poster kampanye hemat listrik di sekolah. Prompt yang paling efektif untuk menghasilkan poster sesuai kebutuhan tersebut adalah ...",
+   "opts": [
+    "“Buatkan poster tentang listrik dengan warna cerah, gaya kartun, dan tulisan judul yang besar supaya bisa terbaca dari kejauhan oleh seluruh siswa di sekolah.”",
+    "“Buatkan poster hemat listrik gaya realistis, warna dominan biru dan kuning, objek diletakkan di tengah, ukuran A3, dicetak kertas glossy, dikumpulkan paling lambat hari Jumat.”",
+    "“Buatkan poster siswa mematikan lampu kelas saat istirahat, gaya flat design, objek di tengah dan ruang kosong di atas, dominan biru-kuning, judul ‘HEMAT LISTRIK’ huruf tebal.”",
+    "“Buatkan poster hemat listrik untuk warga sekolah, gaya bebas saja, warna cerah, tulisan besar, gambarnya bagus, pokoknya yang menarik dan enak dilihat semua siswa.”",
+    "“Buatkan poster kampanye OSIS memakai foto asli siswa kelas XI, warna bebas, tata letak bebas, gaya bebas, judulnya menyusul nanti setelah posternya selesai jadi.”"
+   ],
+   "ans": 2,
+   "bahas": "Prompt yang paling efektif adalah yang memuat kelima unsur sekaligus: subjek, gaya visual, komposisi, warna dominan, dan teks beserta gaya hurufnya."
+  }
+ ]
+};
+
+/* ====== STATE ====== */
+const HURUF = ['A','B','C','D','E'];
+let soal = [], jawaban = [], ragu = [], idx = 0, sisa = 0, timerId = null, siswa = {};
+
+/* ====== HELPERS ====== */
+const $ = (id) => document.getElementById(id);
+const show = (id) => $(id).classList.remove('hide');
+const hide = (id) => $(id).classList.add('hide');
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ====== START SCREEN ====== */
+$('s-judul').textContent = DATA.meta.judul;
+$('s-mapel').textContent = DATA.meta.mapel;
+$('s-kelas').textContent = DATA.meta.kelas;
+$('s-jumlah').textContent = DATA.meta.jumlah + ' soal pilihan ganda';
+$('s-waktu').textContent = DATA.meta.waktu + ' menit';
+$('s-materi').textContent = DATA.meta.materi;
+$('stat-total').textContent = DATA.meta.jumlah;
+
+$('btn-mulai').addEventListener('click', () => {
+  const nama = $('in-nama').value.trim();
+  const kelas = $('in-kelas').value.trim();
+  if (!nama || !kelas) {
+    $('start-error').textContent = 'Nama dan kelas wajib diisi dulu ya.';
+    show('start-error');
+    return;
+  }
+  hide('start-error');
+  siswa = { nama, kelas };
+  mulai($('in-acak').checked);
+});
+
+function mulai(acak) {
+  soal = DATA.soal.slice();
+  if (acak) {
+    for (let i = soal.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [soal[i], soal[j]] = [soal[j], soal[i]];
+    }
+  }
+  jawaban = new Array(soal.length).fill(null);
+  ragu = new Array(soal.length).fill(false);
+  idx = 0;
+  sisa = DATA.meta.waktu * 60;
+
+  $('q-nama').textContent = siswa.nama;
+  $('q-kelas').textContent = siswa.kelas;
+  buatGrid();
+  render();
+  hide('screen-start'); hide('screen-hasil'); show('screen-quiz');
+  window.scrollTo(0, 0);
+
+  clearInterval(timerId);
+  tickTimer();
+  timerId = setInterval(tickTimer, 1000);
+}
+
+/* ====== TIMER ====== */
+function tickTimer() {
+  const m = String(Math.floor(sisa / 60)).padStart(2, '0');
+  const d = String(sisa % 60).padStart(2, '0');
+  $('timer').textContent = m + ':' + d;
+  if (sisa <= 300) {
+    $('timer').className = 'shrink-0 font-mono font-bold text-base sm:text-lg px-3 py-1.5 rounded-lg bg-red-50 text-red-600 tabular-nums';
+  }
+  if (sisa <= 0) { clearInterval(timerId); selesai(true); return; }
+  sisa--;
+}
+
+/* ====== RENDER SOAL ====== */
+function render() {
+  const s = soal[idx];
+  $('q-counter').textContent = 'Soal ' + (idx + 1) + ' dari ' + soal.length;
+  $('q-text').textContent = s.q;
+
+  $('q-opts').innerHTML = s.opts.map((o, i) => {
+    const aktif = jawaban[idx] === i;
+    return '<button type="button" data-i="' + i + '" class="opt w-full text-left flex gap-3 items-start rounded-xl border px-4 py-3 transition ' +
+      (aktif ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600' : 'border-slate-200 bg-white hover:border-indigo-300') + '">' +
+      '<span class="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold ' +
+      (aktif ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600') + '">' + HURUF[i] + '</span>' +
+      '<span class="text-sm sm:text-base leading-relaxed pt-0.5">' + esc(o) + '</span></button>';
+  }).join('');
+
+  $('q-opts').querySelectorAll('.opt').forEach(b => {
+    b.addEventListener('click', () => {
+      jawaban[idx] = Number(b.dataset.i);
+      render(); updateGrid();
+    });
+  });
+
+  $('btn-ragu').className = 'text-xs font-medium rounded-full border px-3 py-1.5 transition ' +
+    (ragu[idx] ? 'bg-amber-400 border-amber-400 text-white' : 'bg-white border-slate-300 text-slate-600');
+  $('btn-ragu').textContent = ragu[idx] ? 'Ditandai ragu-ragu' : 'Tandai ragu-ragu';
+
+  $('btn-prev').disabled = idx === 0;
+  $('btn-next').disabled = idx === soal.length - 1;
+  $('progress').style.width = ((idx + 1) / soal.length * 100) + '%';
+  updateGrid();
+}
+
+/* ====== GRID NOMOR ====== */
+function buatGrid() {
+  $('grid-nomor').innerHTML = soal.map((_, i) =>
+    '<button type="button" data-n="' + i + '" class="nomor h-9 rounded-md text-sm font-semibold transition">' + (i + 1) + '</button>'
+  ).join('');
+  $('grid-nomor').querySelectorAll('.nomor').forEach(b => {
+    b.addEventListener('click', () => {
+      idx = Number(b.dataset.n);
+      render();
+      if (window.innerWidth < 1024) hide('panel');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function updateGrid() {
+  $('grid-nomor').querySelectorAll('.nomor').forEach((b, i) => {
+    let c = 'nomor h-9 rounded-md text-sm font-semibold transition ';
+    if (ragu[i]) c += 'bg-amber-400 text-white';
+    else if (jawaban[i] !== null) c += 'bg-indigo-600 text-white';
+    else c += 'bg-slate-200 text-slate-600';
+    if (i === idx) c += ' ring-2 ring-offset-1 ring-slate-800';
+    b.className = c;
+  });
+  $('stat-jawab').textContent = jawaban.filter(v => v !== null).length;
+}
+
+/* ====== NAVIGASI ====== */
+$('btn-prev').addEventListener('click', () => { if (idx > 0) { idx--; render(); window.scrollTo({top:0,behavior:'smooth'}); } });
+$('btn-next').addEventListener('click', () => { if (idx < soal.length - 1) { idx++; render(); window.scrollTo({top:0,behavior:'smooth'}); } });
+$('btn-ragu').addEventListener('click', () => { ragu[idx] = !ragu[idx]; render(); });
+$('btn-panel').addEventListener('click', () => $('panel').classList.toggle('hide'));
+$('btn-selesai').addEventListener('click', () => selesai(false));
+
+/* ====== SELESAI ====== */
+function selesai(otomatis) {
+  const kosong = jawaban.filter(v => v === null).length;
+  if (!otomatis && kosong > 0) {
+    if (!confirm('Masih ada ' + kosong + ' soal yang belum dijawab. Yakin mau mengumpulkan sekarang?')) return;
+  }
+  clearInterval(timerId);
+
+  let benar = 0, salah = 0;
+  soal.forEach((s, i) => {
+    if (jawaban[i] === null) return;
+    if (jawaban[i] === s.ans) benar++; else salah++;
+  });
+  const nilai = Math.round(benar / soal.length * 100);
+
+  $('h-nama').textContent = siswa.nama;
+  $('h-kelas').textContent = siswa.kelas;
+  $('h-nilai').textContent = nilai;
+  $('h-benar').textContent = benar;
+  $('h-salah').textContent = salah;
+  $('h-kosong').textContent = kosong;
+
+  const warna = nilai >= 75 ? 'border-emerald-500 text-emerald-600' : (nilai >= 60 ? 'border-amber-500 text-amber-600' : 'border-red-500 text-red-600');
+  $('h-lingkaran').className = 'mt-6 inline-flex flex-col items-center justify-center w-32 h-32 rounded-full border-8 ' + warna;
+  $('h-pesan').textContent = otomatis
+    ? 'Waktu habis, jawaban otomatis dikumpulkan.'
+    : (nilai >= 75 ? 'Mantap, kamu sudah tuntas. Pertahankan ya!' : 'Belum tuntas. Coba pelajari lagi pembahasannya di bawah.');
+
+  buatReview();
+  hide('screen-quiz'); show('screen-hasil');
+  $('review').classList.add('hide');
+  $('btn-review').textContent = 'Lihat Pembahasan';
+  window.scrollTo(0, 0);
+}
+
+function buatReview() {
+  $('review').innerHTML = soal.map((s, i) => {
+    const j = jawaban[i];
+    const ok = j === s.ans;
+    const badge = j === null
+      ? '<span class="text-xs font-semibold px-2 py-1 rounded bg-slate-200 text-slate-600">Tidak dijawab</span>'
+      : (ok ? '<span class="text-xs font-semibold px-2 py-1 rounded bg-emerald-100 text-emerald-700">Benar</span>'
+            : '<span class="text-xs font-semibold px-2 py-1 rounded bg-red-100 text-red-700">Salah</span>');
+
+    const opsi = s.opts.map((o, k) => {
+      let c = 'flex gap-2 items-start rounded-lg px-3 py-2 text-sm border ';
+      if (k === s.ans) c += 'border-emerald-400 bg-emerald-50';
+      else if (k === j) c += 'border-red-400 bg-red-50';
+      else c += 'border-transparent';
+      return '<div class="' + c + '"><span class="font-bold">' + HURUF[k] + '.</span><span>' + esc(o) + '</span></div>';
+    }).join('');
+
+    return '<div class="bg-white rounded-2xl border border-slate-200 p-5">' +
+      '<div class="flex items-center justify-between gap-3">' +
+        '<span class="text-xs font-semibold text-slate-500">Soal ' + (i + 1) + ' · ' + esc(s.topik) + ' · ' + s.level + '</span>' + badge +
+      '</div>' +
+      '<p class="mt-2 font-medium leading-relaxed">' + esc(s.q) + '</p>' +
+      '<div class="mt-3 space-y-1">' + opsi + '</div>' +
+      '<div class="mt-3 rounded-lg bg-indigo-50 border border-indigo-100 p-3 text-sm">' +
+        '<p class="font-semibold text-indigo-800">Kunci: ' + HURUF[s.ans] + '</p>' +
+        '<p class="text-indigo-900/80 mt-1 leading-relaxed">' + esc(s.bahas) + '</p>' +
+      '</div></div>';
+  }).join('');
+}
+
+$('btn-review').addEventListener('click', () => {
+  const r = $('review');
+  r.classList.toggle('hide');
+  $('btn-review').textContent = r.classList.contains('hide') ? 'Lihat Pembahasan' : 'Sembunyikan Pembahasan';
+  if (!r.classList.contains('hide')) r.scrollIntoView({ behavior: 'smooth' });
+});
+
+$('btn-ulang').addEventListener('click', () => {
+  hide('screen-hasil'); show('screen-start');
+  $('in-nama').value = ''; $('in-kelas').value = '';
+  window.scrollTo(0, 0);
+});
+</script>
+</body>
+</html>
