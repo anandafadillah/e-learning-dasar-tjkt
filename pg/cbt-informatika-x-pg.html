@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBT Informatika X PG — Hardware & Sistem Operasi</title>
+<style>
+*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.sticky{position:sticky}.inset-0{inset:0}.inset-x-0{left:0;right:0}.bottom-0{bottom:0}.top-0{top:0}.z-30{z-index:30}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mt-1{margin-top:.25rem}.mt-1\.5{margin-top:.375rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.table{display:table}.grid{display:grid}.hidden{display:none}.h-1{height:.25rem}.h-10{height:2.5rem}.h-14{height:3.5rem}.h-3\.5{height:.875rem}.h-32{height:8rem}.h-7{height:1.75rem}.max-h-\[75vh\]{max-height:75vh}.min-h-screen{min-height:100vh}.w-14{width:3.5rem}.w-3\.5{width:.875rem}.w-32{width:8rem}.w-7{width:1.75rem}.w-full{width:100%}.min-w-0{min-width:0}.max-w-3xl{max-width:48rem}.max-w-5xl{max-width:64rem}.max-w-md{max-width:28rem}.max-w-sm{max-width:24rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}.cursor-pointer{cursor:pointer}.list-inside{list-style-position:inside}.list-disc{list-style-type:disc}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-cols-5{grid-template-columns:repeat(5,minmax(0,1fr))}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-5{gap:1.25rem}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.25rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem*var(--tw-space-y-reverse))}.space-y-1\.5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.375rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.375rem*var(--tw-space-y-reverse))}.space-y-2\.5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.625rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.625rem*var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.rounded-r-xl{border-top-right-radius:.75rem;border-bottom-right-radius:.75rem}.rounded-t-2xl{border-top-left-radius:1rem;border-top-right-radius:1rem}.border{border-width:1px}.border-2{border-width:2px}.border-8{border-width:8px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-amber-400{--tw-border-opacity:1;border-color:rgb(251 191 36/var(--tw-border-opacity,1))}.border-emerald-300{--tw-border-opacity:1;border-color:rgb(110 231 183/var(--tw-border-opacity,1))}.border-emerald-500{--tw-border-opacity:1;border-color:rgb(16 185 129/var(--tw-border-opacity,1))}.border-red-300{--tw-border-opacity:1;border-color:rgb(252 165 165/var(--tw-border-opacity,1))}.border-red-400{--tw-border-opacity:1;border-color:rgb(248 113 113/var(--tw-border-opacity,1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240/var(--tw-border-opacity,1))}.border-slate-300{--tw-border-opacity:1;border-color:rgb(203 213 225/var(--tw-border-opacity,1))}.bg-amber-400{--tw-bg-opacity:1;background-color:rgb(251 191 36/var(--tw-bg-opacity,1))}.bg-black\/50{background-color:rgba(0,0,0,.5)}.bg-emerald-50{--tw-bg-opacity:1;background-color:rgb(236 253 245/var(--tw-bg-opacity,1))}.bg-emerald-600{--tw-bg-opacity:1;background-color:rgb(5 150 105/var(--tw-bg-opacity,1))}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255/var(--tw-bg-opacity,1))}.bg-indigo-600{--tw-bg-opacity:1;background-color:rgb(79 70 229/var(--tw-bg-opacity,1))}.bg-red-100{--tw-bg-opacity:1;background-color:rgb(254 226 226/var(--tw-bg-opacity,1))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242/var(--tw-bg-opacity,1))}.bg-red-500{--tw-bg-opacity:1;background-color:rgb(239 68 68/var(--tw-bg-opacity,1))}.bg-slate-100{--tw-bg-opacity:1;background-color:rgb(241 245 249/var(--tw-bg-opacity,1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240/var(--tw-bg-opacity,1))}.bg-slate-400{--tw-bg-opacity:1;background-color:rgb(148 163 184/var(--tw-bg-opacity,1))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252/var(--tw-bg-opacity,1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255/var(--tw-bg-opacity,1))}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}.pt-0\.5{padding-top:.125rem}.text-center{text-align:center}.font-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-\[11px\]{font-size:11px}.text-\[15px\]{font-size:15px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-semibold{font-weight:600}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.leading-none{line-height:1}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6/var(--tw-text-opacity,1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105/var(--tw-text-opacity,1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87/var(--tw-text-opacity,1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229/var(--tw-text-opacity,1))}.text-indigo-700{--tw-text-opacity:1;color:rgb(67 56 202/var(--tw-text-opacity,1))}.text-red-600{--tw-text-opacity:1;color:rgb(220 38 38/var(--tw-text-opacity,1))}.text-red-700{--tw-text-opacity:1;color:rgb(185 28 28/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85/var(--tw-text-opacity,1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59/var(--tw-text-opacity,1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-lg{--tw-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color),0 4px 6px -4px var(--tw-shadow-color)}.shadow-lg,.shadow-sm{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgba(0,0,0,.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color)}.ring-2{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.ring-slate-800{--tw-ring-opacity:1;--tw-ring-color:rgb(30 41 59/var(--tw-ring-opacity,1))}.ring-offset-1{--tw-ring-offset-width:1px}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.hover\:border-indigo-300:hover{--tw-border-opacity:1;border-color:rgb(165 180 252/var(--tw-border-opacity,1))}.hover\:bg-emerald-700:hover{--tw-bg-opacity:1;background-color:rgb(4 120 87/var(--tw-bg-opacity,1))}.hover\:bg-indigo-700:hover{--tw-bg-opacity:1;background-color:rgb(67 56 202/var(--tw-bg-opacity,1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}.focus\:ring-indigo-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(99 102 241/var(--tw-ring-opacity,1))}.active\:scale-\[\.99\]:active{--tw-scale-x:.99;--tw-scale-y:.99;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.disabled\:opacity-40:disabled{opacity:.4}@media (min-width:640px){.sm\:items-center{align-items:center}}@media (min-width:1024px){.lg\:sticky{position:sticky}.lg\:top-24{top:6rem}.lg\:block{display:block}.lg\:hidden{display:none}.lg\:grid-cols-\[1fr_260px\]{grid-template-columns:1fr 260px}}
+</style>
+<style>
+  body { -webkit-tap-highlight-color: transparent; }
+  .opt input:checked + span { border-color:#4f46e5; background:#eef2ff; }
+  @media print { .no-print { display:none !important; } }
+</style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+<!-- ============ HALAMAN AWAL ============ -->
+<section id="page-start" class="min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-6">
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 text-white text-2xl font-bold mb-3">CBT</div>
+      <h1 class="text-xl font-bold leading-snug">Sumatif Harian Informatika</h1>
+      <p class="text-sm text-slate-500 mt-1">Perangkat Keras &amp; Sistem Operasi</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 text-center text-sm mb-6">
+      <div class="bg-slate-50 rounded-xl p-3">
+        <div class="text-lg font-bold text-indigo-600" id="info-jml">25</div>
+        <div class="text-slate-500 text-xs">Soal Pilihan Ganda</div>
+      </div>
+      <div class="bg-slate-50 rounded-xl p-3">
+        <div class="text-lg font-bold text-indigo-600" id="info-waktu">45</div>
+        <div class="text-slate-500 text-xs">Menit</div>
+      </div>
+    </div>
+
+    <label class="block text-sm font-medium mb-1">Nama Lengkap</label>
+    <input id="in-nama" type="text" autocomplete="off" placeholder="Tulis nama kamu"
+      class="w-full mb-3 px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+    <label class="block text-sm font-medium mb-1">Kelas</label>
+    <input id="in-kelas" type="text" autocomplete="off" placeholder="Contoh: X PG 1"
+      class="w-full mb-4 px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+    <p id="start-err" class="hidden text-sm text-red-600 mb-3">Nama dan kelas wajib diisi dulu ya.</p>
+
+    <button id="btn-mulai"
+      class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-[.99] text-white font-semibold transition">
+      Mulai Ujian
+    </button>
+
+    <div class="mt-5 text-xs text-slate-500 leading-relaxed">
+      <p class="font-semibold text-slate-600 mb-1">Petunjuk:</p>
+      <ul class="list-disc list-inside space-y-1">
+        <li>Pilih satu jawaban paling tepat pada tiap soal.</li>
+        <li>Soal bisa ditandai <span class="font-semibold text-amber-600">ragu-ragu</span> untuk dicek ulang.</li>
+        <li>Waktu berjalan otomatis. Kalau habis, jawaban langsung dikumpulkan.</li>
+        <li>Jangan refresh halaman selama ujian berlangsung.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HALAMAN UJIAN ============ -->
+<section id="page-exam" class="hidden min-h-screen">
+  <!-- Header -->
+  <header class="sticky top-0 z-30 bg-white border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-semibold truncate" id="hd-nama">-</p>
+        <p class="text-xs text-slate-500 truncate" id="hd-kelas">-</p>
+      </div>
+      <div id="timer" class="px-3 py-1.5 rounded-lg bg-slate-100 font-mono font-bold tabular-nums text-slate-700">45:00</div>
+      <button id="btn-nav" class="lg:hidden px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 text-sm font-semibold">
+        No. Soal
+      </button>
+    </div>
+    <div class="h-1 bg-slate-200">
+      <div id="bar" class="h-1 bg-indigo-600 transition-all" style="width:0%"></div>
+    </div>
+  </header>
+
+  <div class="max-w-5xl mx-auto px-4 py-5 grid lg:grid-cols-[1fr_260px] gap-5 items-start">
+    <!-- Kartu soal -->
+    <main class="bg-white rounded-2xl shadow-sm p-5">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700" id="q-badge">Soal 1 dari 25</span>
+        <button id="btn-ragu" class="text-xs font-semibold px-2.5 py-1 rounded-full border border-slate-300 text-slate-600">
+          Tandai Ragu-ragu
+        </button>
+      </div>
+
+      <p id="q-text" class="text-[15px] leading-relaxed font-medium mb-4"></p>
+      <div id="q-opts" class="space-y-2.5"></div>
+
+      <div class="flex gap-2 mt-6">
+        <button id="btn-prev" class="flex-1 py-3 rounded-xl border border-slate-300 font-semibold text-slate-600 disabled:opacity-40">
+          Sebelumnya
+        </button>
+        <button id="btn-next" class="flex-1 py-3 rounded-xl bg-indigo-600 text-white font-semibold">
+          Berikutnya
+        </button>
+      </div>
+    </main>
+
+    <!-- Navigasi nomor -->
+    <aside id="nav-panel" class="hidden lg:block bg-white rounded-2xl shadow-sm p-4 lg:sticky lg:top-24">
+      <p class="text-sm font-semibold mb-3">Navigasi Soal</p>
+      <div id="nav-grid" class="grid grid-cols-5 gap-2"></div>
+      <div class="mt-4 space-y-1.5 text-xs text-slate-500">
+        <div class="flex items-center gap-2"><span class="w-3.5 h-3.5 rounded bg-indigo-600 inline-block"></span> Sudah dijawab</div>
+        <div class="flex items-center gap-2"><span class="w-3.5 h-3.5 rounded bg-amber-400 inline-block"></span> Ragu-ragu</div>
+        <div class="flex items-center gap-2"><span class="w-3.5 h-3.5 rounded bg-slate-200 inline-block"></span> Belum dijawab</div>
+      </div>
+      <p class="mt-4 text-xs text-slate-500">Terjawab: <span id="nav-count" class="font-semibold text-slate-700">0/25</span></p>
+      <button id="btn-selesai" class="w-full mt-3 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
+        Selesai &amp; Kumpulkan
+      </button>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ HALAMAN HASIL ============ -->
+<section id="page-result" class="hidden min-h-screen p-4">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-sm p-6 text-center mb-4">
+      <p class="text-sm text-slate-500">Hasil Ujian</p>
+      <h2 class="text-lg font-bold mt-1" id="res-nama">-</h2>
+      <p class="text-sm text-slate-500 mb-4" id="res-kelas">-</p>
+
+      <div class="inline-flex items-center justify-center w-32 h-32 rounded-full border-8" id="res-ring">
+        <div>
+          <div class="text-4xl font-extrabold leading-none" id="res-nilai">0</div>
+          <div class="text-xs text-slate-500 mt-1">Nilai</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 mt-5 text-center text-sm">
+        <div class="bg-emerald-50 rounded-xl py-3">
+          <div class="text-lg font-bold text-emerald-600" id="res-benar">0</div>
+          <div class="text-xs text-slate-500">Benar</div>
+        </div>
+        <div class="bg-red-50 rounded-xl py-3">
+          <div class="text-lg font-bold text-red-600" id="res-salah">0</div>
+          <div class="text-xs text-slate-500">Salah</div>
+        </div>
+        <div class="bg-slate-50 rounded-xl py-3">
+          <div class="text-lg font-bold text-slate-600" id="res-kosong">0</div>
+          <div class="text-xs text-slate-500">Kosong</div>
+        </div>
+      </div>
+      <p class="mt-4 text-sm text-slate-600" id="res-pesan"></p>
+      <p class="mt-1 text-xs text-slate-400">Tunjukkan / screenshot halaman ini ke guru sebagai bukti pengerjaan.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm p-5">
+      <h3 class="font-bold mb-3">Pembahasan Jawaban</h3>
+      <div id="res-review" class="space-y-3"></div>
+      <button id="btn-ulang" class="no-print w-full mt-5 py-3 rounded-xl border border-slate-300 font-semibold text-slate-600">
+        Kerjakan Ulang
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODAL KONFIRMASI ============ -->
+<div id="modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-end sm:items-center justify-center p-4">
+  <div class="bg-white w-full max-w-sm rounded-2xl p-5">
+    <h3 class="font-bold text-lg mb-1" id="modal-title">Kumpulkan jawaban?</h3>
+    <p class="text-sm text-slate-600 mb-4" id="modal-text">-</p>
+    <div class="flex gap-2">
+      <button id="modal-no" class="flex-1 py-3 rounded-xl border border-slate-300 font-semibold text-slate-600">Batal</button>
+      <button id="modal-yes" class="flex-1 py-3 rounded-xl bg-emerald-600 text-white font-semibold">Ya, Kumpulkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer navigasi (mobile) -->
+<div id="drawer" class="hidden fixed inset-0 z-40 bg-black/50 lg:hidden">
+  <div class="absolute bottom-0 inset-x-0 bg-white rounded-t-2xl p-4 max-h-[75vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-3">
+      <p class="font-semibold">Navigasi Soal</p>
+      <button id="drawer-close" class="text-slate-400 text-xl leading-none px-2">&times;</button>
+    </div>
+    <div id="nav-grid-m" class="grid grid-cols-5 gap-2"></div>
+    <div class="mt-4 space-y-1.5 text-xs text-slate-500">
+      <div class="flex items-center gap-2"><span class="w-3.5 h-3.5 rounded bg-indigo-600 inline-block"></span> Sudah dijawab</div>
+      <div class="flex items-center gap-2"><span class="w-3.5 h-3.5 rounded bg-amber-400 inline-block"></span> Ragu-ragu</div>
+      <div class="flex items-center gap-2"><span class="w-3.5 h-3.5 rounded bg-slate-200 inline-block"></span> Belum dijawab</div>
+    </div>
+    <button id="btn-selesai-m" class="w-full mt-4 py-3 rounded-xl bg-emerald-600 text-white font-semibold">
+      Selesai &amp; Kumpulkan
+    </button>
+  </div>
+</div>
+
+<script>
+/* ================== KONFIGURASI ================== */
+const CONFIG = {
+  durasiMenit: 45,     // lama pengerjaan
+  acakSoal:   true,    // urutan soal diacak tiap siswa
+  acakOpsi:   true     // urutan A-E diacak tiap siswa
+};
+
+/* ================== BANK SOAL ================== */
+const BANK = [
+ {
+  "no": 1,
+  "soal": "Komponen yang bertugas mengolah data dan menjalankan seluruh perintah pada komputer adalah ...",
+  "opts": [
+   "VGA, yaitu pengolah data grafis untuk layar monitor",
+   "PSU, yaitu penyalur daya listrik ke semua komponen",
+   "Processor, yaitu komponen pengolah utama komputer",
+   "Motherboard, yaitu papan sirkuit utama komputer",
+   "RAM, yaitu memori penyimpan data sementara program"
+  ],
+  "kunci_idx": 2,
+  "bahas": "Processor (CPU) adalah otak komputer. Semua perintah dari aplikasi maupun sistem operasi diproses di sini."
+ },
+ {
+  "no": 2,
+  "soal": "Data yang tersimpan di RAM akan hilang ketika komputer dimatikan. Sifat RAM yang seperti ini disebut ...",
+  "opts": [
+   "Volatile, yaitu data hanya bertahan saat ada listrik",
+   "Permanen, yaitu data tetap tersimpan meski listrik mati",
+   "Portabel, yaitu data mudah dipindah ke perangkat lain",
+   "Digital, yaitu data disimpan dalam bentuk kode biner",
+   "Statis, yaitu data tidak berubah selama komputer aktif"
+  ],
+  "kunci_idx": 0,
+  "bahas": "RAM bersifat volatile alias sementara. Begitu aliran listrik terputus, seluruh isinya ikut hilang."
+ },
+ {
+  "no": 3,
+  "soal": "Papan sirkuit utama tempat processor, RAM, dan komponen lain dipasang serta saling terhubung adalah ...",
+  "opts": [
+   "Power supply atau catu daya utama komputer",
+   "Casing atau rumah pelindung komponen PC",
+   "Harddisk atau media penyimpanan komputer",
+   "Heatsink atau pendingin komponen processor",
+   "Motherboard atau papan induk komputer"
+  ],
+  "kunci_idx": 4,
+  "bahas": "Motherboard adalah papan induk yang menyatukan dan menghubungkan seluruh komponen komputer."
+ },
+ {
+  "no": 4,
+  "soal": "Fungsi utama Power Supply Unit (PSU) pada komputer adalah ...",
+  "opts": [
+   "Menghubungkan komputer dengan jaringan internet sekolah",
+   "Mengubah listrik AC menjadi DC untuk seluruh komponen",
+   "Menyimpan data sistem operasi dan file milik pengguna",
+   "Mengolah data grafis sebelum dikirimkan ke layar monitor",
+   "Mengatur pembagian memori bagi program yang berjalan"
+  ],
+  "kunci_idx": 1,
+  "bahas": "PSU mengubah listrik AC dari stopkontak menjadi arus DC bertegangan rendah, lalu menyalurkannya ke motherboard, disk, dan VGA."
+ },
+ {
+  "no": 5,
+  "soal": "Saat menjalankan game 3D, komponen yang bertugas mengolah data gambar sebelum ditampilkan ke monitor adalah ...",
+  "opts": [
+   "SSD, media simpan yang menampung file game",
+   "RAM, memori kerja yang menampung data sementara",
+   "NIC, kartu jaringan yang menghubungkan LAN",
+   "VGA, kartu grafis yang mengolah data gambar",
+   "PSU, catu daya yang mengalirkan listrik ke PC"
+  ],
+  "kunci_idx": 3,
+  "bahas": "VGA (kartu grafis) mengolah data grafis lalu mengirimkannya ke monitor. Makin berat grafis game, makin penting peran VGA."
+ },
+ {
+  "no": 6,
+  "soal": "Perbedaan paling mendasar antara SSD dan HDD terletak pada ...",
+  "opts": [
+   "SSD memakai chip memori, HDD memakai piringan berputar",
+   "SSD memakai kabel SATA, HDD memakai kabel daya khusus",
+   "SSD hanya dipakai server, HDD hanya untuk komputer biasa",
+   "SSD berukuran besar, HDD berukuran jauh lebih ringkas",
+   "SSD tidak bisa diisi OS, HDD bisa diisi sistem operasi"
+  ],
+  "kunci_idx": 0,
+  "bahas": "HDD menyimpan data di piringan yang berputar, SSD memakai chip memori tanpa bagian bergerak, sehingga lebih cepat dan tahan guncangan."
+ },
+ {
+  "no": 7,
+  "soal": "Pernyataan yang benar tentang tempat pemasangan komponen saat merakit komputer adalah ...",
+  "opts": [
+   "Processor dipasang pada slot M.2, RAM dipasang pada slot SATA",
+   "RAM dipasang pada socket CPU, VGA dipasang pada slot DIMM",
+   "VGA dipasang pada socket CPU, PSU dipasang pada slot DIMM",
+   "Processor dipasang pada socket, RAM dipasang pada slot DIMM",
+   "Processor dipasang pada slot PCIe, RAM dipasang pada socket"
+  ],
+  "kunci_idx": 3,
+  "bahas": "Processor duduk di socket CPU dan dikunci tuas pengaman, sedangkan RAM ditancapkan ke slot DIMM sampai klip di kedua sisinya mengunci."
+ },
+ {
+  "no": 8,
+  "soal": "Kelompok perangkat eksternal berikut yang semuanya termasuk perangkat keluaran (output) adalah ...",
+  "opts": [
+   "Monitor, keyboard, dan mikrofon perekam",
+   "Printer, speaker, dan monitor komputer",
+   "Keyboard, mouse, dan scanner foto dokumen",
+   "Mouse, speaker, dan keyboard komputer",
+   "Scanner, printer, dan mouse nirkabel"
+  ],
+  "kunci_idx": 1,
+  "bahas": "Printer, speaker, dan monitor sama-sama menyajikan hasil kerja komputer. Keyboard, mouse, scanner, dan mikrofon justru memasukkan data."
+ },
+ {
+  "no": 9,
+  "soal": "Sistem operasi (Operating System) adalah ...",
+  "opts": [
+   "Program aplikasi yang khusus dipakai mengetik dokumen kerja",
+   "Perangkat keras utama yang mengatur aliran listrik komputer",
+   "Jaringan komputer yang menghubungkan banyak perangkat kerja",
+   "Kumpulan file penting yang tersimpan di dalam disk komputer",
+   "Perangkat lunak utama yang mengatur kerja seluruh hardware"
+  ],
+  "kunci_idx": 4,
+  "bahas": "Sistem operasi adalah software utama yang mengatur kerja komputer sekaligus menjadi penghubung antara pengguna, aplikasi, dan hardware."
+ },
+ {
+  "no": 10,
+  "soal": "Urutan hubungan yang benar dari pengguna sampai ke perangkat keras adalah ...",
+  "opts": [
+   "Hardware → Aplikasi → Sistem Operasi → Pengguna",
+   "Sistem Operasi → Hardware → Aplikasi → Pengguna",
+   "Pengguna → Aplikasi → Sistem Operasi → Hardware",
+   "Pengguna → Sistem Operasi → Aplikasi → Hardware",
+   "Aplikasi → Pengguna → Hardware → Sistem Operasi"
+  ],
+  "kunci_idx": 2,
+  "bahas": "Pengguna memakai aplikasi, aplikasi meminta layanan ke sistem operasi, barulah sistem operasi mengatur hardware."
+ },
+ {
+  "no": 11,
+  "soal": "Kelompok berikut yang semuanya termasuk sistem operasi, bukan aplikasi, adalah ...",
+  "opts": [
+   "Google Chrome, VLC, dan Adobe Photoshop",
+   "Microsoft Word, Excel, dan Unity Hub",
+   "WinRAR, Notepad, dan Media Player",
+   "Blender, Discord, dan Steam Client",
+   "Linux Ubuntu, Windows, dan Android"
+  ],
+  "kunci_idx": 4,
+  "bahas": "Ubuntu, Windows, dan Android adalah sistem operasi. Sisanya hanya aplikasi yang berjalan di atas sistem operasi."
+ },
+ {
+  "no": 12,
+  "soal": "Kernel dalam sebuah sistem operasi adalah ...",
+  "opts": [
+   "Chip khusus di motherboard yang menyimpan pengaturan booting",
+   "Bagian inti sistem operasi yang mengatur sumber daya komputer",
+   "Bagian tampilan sistem operasi yang menampilkan ikon aplikasi",
+   "Program tambahan yang dipasang setelah sistem operasi terpasang",
+   "Kumpulan aplikasi bawaan yang dipakai langsung oleh pengguna"
+  ],
+  "kunci_idx": 1,
+  "bahas": "Kernel adalah inti sistem operasi. Ia bekerja di belakang layar mengatur CPU, RAM, proses, penyimpanan, dan perangkat keras."
+ },
+ {
+  "no": 13,
+  "soal": "Berikut ini yang termasuk tugas utama kernel adalah ...",
+  "opts": [
+   "Menyediakan tampilan menu untuk pengguna memilih aplikasi",
+   "Menghapus sendiri file pengguna yang lama tidak pernah dibuka",
+   "Mengatur pembagian CPU dan RAM bagi program yang berjalan",
+   "Membuat desain karakter game dengan bantuan aplikasi grafis",
+   "Mencetak dokumen langsung tanpa melalui driver dan printer"
+  ],
+  "kunci_idx": 2,
+  "bahas": "Tugas kernel antara lain mengatur CPU, RAM, proses, penyimpanan, dan komunikasi dengan hardware — semuanya di belakang layar."
+ },
+ {
+  "no": 14,
+  "soal": "Perbedaan yang tepat antara kernel dan aplikasi adalah ...",
+  "opts": [
+   "Kernel bekerja di belakang layar, aplikasi dipakai pengguna",
+   "Kernel dipakai pengguna, aplikasi bekerja di belakang layar",
+   "Kernel dan aplikasi sama-sama mengatur hardware langsung",
+   "Kernel mudah dihapus kapan saja, aplikasi tidak bisa dihapus",
+   "Kernel berbentuk perangkat keras, aplikasi perangkat lunak"
+  ],
+  "kunci_idx": 0,
+  "bahas": "Kernel adalah inti OS yang bekerja di belakang layar mengatur sumber daya; aplikasi adalah program yang langsung dipakai pengguna."
+ },
+ {
+  "no": 15,
+  "soal": "BIOS (Basic Input/Output System) pada komputer adalah ...",
+  "opts": [
+   "Bagian awal disk berisi kode boot dan informasi partisi data",
+   "Perangkat keras tambahan yang dipasang di slot PCIe komputer",
+   "Program antivirus bawaan yang memindai file sistem operasi",
+   "Firmware pada chip motherboard yang bekerja sebelum OS jalan",
+   "Aplikasi bawaan Windows yang mengatur tampilan layar komputer"
+  ],
+  "kunci_idx": 3,
+  "bahas": "BIOS adalah firmware yang tersimpan di chip motherboard. Ia bekerja paling awal, sebelum Windows atau Linux dijalankan."
+ },
+ {
+  "no": 16,
+  "soal": "POST (Power-On Self-Test) berfungsi untuk ...",
+  "opts": [
+   "Menambah kapasitas RAM dengan memakai ruang kosong di disk",
+   "Memeriksa hardware penting saat komputer baru dinyalakan",
+   "Memasang sistem operasi baru ke dalam disk secara otomatis",
+   "Membersihkan file sampah yang menumpuk di dalam komputer",
+   "Menyimpan pengaturan tampilan desktop milik tiap pengguna"
+  ],
+  "kunci_idx": 1,
+  "bahas": "POST adalah pemeriksaan awal terhadap RAM, processor, keyboard, dan storage. Kalau ada masalah, biasanya muncul pesan error atau bunyi beep."
+ },
+ {
+  "no": 17,
+  "soal": "Boot order (boot priority) pada BIOS berfungsi menentukan ...",
+  "opts": [
+   "Urutan aplikasi yang terbuka otomatis setelah masuk desktop",
+   "Urutan folder yang ditampilkan saat membuka File Explorer",
+   "Urutan pemasangan komponen ketika komputer sedang dirakit",
+   "Urutan pembagian RAM untuk program yang sedang dijalankan",
+   "Urutan perangkat yang dicoba lebih dulu untuk memulai boot"
+  ],
+  "kunci_idx": 4,
+  "bahas": "Boot order adalah daftar urutan perangkat (SSD, flashdisk, DVD) yang dicoba firmware untuk memulai proses boot."
+ },
+ {
+  "no": 18,
+  "soal": "Master Boot Record (MBR) berada di ...",
+  "opts": [
+   "Sektor pertama disk, berisi boot code dan tabel partisi",
+   "Chip firmware motherboard, berisi pengaturan boot order",
+   "Slot memori RAM, berisi data program yang sedang berjalan",
+   "Folder Windows di drive C, berisi file sistem operasi",
+   "Kabel data SATA, berisi jalur pengiriman data ke disk"
+  ],
+  "kunci_idx": 0,
+  "bahas": "MBR ada di sektor pertama disk (bukan di motherboard). Isinya boot code, partition table, dan boot signature."
+ },
+ {
+  "no": 19,
+  "soal": "Dua byte terakhir pada sektor MBR yang bernilai 55 AA disebut ...",
+  "opts": [
+   "Boot order, urutan perangkat yang dipakai boot",
+   "Partition table, tabel pembagian ruang pada disk",
+   "Power On Self Test, pemeriksaan awal perangkat",
+   "Boot signature, penanda sektor MBR yang valid",
+   "Boot loader, program awal pemuat sistem operasi"
+  ],
+  "kunci_idx": 3,
+  "bahas": "55 AA adalah boot signature (magic number) di akhir sektor MBR. Tandanya format sektor tersebut valid untuk proses boot MBR."
+ },
+ {
+  "no": 20,
+  "soal": "Rendi baru selesai merakit PC untuk membuat game. Saat dinyalakan, kipas processor berputar dan lampu casing menyala, tetapi layar monitor tetap gelap dan terdengar bunyi beep berulang dari motherboard. Berdasarkan proses POST, penyebab yang paling mungkin adalah ...",
+  "opts": [
+   "Kapasitas SSD sudah penuh sehingga POST tidak dapat diselesaikan",
+   "Kabel mouse dan keyboard tertukar sehingga monitor ikut padam",
+   "RAM belum terpasang sempurna sehingga POST gagal mendeteksinya",
+   "Sistem operasi belum diaktivasi sehingga layar tetap digelapkan",
+   "File game terlalu besar sehingga proses booting jadi terhambat"
+  ],
+  "kunci_idx": 2,
+  "bahas": "Bunyi beep berulang tanpa tampilan adalah gejala khas POST gagal mendeteksi komponen penting, dan yang paling sering adalah RAM kurang menancap. POST bekerja sebelum sistem operasi, jadi urusan aktivasi atau file game tidak berpengaruh."
+ },
+ {
+  "no": 21,
+  "soal": "Dita akan merakit komputer untuk lab game. Motherboard sudah disiapkan di luar casing agar mudah dikerjakan. Urutan langkah perakitan yang paling tepat adalah ...",
+  "opts": [
+   "Motherboard ke casing → PSU → kabel daya → RAM → processor",
+   "RAM → PSU → processor → kabel daya → motherboard ke casing",
+   "Kabel daya → processor → PSU → RAM → motherboard ke casing",
+   "Processor → RAM → motherboard ke casing → PSU → kabel daya",
+   "PSU → kabel daya → motherboard ke casing → processor → RAM"
+  ],
+  "kunci_idx": 3,
+  "bahas": "Processor dan RAM dipasang saat motherboard masih di luar casing karena ruang kerjanya lega. Setelah itu motherboard dibaut ke casing, PSU dipasang, baru kabel daya dihubungkan terakhir."
+ },
+ {
+  "no": 22,
+  "soal": "Bagas mencetak dokumen desain karakter dari aplikasi Word dan hasilnya keluar di printer. Berdasarkan hubungan aplikasi, kernel, dan hardware, alur yang paling tepat adalah ...",
+  "opts": [
+   "Driver → kernel → Word → printer menerima daya listrik",
+   "Printer → driver → Word → kernel menampilkan hasil cetakan",
+   "Word → sistem operasi/kernel → driver → printer mencetak",
+   "Word → printer langsung → driver → kernel menerima hasil",
+   "Kernel → Word → printer → driver mengirim balik ke layar"
+  ],
+  "kunci_idx": 2,
+  "bahas": "Aplikasi tidak boleh menyentuh hardware langsung. Word meminta layanan ke sistem operasi, kernel mengatur akses lewat driver, barulah printer mencetak."
+ },
+ {
+  "no": 23,
+  "soal": "Fahmi ingin menginstal ulang Windows lewat flashdisk bootable. Flashdisk sudah dicolokkan dan terbaca, tetapi setiap dinyalakan komputer selalu langsung masuk ke Windows lama yang ada di SSD. Tindakan yang paling tepat adalah ...",
+  "opts": [
+   "Mengubah boot order di BIOS agar flashdisk dicoba lebih dulu",
+   "Memformat seluruh isi RAM supaya Windows lama tidak terbaca",
+   "Mengganti kabel monitor agar flashdisk terdeteksi oleh BIOS",
+   "Menambah kapasitas SSD supaya proses instalasi bisa dimulai",
+   "Mencabut kabel daya printer supaya POST membaca flashdisk dulu"
+  ],
+  "kunci_idx": 0,
+  "bahas": "Komputer selalu masuk Windows karena SSD berada di urutan pertama boot order. Solusinya naikkan flashdisk ke urutan teratas lewat pengaturan BIOS."
+ },
+ {
+  "no": 24,
+  "soal": "Sektor MBR klasik berukuran 512 byte yang terdiri atas boot code, partition table, dan boot signature. Jika boot code berukuran 446 byte dan boot signature 2 byte, maka ukuran partition table adalah ...",
+  "opts": [
+   "66 byte, karena 512 dikurangi 446 lalu ditambah 2",
+   "60 byte, karena 512 dikurangi 446 lalu dikurangi 6",
+   "68 byte, karena 446 ditambah 2 lalu dikurangi 380",
+   "56 byte, karena 512 dikurangi 446 lalu dikurangi 10",
+   "64 byte, karena 512 dikurangi 446 dan 2 sisanya 64"
+  ],
+  "kunci_idx": 4,
+  "bahas": "Struktur MBR: 446 byte boot code + 64 byte partition table + 2 byte boot signature = 512 byte. Jadi 512 - 446 - 2 = 64 byte."
+ },
+ {
+  "no": 25,
+  "soal": "Nabila membuka file gambar sprite.png dengan klik dua kali, lalu gambar langsung tampil di monitor. Berdasarkan pembagian tugas kernel dan aplikasi, urutan proses yang paling tepat adalah ...",
+  "opts": [
+   "Monitor membaca SSD → kernel menyalin gambar ke dalam RAM",
+   "Aplikasi minta ke kernel → kernel baca SSD → tampil di layar",
+   "Aplikasi baca SSD sendiri → kernel hanya menampilkan gambar",
+   "Kernel membuka aplikasi → aplikasi menyimpan data baru ke SSD",
+   "BIOS membaca file → kernel mencetak hasilnya lewat printer"
+  ],
+  "kunci_idx": 1,
+  "bahas": "Aplikasi penampil gambar meminta sistem operasi membaca file, kernel yang mengatur akses ke SSD, lalu data dikembalikan ke aplikasi untuk ditampilkan di monitor."
+ }
+];
+
+/* ================== STATE ================== */
+const HURUF = ["A","B","C","D","E"];
+let soal = [], jawab = [], ragu = [], idx = 0, sisa = 0, timerId = null;
+const $ = id => document.getElementById(id);
+
+function acak(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function siapkanSoal(){
+  let list = BANK.map(s => {
+    let pasangan = s.opts.map((t,i)=>({teks:t, benar: i===s.kunci_idx}));
+    if(CONFIG.acakOpsi) pasangan = acak(pasangan);
+    return { no:s.no, soal:s.soal, bahas:s.bahas, opts:pasangan,
+             kunci: pasangan.findIndex(p=>p.benar) };
+  });
+  if(CONFIG.acakSoal) list = acak(list);
+  soal  = list;
+  jawab = new Array(list.length).fill(null);
+  ragu  = new Array(list.length).fill(false);
+  idx   = 0;
+}
+
+/* ================== HALAMAN AWAL ================== */
+$("info-jml").textContent   = BANK.length;
+$("info-waktu").textContent = CONFIG.durasiMenit;
+
+$("btn-mulai").addEventListener("click", () => {
+  const nama = $("in-nama").value.trim(), kelas = $("in-kelas").value.trim();
+  if(!nama || !kelas){ $("start-err").classList.remove("hidden"); return; }
+  $("start-err").classList.add("hidden");
+  $("hd-nama").textContent = nama;  $("res-nama").textContent = nama;
+  $("hd-kelas").textContent = kelas; $("res-kelas").textContent = kelas;
+  siapkanSoal();
+  buatNav();
+  render();
+  mulaiTimer();
+  $("page-start").classList.add("hidden");
+  $("page-exam").classList.remove("hidden");
+  window.scrollTo(0,0);
+});
+
+/* ================== TIMER ================== */
+function mulaiTimer(){
+  sisa = CONFIG.durasiMenit * 60;
+  tampilTimer();
+  timerId = setInterval(()=>{
+    sisa--; tampilTimer();
+    if(sisa <= 0){ clearInterval(timerId); kumpulkan(); }
+  }, 1000);
+}
+function tampilTimer(){
+  const m = String(Math.floor(sisa/60)).padStart(2,"0");
+  const d = String(sisa%60).padStart(2,"0");
+  $("timer").textContent = m+":"+d;
+  $("timer").className = "px-3 py-1.5 rounded-lg font-mono font-bold tabular-nums " +
+    (sisa <= 300 ? "bg-red-100 text-red-700 animate-pulse" : "bg-slate-100 text-slate-700");
+}
+
+/* ================== RENDER SOAL ================== */
+function render(){
+  const s = soal[idx];
+  $("q-badge").textContent = "Soal " + (idx+1) + " dari " + soal.length;
+  $("q-text").textContent  = s.soal;
+
+  $("q-opts").innerHTML = s.opts.map((o,i)=>`
+    <label class="opt block cursor-pointer">
+      <input type="radio" name="opt" class="hidden" value="${i}" ${jawab[idx]===i?"checked":""}>
+      <span class="flex gap-3 items-start p-3 rounded-xl border-2 border-slate-200 hover:border-indigo-300 transition">
+        <span class="shrink-0 w-7 h-7 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm flex items-center justify-center">${HURUF[i]}</span>
+        <span class="text-[15px] leading-relaxed pt-0.5">${o.teks}</span>
+      </span>
+    </label>`).join("");
+
+  $("q-opts").querySelectorAll("input").forEach(inp=>{
+    inp.addEventListener("change", ()=>{ jawab[idx] = +inp.value; updateNav(); });
+  });
+
+  $("btn-prev").disabled = idx === 0;
+  $("btn-next").textContent = idx === soal.length-1 ? "Soal Terakhir" : "Berikutnya";
+  setRaguBtn();
+  updateNav();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function setRaguBtn(){
+  const b = $("btn-ragu");
+  b.textContent = ragu[idx] ? "Ditandai Ragu-ragu" : "Tandai Ragu-ragu";
+  b.className = "text-xs font-semibold px-2.5 py-1 rounded-full border " +
+    (ragu[idx] ? "bg-amber-400 border-amber-400 text-white" : "border-slate-300 text-slate-600");
+}
+
+/* ================== NAVIGASI ================== */
+function buatNav(){
+  const html = soal.map((s,i)=>`<button data-i="${i}" class="nav-btn h-10 rounded-lg text-sm font-semibold"></button>`).join("");
+  $("nav-grid").innerHTML = html;
+  $("nav-grid-m").innerHTML = html;
+  document.querySelectorAll(".nav-btn").forEach(b=>{
+    b.addEventListener("click", ()=>{ idx = +b.dataset.i; $("drawer").classList.add("hidden"); render(); });
+  });
+}
+function updateNav(){
+  document.querySelectorAll(".nav-btn").forEach(b=>{
+    const i = +b.dataset.i;
+    let cls = "nav-btn h-10 rounded-lg text-sm font-semibold ";
+    if(ragu[i])            cls += "bg-amber-400 text-white";
+    else if(jawab[i]!==null) cls += "bg-indigo-600 text-white";
+    else                   cls += "bg-slate-200 text-slate-600";
+    if(i === idx) cls += " ring-2 ring-offset-1 ring-slate-800";
+    b.className = cls;
+    b.textContent = i+1;
+  });
+  const terisi = jawab.filter(v=>v!==null).length;
+  $("nav-count").textContent = terisi + "/" + soal.length;
+  $("bar").style.width = (terisi/soal.length*100) + "%";
+}
+
+$("btn-prev").addEventListener("click", ()=>{ if(idx>0){ idx--; render(); }});
+$("btn-next").addEventListener("click", ()=>{ if(idx<soal.length-1){ idx++; render(); }});
+$("btn-ragu").addEventListener("click", ()=>{ ragu[idx] = !ragu[idx]; setRaguBtn(); updateNav(); });
+$("btn-nav").addEventListener("click", ()=> $("drawer").classList.remove("hidden"));
+$("drawer-close").addEventListener("click", ()=> $("drawer").classList.add("hidden"));
+$("drawer").addEventListener("click", e=>{ if(e.target === $("drawer")) $("drawer").classList.add("hidden"); });
+
+/* ================== KONFIRMASI & KUMPULKAN ================== */
+function konfirmasi(){
+  const kosong = jawab.filter(v=>v===null).length;
+  const nRagu  = ragu.filter(Boolean).length;
+  $("modal-text").textContent = kosong || nRagu
+    ? `Masih ada ${kosong} soal kosong dan ${nRagu} soal ditandai ragu-ragu. Yakin dikumpulkan sekarang?`
+    : "Semua soal sudah dijawab. Jawaban akan langsung dinilai.";
+  $("drawer").classList.add("hidden");
+  $("modal").classList.remove("hidden");
+}
+$("btn-selesai").addEventListener("click", konfirmasi);
+$("btn-selesai-m").addEventListener("click", konfirmasi);
+$("modal-no").addEventListener("click", ()=> $("modal").classList.add("hidden"));
+$("modal-yes").addEventListener("click", ()=>{ $("modal").classList.add("hidden"); kumpulkan(); });
+
+function kumpulkan(){
+  clearInterval(timerId);
+  let benar = 0, salah = 0, kosong = 0;
+  soal.forEach((s,i)=>{
+    if(jawab[i]===null) kosong++;
+    else if(jawab[i]===s.kunci) benar++;
+    else salah++;
+  });
+  const nilai = Math.round(benar / soal.length * 100);
+
+  $("res-benar").textContent  = benar;
+  $("res-salah").textContent  = salah;
+  $("res-kosong").textContent = kosong;
+  $("res-nilai").textContent  = nilai;
+  $("res-ring").className = "inline-flex items-center justify-center w-32 h-32 rounded-full border-8 " +
+    (nilai >= 75 ? "border-emerald-500" : nilai >= 60 ? "border-amber-400" : "border-red-400");
+  $("res-pesan").textContent = nilai >= 75
+    ? "Mantap, kamu sudah tuntas. Pertahankan ya!"
+    : nilai >= 60
+      ? "Sedikit lagi tuntas. Baca ulang bagian yang masih salah."
+      : "Belum tuntas. Pelajari lagi pembahasan di bawah, lalu coba lagi.";
+
+  $("res-review").innerHTML = soal.map((s,i)=>{
+    const jwb = jawab[i];
+    const ok  = jwb === s.kunci;
+    const warna = jwb===null ? "border-slate-300 bg-slate-50"
+                : ok ? "border-emerald-300 bg-emerald-50" : "border-red-300 bg-red-50";
+    const label = jwb===null ? "Tidak dijawab" : ok ? "Benar" : "Salah";
+    const badge = jwb===null ? "bg-slate-400" : ok ? "bg-emerald-600" : "bg-red-500";
+    return `
+      <div class="border-l-4 ${warna} rounded-r-xl p-3">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs font-semibold text-slate-500">Soal ${i+1} (asli no. ${s.no})</span>
+          <span class="text-[11px] font-semibold text-white px-2 py-0.5 rounded-full ${badge}">${label}</span>
+        </div>
+        <p class="text-sm font-medium mb-2">${s.soal}</p>
+        <p class="text-xs text-slate-600"><span class="font-semibold">Jawaban kamu:</span>
+          ${jwb===null ? "-" : HURUF[jwb] + ". " + s.opts[jwb].teks}</p>
+        <p class="text-xs text-emerald-700"><span class="font-semibold">Kunci:</span>
+          ${HURUF[s.kunci]}. ${s.opts[s.kunci].teks}</p>
+        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed"><span class="font-semibold">Pembahasan:</span> ${s.bahas}</p>
+      </div>`;
+  }).join("");
+
+  $("page-exam").classList.add("hidden");
+  $("page-result").classList.remove("hidden");
+  window.scrollTo(0,0);
+}
+
+$("btn-ulang").addEventListener("click", ()=>{
+  $("page-result").classList.add("hidden");
+  $("page-start").classList.remove("hidden");
+  $("in-nama").value = ""; $("in-kelas").value = "";
+  window.scrollTo(0,0);
+});
+</script>
+</body>
+</html>

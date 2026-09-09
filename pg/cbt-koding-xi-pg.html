@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="CBT Ulangan Harian Koding dan Kecerdasan Artifisial kelas XI PG - dasar Python.">
+<title>Ulangan Python XI PG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Utility layer bergaya Tailwind, ditulis inline supaya CBT tetap rapi
+   saat dijalankan di lab sekolah tanpa koneksi internet. */
+*{box-sizing:border-box}
+p,dl,dd,dt,ul,figure{margin:0}
+ul{padding:0;list-style:none}
+button,input{font:inherit;color:inherit}
+.flex{display:flex}.grid{display:grid}.inline-block{display:inline-block}
+.grid>*,.flex>*{min-width:0}
+.flex-col{flex-direction:column}.flex-1{flex:1 1 0%}.flex-wrap{flex-wrap:wrap}
+.items-center{align-items:center}.items-end{align-items:flex-end}
+.justify-between{justify-content:space-between}
+.gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-5{gap:1.25rem}
+.gap-x-4{column-gap:1rem}.gap-y-3{row-gap:.75rem}
+.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-cols-8{grid-template-columns:repeat(8,minmax(0,1fr))}
+.p-4{padding:1rem}.p-5{padding:1.25rem}
+.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}
+.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}
+.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-5{padding-top:1.25rem;padding-bottom:1.25rem}
+.py-8{padding-top:2rem;padding-bottom:2rem}.pt-4{padding-top:1rem}
+.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}
+.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.mb-3{margin-bottom:.75rem}
+.w-full{width:100%}.w-3{width:.75rem}.h-3{height:.75rem}.min-w-0{min-width:0}.min-h-screen{min-height:100vh}
+.text-xs{font-size:.75rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}
+.text-xl{font-size:1.25rem}.text-2xl{font-size:1.5rem}.text-5xl{font-size:3rem}
+.font-semibold{font-weight:600}.font-bold{font-weight:700}.font-extrabold{font-weight:800}
+.leading-tight{line-height:1.2}.leading-none{line-height:1}
+.text-center{text-align:center}.text-right{text-align:right}.underline{text-decoration:underline}
+.rounded{border-radius:4px}
+.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(min-width:640px){
+  .sm\:p-5{padding:1.25rem}.sm\:p-7{padding:1.75rem}
+  .sm\:text-3xl{font-size:1.875rem}
+  .sm\:grid-cols-10{grid-template-columns:repeat(10,minmax(0,1fr))}
+}
+:root{
+  --ground:#f5f7fb; --surface:#ffffff; --surface2:#edf1f8; --line:#dde3ee;
+  --ink:#141d2b; --muted:#5b6a81; --accent:#2f5fe0; --accent-ink:#ffffff; --accent-soft:#e6ecfd;
+  --ok:#0f7a58; --ok-soft:#e2f4ed; --bad:#c2394b; --bad-soft:#fbe8ea; --warn:#a86a10; --warn-soft:#fbf1dd;
+  --code-bg:#131b27; --code-ink:#e8eef8; --code-key:#8fb6ff; --shadow:0 1px 2px rgba(20,29,43,.06),0 8px 24px -12px rgba(20,29,43,.18);
+}
+:root:not([data-theme="light"]) { color-scheme: light; }
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#0d121a; --surface:#151d28; --surface2:#1d2733; --line:#2a3543;
+    --ink:#e9eef7; --muted:#9aa8bd; --accent:#7ba0ff; --accent-ink:#0d121a; --accent-soft:#1b2947;
+    --ok:#54c79e; --ok-soft:#12332a; --bad:#ff8494; --bad-soft:#3a1d23; --warn:#e2a94f; --warn-soft:#392c15;
+    --code-bg:#0a0f16; --code-ink:#e2e9f4; --code-key:#8fb6ff; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#0d121a; --surface:#151d28; --surface2:#1d2733; --line:#2a3543;
+  --ink:#e9eef7; --muted:#9aa8bd; --accent:#7ba0ff; --accent-ink:#0d121a; --accent-soft:#1b2947;
+  --ok:#54c79e; --ok-soft:#12332a; --bad:#ff8494; --bad-soft:#3a1d23; --warn:#e2a94f; --warn-soft:#392c15;
+  --code-bg:#0a0f16; --code-ink:#e2e9f4; --code-key:#8fb6ff; --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased; line-height:1.55;
+}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.wrap{width:100%;max-width:46rem;margin-inline:auto;padding-inline:1rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{text-wrap:balance;margin:0}
+.soal-teks{font-size:1.02rem;line-height:1.65}
+.soal-teks code,.opsi-teks code,.bahas code{
+  background:var(--surface2);border:1px solid var(--line);border-radius:5px;
+  padding:.05em .32em;font-size:.86em;white-space:nowrap;color:var(--ink)
+}
+pre.kode{
+  background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:.9rem 1rem;
+  overflow-x:auto;font-size:.82rem;line-height:1.6;margin:0;tab-size:4;max-width:100%;border:1px solid rgba(255,255,255,.06)
+}
+pre.kode .kw{color:var(--code-key)}
+pre.kode .st{color:#7fd6a6}
+pre.kode .nu{color:#f0b978}
+pre.kode .cm{color:#7d8ba3;font-style:italic}
+.opsi{
+  display:flex;gap:.7rem;width:100%;text-align:left;align-items:flex-start;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:12px;
+  padding:.7rem .8rem;cursor:pointer;transition:border-color .12s,background .12s;color:var(--ink)
+}
+.opsi:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opsi:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opsi .huruf{
+  flex:none;width:1.65rem;height:1.65rem;border-radius:8px;display:grid;place-items:center;
+  background:var(--surface2);border:1px solid var(--line);font-weight:700;font-size:.8rem
+}
+.opsi[aria-checked="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opsi[aria-checked="true"] .huruf{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.opsi.benar{border-color:var(--ok);background:var(--ok-soft)}
+.opsi.benar .huruf{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opsi.salah{border-color:var(--bad);background:var(--bad-soft)}
+.opsi.salah .huruf{background:var(--bad);color:#fff;border-color:var(--bad)}
+.opsi-teks{font-size:.94rem;line-height:1.5;padding-top:.1rem}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  border-radius:10px;padding:.62rem 1rem;font-weight:600;font-size:.9rem;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer
+}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-utama{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.field{
+  width:100%;background:var(--surface2);border:1px solid var(--line);border-radius:10px;
+  padding:.65rem .8rem;color:var(--ink);font:inherit;font-size:.95rem
+}
+.field:focus{outline:2px solid var(--accent);outline-offset:1px}
+.nav-nomor{
+  aspect-ratio:1;border-radius:9px;border:1px solid var(--line);background:var(--surface2);
+  color:var(--muted);font-weight:700;font-size:.8rem;cursor:pointer;font-variant-numeric:tabular-nums
+}
+.nav-nomor.terisi{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.nav-nomor.ragu{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.nav-nomor.aktif{outline:2px solid var(--ink);outline-offset:1px}
+.pil{display:inline-flex;align-items:center;gap:.3rem;border-radius:999px;padding:.18rem .55rem;font-size:.7rem;font-weight:700;letter-spacing:.02em}
+.pil-level{background:var(--surface2);color:var(--muted);border:1px solid var(--line)}
+#pil-materi{max-width:10.5rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
+#btn-ragu{white-space:nowrap;flex:none}
+.pil-hots{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+.pil-benar{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok)}
+.pil-salah{background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad)}
+.bar{height:4px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.bar > i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.topbar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bottombar{position:sticky;bottom:0;z-index:30;background:color-mix(in srgb,var(--ground) 92%,transparent);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+.sheet{position:fixed;inset:0;z-index:50;display:none;place-items:end center;background:rgba(8,12,18,.45)}
+.sheet.buka{display:grid}
+.sheet-isi{width:100%;max-width:46rem;background:var(--surface);border-radius:16px 16px 0 0;border:1px solid var(--line);padding:1rem;max-height:80vh;overflow:auto}
+.bahas{background:var(--surface2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:.7rem .85rem;font-size:.88rem;line-height:1.6}
+.tabular{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{.topbar,.bottombar,.sheet,.no-print{display:none!important}}
+</style>
+
+</head>
+<body>
+<!-- ============ 1. LAYAR MULAI ============ -->
+<section id="layar-mulai" class="wrap py-8">
+  <div class="card p-5 sm:p-7">
+    <p class="eyebrow">SMK Cyber Media Jakarta &middot; Ulangan Harian</p>
+    <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold leading-tight">Dasar Python: Variabel, Koleksi Data, dan Percabangan</h1>
+    <p class="mt-2 text-sm" style="color:var(--muted)">Koding dan Kecerdasan Artifisial &middot; Kelas XI Pengembangan Gim</p>
+
+    <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+      <div><dt class="eyebrow">Jumlah soal</dt><dd class="font-semibold tabular">40 pilihan ganda</dd></div>
+      <div><dt class="eyebrow">Alokasi waktu</dt><dd class="font-semibold tabular">60 menit</dd></div>
+      <div><dt class="eyebrow">Bobot</dt><dd class="font-semibold">30 reguler + 10 HOTS</dd></div>
+      <div><dt class="eyebrow">Nilai maksimal</dt><dd class="font-semibold tabular">100</dd></div>
+    </dl>
+
+    <div class="mt-5 text-sm" style="color:var(--muted)">
+      <p class="font-semibold" style="color:var(--ink)">Materi yang diujikan</p>
+      <p class="mt-1">Variabel &amp; aturan penamaan, tipe data dasar, list, dictionary, list of dictionaries, percabangan <code>if-elif-else</code>, dan <code>match-case</code>.</p>
+    </div>
+
+    <div class="mt-6 grid gap-3">
+      <div>
+        <label class="eyebrow" for="in-nama">Nama lengkap</label>
+        <input id="in-nama" class="field mt-1" type="text" placeholder="Tulis nama lengkapmu" autocomplete="name">
+      </div>
+      <div>
+        <label class="eyebrow" for="in-kelas">Kelas</label>
+        <input id="in-kelas" class="field mt-1" type="text" placeholder="Contoh: XI PG 1" list="daftar-kelas">
+        <datalist id="daftar-kelas"><option value="XI PG 1"></option><option value="XI PG 2"></option></datalist>
+      </div>
+    </div>
+
+    <p id="pesan-mulai" class="mt-3 text-sm" style="color:var(--bad);display:none">Nama dan kelas wajib diisi dulu sebelum mulai.</p>
+
+    <button id="btn-mulai" class="btn btn-utama w-full mt-5 py-3">Mulai Ulangan</button>
+
+    <div id="ada-simpanan" class="mt-3 text-sm text-center" style="display:none;color:var(--muted)">
+      Jawabanmu sebelumnya tersimpan di perangkat ini. <button id="btn-hapus-simpanan" class="underline font-semibold" style="color:var(--accent)">Mulai dari kosong</button>
+    </div>
+
+    <ul class="mt-6 pt-4 text-sm grid gap-1.5" style="border-top:1px solid var(--line);color:var(--muted)">
+      <li>&bull; Waktu berjalan otomatis begitu tombol mulai ditekan.</li>
+      <li>&bull; Jawaban tersimpan sendiri, aman kalau halaman tidak sengaja tertutup.</li>
+      <li>&bull; Soal yang ragu bisa ditandai, lalu ditengok lagi lewat daftar nomor.</li>
+      <li>&bull; Nilai dan pembahasan muncul langsung setelah lembar dikumpulkan.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 2. LAYAR UJIAN ============ -->
+<section id="layar-ujian" style="display:none" class="min-h-screen flex flex-col">
+  <header class="topbar">
+    <div class="wrap py-2.5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <p class="eyebrow truncate" id="label-siswa">&nbsp;</p>
+          <p class="text-sm font-bold tabular" id="label-progres">Soal 1 dari 40</p>
+        </div>
+        <div class="text-right">
+          <p class="eyebrow">Sisa waktu</p>
+          <p class="text-lg font-extrabold tabular" id="label-waktu">60:00</p>
+        </div>
+      </div>
+      <div class="bar mt-2"><i id="bar-progres" style="width:2.5%"></i></div>
+    </div>
+  </header>
+
+  <main class="wrap py-5 flex-1">
+    <div class="card p-4 sm:p-5">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl font-extrabold tabular" id="nomor-soal">1</span>
+          <span class="pil pil-level" id="pil-materi">Materi</span>
+          <span class="pil pil-hots" id="pil-hots" style="display:none">HOTS</span>
+        </div>
+        <button id="btn-ragu" class="btn text-xs px-2.5 py-1.5">Tandai ragu</button>
+      </div>
+
+      <p class="soal-teks mt-3" id="teks-soal"></p>
+      <div id="wadah-kode" class="mt-3" style="display:none"><pre class="kode"><code id="kode-soal"></code></pre></div>
+
+      <div class="grid gap-2 mt-4" id="wadah-opsi"></div>
+    </div>
+  </main>
+
+  <div class="bottombar">
+    <div class="wrap py-2.5 flex items-center gap-2">
+      <button id="btn-prev" class="btn flex-1">Sebelumnya</button>
+      <button id="btn-daftar" class="btn px-3" title="Daftar nomor soal">Daftar</button>
+      <button id="btn-next" class="btn btn-utama flex-1">Berikutnya</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. PANEL DAFTAR NOMOR ============ -->
+<div class="sheet" id="sheet-nav">
+  <div class="sheet-isi">
+    <div class="flex items-center justify-between">
+      <h2 class="font-bold">Daftar Nomor Soal</h2>
+      <button id="btn-tutup-sheet" class="btn text-xs px-2.5 py-1.5">Tutup</button>
+    </div>
+    <div class="flex flex-wrap gap-3 mt-2 text-xs" style="color:var(--muted)">
+      <span class="flex items-center gap-1.5"><i class="inline-block w-3 h-3 rounded" style="background:var(--accent-soft);border:1px solid var(--accent)"></i>Terjawab</span>
+      <span class="flex items-center gap-1.5"><i class="inline-block w-3 h-3 rounded" style="background:var(--warn-soft);border:1px solid var(--warn)"></i>Ragu</span>
+      <span class="flex items-center gap-1.5"><i class="inline-block w-3 h-3 rounded" style="background:var(--surface2);border:1px solid var(--line)"></i>Kosong</span>
+    </div>
+    <div class="grid grid-cols-8 sm:grid-cols-10 gap-2 mt-4" id="grid-nav"></div>
+    <p class="mt-4 text-sm tabular" id="ringkas-nav" style="color:var(--muted)"></p>
+    <button id="btn-kumpul" class="btn btn-utama w-full mt-3 py-3">Kumpulkan Lembar Jawaban</button>
+  </div>
+</div>
+
+<!-- ============ 4. LAYAR HASIL ============ -->
+<section id="layar-hasil" style="display:none" class="wrap py-8">
+  <div class="card p-5 sm:p-7">
+    <p class="eyebrow">Hasil Ulangan Harian</p>
+    <h2 class="mt-1 text-xl font-extrabold" id="hasil-nama">&nbsp;</h2>
+    <div class="mt-5 flex items-end gap-5 flex-wrap">
+      <div>
+        <p class="eyebrow">Nilai akhir</p>
+        <p class="text-5xl font-extrabold tabular leading-none" id="hasil-nilai">0</p>
+      </div>
+      <div class="grid gap-1 text-sm tabular">
+        <p><span class="font-bold" id="hasil-benar">0</span> benar &middot; <span class="font-bold" id="hasil-salah">0</span> salah</p>
+        <p style="color:var(--muted)">Waktu pengerjaan <span id="hasil-durasi">-</span></p>
+        <p style="color:var(--muted)">Reguler <span id="hasil-reguler">0/30</span> &middot; HOTS <span id="hasil-hots">0/10</span></p>
+      </div>
+    </div>
+    <p class="mt-4 text-sm" id="hasil-pesan" style="color:var(--muted)"></p>
+    <div class="flex gap-2 mt-5 flex-wrap no-print">
+      <button id="btn-salin" class="btn">Salin rekap nilai</button>
+      <button id="btn-cetak" class="btn">Cetak / simpan PDF</button>
+      <button id="btn-ulang" class="btn">Kerjakan ulang</button>
+    </div>
+  </div>
+
+  <h3 class="mt-8 mb-3 font-extrabold text-lg">Pembahasan Jawaban</h3>
+  <div class="grid gap-3" id="wadah-review"></div>
+</section>
+
+<script>
+const SOAL = [{"no": 1, "level": "C2", "materi": "Variabel di Python", "teks": "Python disebut menggunakan sistem <em>dynamic typing</em>. Maksud dari istilah tersebut adalah ...", "opsi": ["tipe data variabel wajib dituliskan manual sebelum variabel diisi nilai", "tipe data variabel berubah dengan sendirinya setiap program dijalankan", "tipe data variabel hanya boleh diisi satu jenis nilai sepanjang program", "tipe data variabel ditentukan oleh urutan penulisan baris kode program", "tipe data variabel ditentukan otomatis saat nilai diisikan ke variabel"], "kunci": 4, "pembahasan": "Dynamic typing berarti Python menebak sendiri tipe data variabel dari nilai yang diisikan, jadi kita tidak perlu mendeklarasikan tipe secara manual seperti di C++ atau Java."}, {"no": 2, "level": "C2", "materi": "Aturan penamaan variabel", "teks": "Perhatikan empat nama variabel berikut: <code>skor_pemain</code>, <code>2nyawa</code>, <code>level_akhir</code>, dan <code>_hp</code>. Nama variabel yang <b>tidak valid</b> di Python adalah ...", "opsi": ["<code>level_akhir</code>, karena namanya lebih dari satu suku kata", "<code>_hp</code> dan <code>2nyawa</code>, karena keduanya diawali simbol", "<code>2nyawa</code>, karena nama variabel diawali dengan angka", "<code>_hp</code>, karena nama variabel diawali dengan underscore", "<code>skor_pemain</code>, karena memakai underscore di tengah"], "kunci": 2, "pembahasan": "Nama variabel tidak boleh diawali angka. Underscore di awal maupun di tengah nama itu sah, jadi hanya <code>2nyawa</code> yang melanggar aturan."}, {"no": 3, "level": "C3", "materi": "Aturan penamaan variabel", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "nyawa = 3\nNyawa = 5\nprint(nyawa)", "opsi": ["8, karena Python menjumlahkan kedua variabel yang mirip itu", "Error, karena Python melarang variabel diawali huruf kapital", "Error, karena kedua nama variabel dianggap saling bertabrakan", "3, karena <code>nyawa</code> dan <code>Nyawa</code> adalah dua variabel berbeda", "5, karena nilai variabel terakhir menimpa nilai variabel awal"], "kunci": 3, "pembahasan": "Python bersifat <em>case-sensitive</em>, huruf besar dan kecil dibedakan. <code>nyawa</code> dan <code>Nyawa</code> adalah dua kotak penyimpanan yang berbeda, sehingga yang dicetak tetap 3."}, {"no": 4, "level": "C2", "materi": "Aturan penamaan variabel", "teks": "Sesuai <em>best practice</em> penulisan variabel di Python, gaya penamaan yang paling dianjurkan adalah ...", "opsi": ["<code>totalSkorPemain</code> dengan gaya penulisan camelCase", "<code>TotalSkorPemain</code> dengan gaya penulisan PascalCase", "<code>TOTALSKORPEMAIN</code> dengan gaya seluruh huruf kapital", "<code>total-skor-pemain</code> dengan gaya pemisah tanda hubung", "<code>total_skor_pemain</code> dengan gaya penulisan snake_case"], "kunci": 4, "pembahasan": "Konvensi resmi Python memakai snake_case: huruf kecil semua dan antar kata dipisah underscore. Tanda hubung malah dibaca sebagai operator kurang."}, {"no": 5, "level": "C1", "materi": "Aturan penamaan variabel", "teks": "Kelompok nama berikut tidak boleh dipakai sebagai nama variabel karena merupakan kata kunci bawaan Python, yaitu ...", "opsi": ["<code>nama_1</code>, <code>_hp</code>, dan <code>x2</code> yang berupa keyword", "<code>if</code>, <code>match</code>, dan <code>class</code> yang merupakan keyword", "<code>str</code>, <code>int</code>, dan <code>float</code> yang merupakan keyword", "<code>skor</code>, <code>level</code>, dan <code>nyawa</code> yang umum dipakai", "<code>print</code>, <code>input</code>, dan <code>type</code> yang berupa keyword"], "kunci": 1, "pembahasan": "<code>if</code>, <code>match</code>, dan <code>class</code> adalah keyword yang sudah punya arti khusus di Python. <code>str</code>, <code>int</code>, <code>print</code>, dan <code>type</code> itu nama fungsi bawaan, bukan keyword."}, {"no": 6, "level": "C2", "materi": "Tipe data dasar", "teks": "Nilai <code>85.5</code> yang disimpan pada variabel <code>akurasi_tembakan</code> termasuk tipe data ...", "opsi": ["<code>float</code>, karena berupa bilangan desimal bertanda titik", "<code>int</code>, karena berupa bilangan bulat yang tidak berkoma", "<code>str</code>, karena angkanya ditulis memakai pemisah titik", "<code>bool</code>, karena nilainya hanya benar atau salah saja", "<code>list</code>, karena nilainya tersusun atas dua bagian angka"], "kunci": 0, "pembahasan": "Bilangan desimal di Python memakai titik sebagai pemisah dan bertipe <code>float</code>. Kalau tanpa titik, barulah menjadi <code>int</code>."}, {"no": 7, "level": "C3", "materi": "Tipe data dasar", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "hp = 100\nprint(type(hp))", "opsi": ["<code>&lt;class 'float'&gt;</code>, karena angka dianggap desimal", "<code>100</code>, karena <code>type()</code> mencetak isi variabel", "<code>int</code>, karena <code>type()</code> mencetak nama tipe saja", "<code>&lt;class 'int'&gt;</code>, karena 100 berupa bilangan bulat", "<code>&lt;class 'str'&gt;</code>, karena 100 dianggap sebagai teks"], "kunci": 3, "pembahasan": "Fungsi <code>type()</code> mengembalikan objek kelas dari nilai, sehingga tercetak lengkap sebagai <code>&lt;class 'int'&gt;</code>, bukan hanya kata <code>int</code>."}, {"no": 8, "level": "C1", "materi": "Tipe data dasar", "teks": "Tipe data <code>bool</code> di Python hanya memiliki dua kemungkinan nilai, yaitu ...", "opsi": ["<code>True</code> dan <code>False</code> dengan huruf awal kapital", "<code>true</code> dan <code>false</code> dengan seluruh huruf kecil", "<code>1</code> dan <code>0</code> yang ditulis tanpa tanda petik", "<code>\"True\"</code> dan <code>\"False\"</code> di dalam tanda petik", "<code>Ya</code> dan <code>Tidak</code> dengan huruf awal kapital"], "kunci": 0, "pembahasan": "Boolean Python ditulis <code>True</code> dan <code>False</code> dengan huruf awal kapital. Kalau diapit tanda petik, nilainya berubah jadi string."}, {"no": 9, "level": "C2", "materi": "Tipe data dasar", "teks": "Penulisan variabel bertipe <code>str</code> yang benar untuk menyimpan judul gim adalah ...", "opsi": ["<code>nama_gim = \"Petualangan Nusantara\"</code> memakai petik", "<code>nama_gim = Petualangan Nusantara</code> tanpa tanda petik", "<code>nama_gim = (Petualangan Nusantara)</code> memakai kurung", "<code>nama_gim = [Petualangan Nusantara]</code> memakai siku", "<code>nama_gim = {Petualangan Nusantara}</code> memakai kurawal"], "kunci": 0, "pembahasan": "Nilai string wajib diapit tanda petik ganda atau tunggal. Tanpa tanda petik, Python mengira itu nama variabel lain sehingga muncul error."}, {"no": 10, "level": "C2", "materi": "List", "teks": "Perhatikan list berikut. Perintah yang tepat untuk menampilkan item pertama adalah ...", "kode": "item = [\"Pedang\", \"Perisai\", \"Ramuan\", \"Panah\"]", "opsi": ["<code>print(item(0))</code>, karena akses memakai kurung biasa", "<code>print(item{0})</code>, karena akses memakai kurung kurawal", "<code>print(item[0])</code>, karena indeks list dimulai dari 0", "<code>print(item[1])</code>, karena indeks list dimulai dari 1", "<code>print(item[-1])</code>, karena indeks negatif untuk awal"], "kunci": 2, "pembahasan": "Indeks list di Python selalu dimulai dari 0 dan diakses memakai kurung siku, sehingga item pertama berada di <code>item[0]</code>."}, {"no": 11, "level": "C3", "materi": "List", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "item = [\"Pedang\", \"Perisai\", \"Ramuan\", \"Panah\"]\nprint(item[-1])", "opsi": ["Error, karena list tidak mengenal penulisan indeks negatif", "<code>Panah</code>, karena indeks -1 menunjuk item paling belakang", "<code>Pedang</code>, karena indeks -1 menunjuk item paling depan", "<code>Ramuan</code>, karena indeks -1 menunjuk item sebelum akhir", "<code>Perisai</code>, karena indeks -1 dihitung mundur dari tengah"], "kunci": 1, "pembahasan": "Indeks negatif dihitung dari belakang. <code>-1</code> berarti item paling akhir, yaitu <code>Panah</code>."}, {"no": 12, "level": "C3", "materi": "List", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "skor = [70, 85, 90, 60, 95]\nprint(skor[1:3])", "opsi": ["<code>[85, 90, 60]</code>, karena diambil indeks 1 sampai ke-3", "<code>[70, 85, 90]</code>, karena diambil dari indeks 0 sampai 3", "<code>[90, 60]</code>, karena penghitungan dimulai dari indeks 2", "<code>[85]</code>, karena slicing hanya mengambil satu item saja", "<code>[85, 90]</code>, karena diambil indeks 1 sampai sebelum 3"], "kunci": 4, "pembahasan": "Slicing <code>[start:stop]</code> mengambil mulai indeks start sampai <b>sebelum</b> indeks stop, jadi indeks 1 dan 2 yang terambil."}, {"no": 13, "level": "C2", "materi": "List", "teks": "Perhatikan potongan kode berikut. Isi list <code>tim</code> setelah kode dijalankan adalah ...", "kode": "tim = [\"Budi\", \"Siti\"]\ntim.append(\"Andi\")", "opsi": ["<code>['Budi', 'Siti']</code>, karena append tidak mengubah list", "<code>['Budi', 'Siti', 'Andi']</code>, data masuk paling belakang", "<code>['Andi', 'Budi', 'Siti']</code>, data masuk paling depan", "<code>['Budi', 'Andi', 'Siti']</code>, data masuk di posisi tengah", "<code>['Andi']</code>, data lama tergantikan oleh data yang baru"], "kunci": 1, "pembahasan": "Method <code>append()</code> selalu menambahkan data ke barisan paling belakang list tanpa menghapus data yang sudah ada."}, {"no": 14, "level": "C3", "materi": "List", "teks": "Perhatikan potongan kode berikut. Isi list <code>tim</code> setelah kode dijalankan adalah ...", "kode": "tim = [\"Budi\", \"Siti\", \"Andi\"]\ntim.insert(1, \"Dewi\")", "opsi": ["<code>['Budi', 'Siti', 'Dewi', 'Andi']</code> disisip di indeks 2", "<code>['Budi', 'Siti', 'Andi', 'Dewi']</code> disisip di akhir", "<code>['Budi', 'Dewi', 'Andi']</code> karena Siti diganti Dewi", "<code>['Budi', 'Dewi', 'Siti', 'Andi']</code> disisip di indeks 1", "<code>['Dewi', 'Budi', 'Siti', 'Andi']</code> disisip di indeks 0"], "kunci": 3, "pembahasan": "<code>insert(1, \"Dewi\")</code> menyisipkan Dewi tepat di indeks 1, sedangkan item lama mulai indeks 1 bergeser ke kanan."}, {"no": 15, "level": "C2", "materi": "List", "teks": "Perbedaan mendasar antara method <code>remove()</code> dan <code>pop()</code> pada list adalah ...", "opsi": ["<code>remove()</code> menghapus item awal, <code>pop()</code> item akhir", "<code>remove()</code> menghapus isi list, <code>pop()</code> variabelnya", "<code>remove()</code> menghapus lewat nilai, <code>pop()</code> lewat indeks", "<code>remove()</code> menghapus lewat indeks, <code>pop()</code> lewat nilai", "<code>remove()</code> menghapus semua item, <code>pop()</code> satu item"], "kunci": 2, "pembahasan": "<code>remove(\"Siti\")</code> mencari berdasarkan nilainya, sedangkan <code>pop(1)</code> menghapus berdasarkan posisi indeks sekaligus mengembalikan nilai yang dihapus."}, {"no": 16, "level": "C3", "materi": "List", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "inventaris = [\"Pedang\", \"Perisai\", \"Ramuan\"]\nprint(len(inventaris))", "opsi": ["Error, karena <code>len()</code> hanya berlaku untuk string saja", "<code>3</code>, karena <code>len()</code> menghitung jumlah item list", "<code>2</code>, karena <code>len()</code> menghitung mulai indeks 0", "<code>4</code>, karena <code>len()</code> ikut menghitung nama list", "<code>Pedang</code>, karena <code>len()</code> memberi item pertama"], "kunci": 1, "pembahasan": "<code>len()</code> menghitung banyaknya item, bukan indeks terakhirnya. Ada tiga item, maka hasilnya 3."}, {"no": 17, "level": "C2", "materi": "Dictionary", "teks": "Perbedaan utama dictionary dibanding list terletak pada cara mengakses datanya, yaitu ...", "opsi": ["dictionary diakses memakai indeks angka yang dimulai dari 0", "dictionary diakses memakai urutan penulisan data di program", "dictionary diakses memakai fungsi khusus yang dibuat sendiri", "dictionary diakses memakai nomor baris tempat data ditulis", "dictionary diakses memakai key unik, bukan indeks angka"], "kunci": 4, "pembahasan": "List memakai indeks angka, sedangkan dictionary memakai nama key yang unik sebagai alamat datanya."}, {"no": 18, "level": "C3", "materi": "Dictionary", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "siswa = {\"nis\": \"1001\", \"nama\": \"Budi Santoso\", \"kelas\": 11}\nprint(siswa[\"nama\"])", "opsi": ["<code>1001</code>, karena Python mencetak nilai paling pertama", "<code>11</code>, karena Python mencetak nilai paling terakhir", "Error, karena akses dictionary butuh indeks angka", "<code>Budi Santoso</code>, karena key nama menyimpan nilai itu", "<code>nama</code>, karena perintah mencetak nama key-nya saja"], "kunci": 3, "pembahasan": "Menuliskan key di dalam kurung siku akan mengembalikan value milik key tersebut, yaitu <code>Budi Santoso</code>."}, {"no": 19, "level": "C3", "materi": "Dictionary", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "siswa = {\"nis\": \"1001\", \"nama\": \"Budi Santoso\", \"kelas\": 11}\nprint(siswa.get(\"alamat\", \"Belum Diisi\"))", "opsi": ["<code>alamat</code>, karena Python mencetak nama key yang dicari itu", "<code>None</code>, karena nilai default pada get selalu diabaikan saja", "Error, karena key alamat tidak terdaftar di dalam dictionary itu", "<code>\"\"</code>, karena get mengembalikan teks kosong bila key hilang", "<code>Belum Diisi</code>, karena key tidak ada sehingga default dipakai"], "kunci": 4, "pembahasan": "Method <code>.get()</code> aman dari error. Jika key tidak ditemukan, yang dikembalikan adalah nilai default yang kita tulis di argumen kedua."}, {"no": 20, "level": "C2", "materi": "Dictionary", "teks": "Perhatikan potongan kode berikut. Baris kedua pada kode tersebut berfungsi untuk ...", "kode": "siswa = {\"nis\": \"1001\", \"nama\": \"Budi Santoso\"}\nsiswa[\"jurusan\"] = \"PG\"", "opsi": ["menampilkan nilai key jurusan yang sudah ada di dictionary", "menghapus key jurusan yang tersimpan di dalam dictionary", "memunculkan error karena key jurusan belum pernah dibuat", "menambahkan key baru jurusan beserta nilainya ke dictionary", "mengganti seluruh isi dictionary dengan satu key jurusan saja"], "kunci": 3, "pembahasan": "Kalau key belum ada, penugasan seperti itu akan membuat key baru. Kalau key sudah ada, nilainya yang diperbarui."}, {"no": 21, "level": "C2", "materi": "Dictionary", "teks": "Perintah yang benar untuk menghapus key <code>is_aktif</code> dari dictionary <code>siswa</code> adalah ...", "opsi": ["<code>del siswa[\"is_aktif\"]</code> atau <code>siswa.pop(\"is_aktif\")</code>", "<code>remove siswa[\"is_aktif\"]</code> atau <code>siswa.cut(\"is_aktif\")</code>", "<code>siswa.delete(\"is_aktif\")</code> atau <code>del.siswa(\"is_aktif\")</code>", "<code>siswa - \"is_aktif\"</code> atau <code>siswa.minus(\"is_aktif\")</code>", "<code>drop siswa[\"is_aktif\"]</code> atau <code>siswa.erase(\"is_aktif\")</code>"], "kunci": 0, "pembahasan": "Dictionary hanya mengenal <code>del</code> dan method <code>pop()</code> untuk menghapus key. Method lain seperti <code>delete()</code> atau <code>erase()</code> tidak ada di Python."}, {"no": 22, "level": "C1", "materi": "Dictionary", "teks": "Method <code>.values()</code> pada dictionary digunakan untuk mengambil ...", "opsi": ["seluruh nilai (value) yang tersimpan di dalam dictionary", "seluruh kunci (key) yang tersimpan di dalam dictionary", "pasangan key dan value yang ada di dalam dictionary itu", "jumlah pasangan key dan value yang ada di dictionary", "urutan penulisan key dan value yang ada di dictionary"], "kunci": 0, "pembahasan": "<code>.keys()</code> mengambil kuncinya, <code>.values()</code> mengambil nilainya, dan <code>.items()</code> mengambil pasangan keduanya."}, {"no": 23, "level": "C3", "materi": "List of Dictionaries", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "daftar = [\n    {\"id\": 1, \"nama\": \"Budi\", \"nilai\": 85},\n    {\"id\": 2, \"nama\": \"Siti\", \"nilai\": 92},\n    {\"id\": 3, \"nama\": \"Andi\", \"nilai\": 78}\n]\nprint(daftar[1][\"nama\"])", "opsi": ["<code>nama</code>, karena yang tercetak nama key, bukan isi", "Error, karena list tidak boleh berisi data dictionary", "<code>Siti</code>, karena indeks 1 menunjuk dictionary kedua", "<code>Budi</code>, karena indeks 1 menunjuk dictionary awal", "<code>Andi</code>, karena indeks 1 dihitung mundur dari akhir"], "kunci": 2, "pembahasan": "Akses bertingkat dibaca dari kiri: <code>daftar[1]</code> mengambil dictionary kedua, lalu <code>[\"nama\"]</code> mengambil value key nama di dalamnya."}, {"no": 24, "level": "C2", "materi": "List of Dictionaries", "teks": "Data hasil API atau database umumnya berbentuk <em>list of dictionaries</em> karena ...", "opsi": ["satu dictionary tidak dapat menyimpan lebih dari satu pasangan key-value", "satu list menampung banyak data yang tiap datanya berpasangan key-value", "satu list hanya menampung data angka yang urutannya sudah ditentukan", "satu dictionary menampung banyak list yang isinya wajib bertipe sama", "satu list wajib berisi dictionary supaya datanya dapat dicetak ke layar"], "kunci": 1, "pembahasan": "List menjaga urutan banyak record, sedangkan dictionary di dalamnya menyimpan detail tiap record sebagai pasangan key-value. Persis seperti bentuk data JSON."}, {"no": 25, "level": "C1", "materi": "Percabangan if-else", "teks": "Operator perbandingan yang berarti \"tidak sama dengan\" di Python adalah ...", "opsi": ["<code>&lt;&gt;</code> yang bernilai True bila kedua nilai berbeda", "<code>=!</code> yang bernilai True bila kedua nilai berbeda", "<code>&gt;&lt;</code> yang bernilai True bila kedua nilai berbeda", "<code>!=</code> yang bernilai True bila kedua nilai berbeda", "<code>==</code> yang bernilai True bila kedua nilai berbeda"], "kunci": 3, "pembahasan": "Python memakai <code>!=</code> untuk tidak sama dengan, sedangkan <code>==</code> justru untuk memeriksa kesamaan nilai."}, {"no": 26, "level": "C2", "materi": "Percabangan if-else", "teks": "Dua aturan penulisan yang wajib dipenuhi saat membuat blok <code>if</code> di Python adalah ...", "opsi": ["diawali kurung biasa dan isi bloknya ditulis pada baris sama", "diakhiri titik dua dan isi bloknya ditulis di dalam kurung", "diakhiri titik dua dan isi bloknya ditulis menjorok ke dalam", "diakhiri titik koma dan isi bloknya ditulis rata kiri semua", "diapit kurung kurawal dan isi bloknya boleh ditulis rata kiri"], "kunci": 2, "pembahasan": "Baris <code>if</code> selalu ditutup titik dua, lalu isi bloknya wajib diberi indentasi. Indentasi inilah pengganti kurung kurawal di Python."}, {"no": 27, "level": "C2", "materi": "Percabangan if-elif-else", "teks": "Ketika Python menemukan satu kondisi bernilai <code>True</code> pada rangkaian <code>if-elif-else</code>, yang terjadi adalah ...", "opsi": ["blok itu dijalankan lalu Python mengulang pengecekan dari awal", "blok itu dijalankan bersama seluruh blok elif yang ada di bawah", "blok itu dijalankan lalu kondisi di bawahnya tidak dicek lagi", "blok itu dijalankan lalu kondisi di bawahnya tetap dicek semua", "blok itu dilewati lalu Python langsung menjalankan blok else"], "kunci": 2, "pembahasan": "Python mengecek dari atas ke bawah dan langsung keluar dari rangkaian begitu menemukan kondisi pertama yang bernilai True."}, {"no": 28, "level": "C3", "materi": "Percabangan if-elif-else", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "skor = 75\nif skor >= 90:\n    predikat = \"A\"\nelif skor >= 80:\n    predikat = \"B\"\nelif skor >= 70:\n    predikat = \"C\"\nelse:\n    predikat = \"D\"\nprint(predikat)", "opsi": ["<code>CD</code>, karena skor 75 memenuhi dua kondisi sekaligus", "<code>C</code>, karena skor 75 memenuhi kondisi <code>skor >= 70</code>", "<code>B</code>, karena skor 75 memenuhi kondisi <code>skor >= 80</code>", "<code>A</code>, karena skor 75 memenuhi kondisi <code>skor >= 90</code>", "<code>D</code>, karena skor 75 tidak memenuhi satu pun kondisi"], "kunci": 1, "pembahasan": "75 gagal di kondisi >= 90 dan >= 80, lalu lolos di kondisi >= 70 sehingga predikatnya C dan blok else tidak dijalankan."}, {"no": 29, "level": "C2", "materi": "Match-case", "teks": "Fitur <code>match-case</code> yang hadir sejak Python 3.10 bekerja dengan cara ...", "opsi": ["mencocokkan nilai atau pola variabel dengan tiap case yang ada", "mengevaluasi kondisi boolean dari variabel pada tiap case yang ada", "mengulang eksekusi blok kode sampai ada case yang bernilai True", "mengurutkan nilai variabel sebelum dicocokkan dengan tiap case", "menghitung jumlah case yang cocok dengan nilai variabel tersebut"], "kunci": 0, "pembahasan": "Kalau <code>if-elif</code> mengevaluasi kondisi True/False, <code>match-case</code> mencocokkan pola atau nilai dari sebuah variabel, mirip switch-case di bahasa lain."}, {"no": 30, "level": "C1", "materi": "Match-case", "teks": "Pada struktur <code>match-case</code>, karakter <code>_</code> berfungsi sebagai ...", "opsi": ["penanda awal blok yang wajib ditulis sebelum case pertama", "pemisah antar case supaya Python tahu batas tiap blok kode", "penanda komentar yang isinya diabaikan saat kode dijalankan", "penampung nilai sementara yang dipakai ulang di dalam case", "penampung default yang jalan bila tidak ada case yang cocok"], "kunci": 4, "pembahasan": "<code>case _:</code> adalah pengganti <code>else</code>, yaitu blok cadangan yang dijalankan bila tidak ada pola yang cocok."}, {"no": 31, "level": "C4", "materi": "List", "teks": "Tim gim mengelola inventaris karakter dengan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "inventaris = [\"Pedang\", \"Perisai\", \"Ramuan\"]\ninventaris.append(\"Panah\")\ninventaris.insert(1, \"Tameng\")\ninventaris.remove(\"Ramuan\")\nprint(len(inventaris))", "opsi": ["<code>3</code>, karena jumlah item kembali sama seperti kondisi awal", "<code>5</code>, karena <code>remove()</code> gagal menemukan item yang dituju", "<code>6</code>, karena <code>insert()</code> menggandakan seluruh item lama", "Error, karena indeks item Ramuan telanjur bergeser ke kanan", "<code>4</code>, karena ada dua penambahan dan satu penghapusan item"], "kunci": 4, "pembahasan": "Mulai 3 item, <code>append</code> jadi 4, <code>insert</code> jadi 5, lalu <code>remove</code> mengurangi satu sehingga tersisa 4 item."}, {"no": 32, "level": "C4", "materi": "List", "teks": "Sistem antrian pemain diproses dengan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "antrian = [\"Aldi\", \"Bima\", \"Cinta\", \"Dewi\"]\nkeluar = antrian.pop(1)\nprint(keluar, len(antrian))", "opsi": ["<code>Bima 3</code>, sebab pop(1) menghapus sekaligus mengembalikannya", "<code>Aldi 3</code>, sebab pop(1) menghapus item pertama pada list itu", "<code>Bima 4</code>, sebab pop() hanya membaca tanpa menghapus item", "<code>Dewi 3</code>, sebab pop(1) menghapus item terakhir pada list itu", "<code>1 3</code>, sebab pop() mengembalikan indeks item yang dihapus"], "kunci": 0, "pembahasan": "<code>pop(1)</code> menghapus item di indeks 1 (Bima) dan mengembalikan nilainya, sehingga list menyisakan 3 item."}, {"no": 33, "level": "C4", "materi": "List of Dictionaries", "teks": "Perhatikan potongan kode berikut. Nama yang akan tercetak ke layar adalah ...", "kode": "daftar_siswa = [\n    {\"nama\": \"Budi\", \"nilai\": 85},\n    {\"nama\": \"Siti\", \"nilai\": 92},\n    {\"nama\": \"Andi\", \"nilai\": 78},\n    {\"nama\": \"Rina\", \"nilai\": 80}\n]\nfor s in daftar_siswa:\n    if s[\"nilai\"] >= 80:\n        print(s[\"nama\"])", "opsi": ["Andi saja karena hanya dia yang tidak memenuhi syarat", "semua nama karena perulangan membaca seluruh isi data", "Budi, Siti, dan Rina karena nilainya memenuhi syarat >= 80", "Budi dan Siti saja karena keduanya bernilai lebih dari 80", "Siti saja karena hanya dia yang nilainya paling tinggi"], "kunci": 2, "pembahasan": "Syaratnya <code>&gt;= 80</code>, jadi Rina yang bernilai tepat 80 ikut lolos. Hanya Andi (78) yang tidak tercetak."}, {"no": 34, "level": "C4", "materi": "Dictionary", "teks": "Sebuah gim menyimpan data pemain dalam dictionary, namun sebagian pemain baru belum memiliki key <code>skor_tertinggi</code>. Perintah <code>print(pemain[\"skor_tertinggi\"])</code> membuat program berhenti karena error. Perbaikan yang paling tepat adalah ...", "opsi": ["mengubahnya menjadi <code>pemain.keys(\"skor_tertinggi\")</code> supaya key terbaca", "mengubahnya menjadi <code>pemain.pop(\"skor_tertinggi\")</code> supaya key dihapus", "mengubahnya menjadi <code>pemain[\"skor tertinggi\"]</code> tanpa memakai underscore", "mengubahnya menjadi <code>pemain.get(\"skor_tertinggi\", 0)</code> sebagai default", "mengubahnya menjadi <code>pemain[\"skor_tertinggi\", 0]</code> sebagai nilai cadangan"], "kunci": 3, "pembahasan": "Method <code>.get()</code> tidak melempar error saat key tidak ada, melainkan mengembalikan nilai default yang kita tentukan, misalnya 0."}, {"no": 35, "level": "C4", "materi": "Percabangan if-elif-else", "teks": "Perhatikan potongan kode penentuan paket berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "harga = 2000\nif harga >= 1000 and harga <= 2000:\n    paket = \"basic\"\nelif harga >= 2000 and harga <= 5000:\n    paket = \"premium\"\nelse:\n    paket = \"free\"\nprint(paket)", "opsi": ["<code>basic premium</code>, karena 2000 memenuhi dua kondisi sekaligus", "Error, karena batas nilai kedua kondisi saling tumpang tindih", "<code>basic</code>, karena nilai 2000 dicek lebih dulu di kondisi awal", "<code>premium</code>, karena nilai 2000 juga masuk rentang kondisi kedua", "<code>free</code>, karena nilai 2000 tepat berada di batas dua rentang"], "kunci": 2, "pembahasan": "Nilai 2000 memang masuk dua rentang, tetapi Python berhenti di kondisi pertama yang bernilai True sehingga hasilnya <code>basic</code>."}, {"no": 36, "level": "C5", "materi": "Percabangan if-elif-else", "teks": "Perhatikan kembali potongan kode berikut. Agar batas rentang antar paket tidak tumpang tindih, perbaikan yang paling tepat adalah ...", "kode": "if harga >= 1000 and harga <= 2000:\n    paket = \"basic\"\nelif harga >= 2000 and harga <= 5000:\n    paket = \"premium\"", "opsi": ["mengubah kondisi kedua menjadi <code>harga &gt;= 2000 and harga &gt;= 5000</code>", "mengubah kondisi awal menjadi <code>harga &gt;= 1000 or harga &lt;= 2000</code>", "mengubah kondisi awal menjadi <code>harga &lt;= 1000 and harga &gt;= 2000</code>", "menukar urutan agar kondisi rentang premium dicek lebih dahulu", "mengubah kondisi kedua menjadi <code>harga &gt; 2000 and harga &lt;= 5000</code>"], "kunci": 4, "pembahasan": "Batas 2000 sudah diambil rentang pertama, jadi rentang kedua harus dimulai dari nilai di atas 2000 memakai <code>&gt;</code>, bukan <code>&gt;=</code>."}, {"no": 37, "level": "C4", "materi": "Match-case", "teks": "Perhatikan potongan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "status = \"Diamond\"\nmatch status:\n    case \"Basic\":\n        label = \"Paket Basic\"\n    case \"Premium\":\n        label = \"Paket Premium\"\n    case \"Platinum\":\n        label = \"Paket Platinum\"\n    case _:\n        label = \"Paket Tidak Dikenal\"\nprint(label)", "opsi": ["Error, karena nilai variabel status tidak terdaftar pada case", "<code>Paket Tidak Dikenal</code>, karena tidak ada case yang cocok", "<code>Paket Platinum</code>, karena Diamond setara dengan Platinum", "<code>Paket Basic</code>, karena case pertama dipakai sebagai default", "program tidak mencetak apa pun karena tidak ada case yang cocok"], "kunci": 1, "pembahasan": "Nilai <code>\"Diamond\"</code> tidak cocok dengan case mana pun, sehingga blok <code>case _</code> sebagai penampung default yang dijalankan."}, {"no": 38, "level": "C4", "materi": "Match-case", "teks": "Program berikut mencetak teks kosong, padahal variabel <code>tier</code> sudah terisi. Penyebab utamanya adalah ...", "kode": "tier = \"basic\"\nlabel = \"\"\nmatch tier:\n    case \"Basic\":\n        label = \"Paket Basic\"\n    case \"Premium\":\n        label = \"Paket Premium\"\nprint(label)", "opsi": ["nilai basic tidak cocok dengan case Basic karena beda huruf kapital", "nilai basic tidak dapat dicocokkan karena bertipe data string biasa", "struktur match-case hanya bisa mencocokkan nilai bertipe data angka", "variabel label harus diisi nilai awal berupa angka nol, bukan teks", "blok match wajib memakai case _ agar seluruh nilai dapat dicocokkan"], "kunci": 0, "pembahasan": "Pencocokan string bersifat case-sensitive, sehingga <code>\"basic\"</code> tidak sama dengan <code>\"Basic\"</code> dan label tetap kosong."}, {"no": 39, "level": "C5", "materi": "Percabangan if-elif-else dan match-case", "teks": "Sebuah gim menampilkan pesan status berdasarkan sisa HP karakter: 0–30 kritis, 31–70 waspada, dan 71–100 aman. Struktur percabangan yang paling tepat dipakai adalah ...", "opsi": ["<code>if-else</code> bertingkat dua, karena rentang nilai yang ada hanya dua macam", "<code>if-elif-else</code>, karena kondisinya berupa rentang nilai yang dibandingkan", "<code>match-case</code>, karena kondisinya berupa rentang nilai yang dibandingkan", "<code>if</code> tunggal tanpa <code>else</code>, karena hanya ada satu kondisi yang dicek", "<code>match-case</code>, karena tiap rentang nilai dapat ditulis menjadi satu case"], "kunci": 1, "pembahasan": "Rentang nilai perlu operator perbandingan seperti <code>&gt;=</code> dan <code>&lt;=</code>, dan itu wilayahnya <code>if-elif-else</code>. <code>match-case</code> lebih cocok untuk mencocokkan nilai pasti."}, {"no": 40, "level": "C4", "materi": "List of Dictionaries", "teks": "Sistem naik level pada gim diproses dengan kode berikut. Output yang dihasilkan program tersebut adalah ...", "kode": "pemain = [\n    {\"nama\": \"Rani\", \"skor\": 120, \"level\": 3},\n    {\"nama\": \"Yoga\", \"skor\": 95, \"level\": 2}\n]\npemain[1][\"skor\"] = pemain[1][\"skor\"] + 30\nfor p in pemain:\n    if p[\"skor\"] >= 120:\n        p[\"level\"] = p[\"level\"] + 1\nprint(pemain[1][\"level\"])", "opsi": ["<code>4</code>, karena level Yoga bertambah dua kali selama perulangan itu", "<code>125</code>, karena yang dicetak adalah skor Yoga setelah ditambah", "Error, karena nilai dictionary di dalam list tidak dapat diubah", "<code>3</code>, karena skor Yoga naik jadi 125 sehingga levelnya bertambah", "<code>2</code>, karena skor Yoga tetap 95 sehingga levelnya tidak berubah"], "kunci": 3, "pembahasan": "Skor Yoga menjadi 95 + 30 = 125 sehingga memenuhi syarat >= 120, dan levelnya naik dari 2 menjadi 3."}];
+const DURASI_MENIT = 60;
+const KUNCI_SIMPAN = "cbt-koding-xi-pg-v1";
+const HURUF = ["A","B","C","D","E"];
+
+const state = { nama:"", kelas:"", idx:0, jawab:{}, ragu:{}, deadline:0, mulai:0, selesai:false };
+
+/* ---------- penyimpanan lokal (aman kalau diblokir browser) ---------- */
+function simpan(){
+  try{ localStorage.setItem(KUNCI_SIMPAN, JSON.stringify(state)); }catch(e){}
+}
+function muat(){
+  try{
+    const t = localStorage.getItem(KUNCI_SIMPAN);
+    if(!t) return null;
+    const d = JSON.parse(t);
+    return (d && typeof d === "object") ? d : null;
+  }catch(e){ return null; }
+}
+function hapusSimpanan(){ try{ localStorage.removeItem(KUNCI_SIMPAN); }catch(e){} }
+
+/* ---------- pewarnaan sintaks sederhana untuk blok kode ---------- */
+const KEYWORD = /\b(if|elif|else|match|case|for|in|and|or|not|print|len|type|True|False|None|del|append|insert|remove|pop|get|keys|values|items)\b/g;
+function warnaiKode(kode){
+  let h = kode.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  h = h.replace(/(#[^\n]*)/g, '<span class="cm">$1</span>');
+  h = h.replace(/("[^"\n]*"|'[^'\n]*')/g, '<span class="st">$1</span>');
+  h = h.replace(KEYWORD, '<span class="kw">$&</span>');
+  h = h.replace(/\b(\d+)\b/g, '<span class="nu">$1</span>');
+  return h;
+}
+
+/* ---------- elemen ---------- */
+const el = (id) => document.getElementById(id);
+const layarMulai = el("layar-mulai"), layarUjian = el("layar-ujian"), layarHasil = el("layar-hasil");
+
+/* ---------- layar mulai ---------- */
+const tersimpan = muat();
+if(tersimpan && tersimpan.nama && !tersimpan.selesai){
+  el("in-nama").value = tersimpan.nama;
+  el("in-kelas").value = tersimpan.kelas || "";
+  el("ada-simpanan").style.display = "block";
+  el("btn-mulai").textContent = "Lanjutkan Ulangan";
+}
+el("btn-hapus-simpanan").addEventListener("click", () => {
+  hapusSimpanan();
+  el("ada-simpanan").style.display = "none";
+  el("btn-mulai").textContent = "Mulai Ulangan";
+});
+
+el("btn-mulai").addEventListener("click", () => {
+  const nama = el("in-nama").value.trim(), kelas = el("in-kelas").value.trim();
+  if(!nama || !kelas){ el("pesan-mulai").style.display = "block"; return; }
+  el("pesan-mulai").style.display = "none";
+  const lama = muat();
+  if(lama && lama.nama === nama && !lama.selesai && lama.deadline > Date.now()){
+    Object.assign(state, lama);
+  }else{
+    state.nama = nama; state.kelas = kelas; state.idx = 0;
+    state.jawab = {}; state.ragu = {}; state.selesai = false;
+    state.mulai = Date.now();
+    state.deadline = Date.now() + DURASI_MENIT*60*1000;
+  }
+  state.nama = nama; state.kelas = kelas;
+  simpan(); mulaiUjian();
+});
+
+function mulaiUjian(){
+  layarMulai.style.display = "none";
+  layarHasil.style.display = "none";
+  layarUjian.style.display = "flex";
+  el("label-siswa").textContent = state.nama + " · " + state.kelas;
+  bangunNav();
+  tampilSoal();
+  jalankanTimer();
+  window.scrollTo(0,0);
+}
+
+/* ---------- timer ---------- */
+let timerId = null;
+function jalankanTimer(){
+  clearInterval(timerId);
+  const tick = () => {
+    const sisa = Math.max(0, state.deadline - Date.now());
+    const m = Math.floor(sisa/60000), d = Math.floor((sisa%60000)/1000);
+    el("label-waktu").textContent = String(m).padStart(2,"0") + ":" + String(d).padStart(2,"0");
+    el("label-waktu").style.color = sisa < 5*60000 ? "var(--bad)" : "var(--ink)";
+    if(sisa <= 0){ clearInterval(timerId); kumpulkan(true); }
+  };
+  tick(); timerId = setInterval(tick, 1000);
+}
+
+/* ---------- render soal ---------- */
+function tampilSoal(){
+  const s = SOAL[state.idx];
+  el("nomor-soal").textContent = s.no;
+  el("pil-materi").textContent = s.materi;
+  el("pil-hots").style.display = (s.level === "C4" || s.level === "C5") ? "inline-flex" : "none";
+  el("teks-soal").innerHTML = s.teks;
+
+  if(s.kode){
+    el("kode-soal").innerHTML = warnaiKode(s.kode);
+    el("wadah-kode").style.display = "block";
+  } else { el("wadah-kode").style.display = "none"; }
+
+  const wadah = el("wadah-opsi");
+  wadah.innerHTML = "";
+  s.opsi.forEach((teks, i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "opsi"; b.setAttribute("role","radio");
+    b.setAttribute("aria-checked", state.jawab[s.no] === i ? "true" : "false");
+    b.innerHTML = '<span class="huruf">' + HURUF[i] + '</span><span class="opsi-teks">' + teks + '</span>';
+    b.addEventListener("click", () => pilihJawaban(s.no, i));
+    wadah.appendChild(b);
+  });
+
+  el("btn-ragu").textContent = state.ragu[s.no] ? "Batal tandai" : "Tandai ragu";
+  el("btn-ragu").style.color = state.ragu[s.no] ? "var(--warn)" : "";
+  el("btn-prev").disabled = state.idx === 0;
+  el("btn-next").textContent = state.idx === SOAL.length-1 ? "Selesai" : "Berikutnya";
+  el("label-progres").textContent = "Soal " + (state.idx+1) + " dari " + SOAL.length;
+  el("bar-progres").style.width = ((state.idx+1)/SOAL.length*100) + "%";
+  perbaruiNav();
+}
+
+function pilihJawaban(no, i){
+  state.jawab[no] = i; simpan();
+  [...el("wadah-opsi").children].forEach((b, k) => b.setAttribute("aria-checked", k === i ? "true" : "false"));
+  perbaruiNav();
+  setTimeout(() => { if(state.idx < SOAL.length-1){ state.idx++; tampilSoal(); window.scrollTo({top:0,behavior:"smooth"}); } }, 220);
+}
+
+el("btn-ragu").addEventListener("click", () => {
+  const no = SOAL[state.idx].no;
+  state.ragu[no] = !state.ragu[no]; simpan(); tampilSoal();
+});
+el("btn-prev").addEventListener("click", () => { if(state.idx>0){ state.idx--; tampilSoal(); window.scrollTo(0,0);} });
+el("btn-next").addEventListener("click", () => {
+  if(state.idx < SOAL.length-1){ state.idx++; tampilSoal(); window.scrollTo(0,0); }
+  else bukaSheet();
+});
+
+/* ---------- daftar nomor ---------- */
+function bangunNav(){
+  const g = el("grid-nav"); g.innerHTML = "";
+  SOAL.forEach((s, i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "nav-nomor"; b.textContent = s.no;
+    b.addEventListener("click", () => { state.idx = i; tutupSheet(); tampilSoal(); window.scrollTo(0,0); });
+    g.appendChild(b);
+  });
+}
+function perbaruiNav(){
+  const anak = el("grid-nav").children;
+  SOAL.forEach((s, i) => {
+    const b = anak[i]; if(!b) return;
+    b.className = "nav-nomor" + (state.jawab[s.no] !== undefined ? " terisi" : "") + (state.ragu[s.no] ? " ragu" : "") + (i === state.idx ? " aktif" : "");
+  });
+  const terisi = Object.keys(state.jawab).length;
+  el("ringkas-nav").textContent = terisi + " soal terjawab, " + (SOAL.length - terisi) + " masih kosong.";
+}
+function bukaSheet(){ perbaruiNav(); el("sheet-nav").classList.add("buka"); }
+function tutupSheet(){ el("sheet-nav").classList.remove("buka"); }
+el("btn-daftar").addEventListener("click", bukaSheet);
+el("btn-tutup-sheet").addEventListener("click", tutupSheet);
+el("sheet-nav").addEventListener("click", (e) => { if(e.target === el("sheet-nav")) tutupSheet(); });
+
+/* ---------- kumpulkan & nilai ---------- */
+let siapKumpul = false;
+el("btn-kumpul").addEventListener("click", () => {
+  const b = el("btn-kumpul");
+  if(siapKumpul){ kumpulkan(false); return; }
+  const kosong = SOAL.length - Object.keys(state.jawab).length;
+  el("ringkas-nav").innerHTML = kosong > 0
+    ? '<b style="color:var(--warn)">Masih ada ' + kosong + ' soal kosong.</b> Tekan sekali lagi kalau tetap mau dikumpulkan.'
+    : '<b style="color:var(--ok)">Semua soal sudah terjawab.</b> Tekan sekali lagi untuk mengumpulkan.';
+  b.textContent = "Tekan lagi untuk mengumpulkan";
+  siapKumpul = true;
+  setTimeout(() => { siapKumpul = false; b.textContent = "Kumpulkan Lembar Jawaban"; perbaruiNav(); }, 5000);
+});
+
+function kumpulkan(otomatis){
+  clearInterval(timerId);
+  tutupSheet();
+  state.selesai = true; simpan();
+
+  let benar = 0, benarReg = 0, benarHots = 0, totalHots = 0;
+  SOAL.forEach(s => {
+    const hots = (s.level === "C4" || s.level === "C5");
+    if(hots) totalHots++;
+    if(state.jawab[s.no] === s.kunci){ benar++; hots ? benarHots++ : benarReg++; }
+  });
+  const nilai = Math.round(benar / SOAL.length * 100);
+  const detik = Math.max(0, Math.round((Date.now() - state.mulai)/1000));
+  const durasi = Math.floor(detik/60) + " menit " + (detik%60) + " detik";
+
+  el("hasil-nama").textContent = state.nama + " — " + state.kelas;
+  el("hasil-nilai").textContent = nilai;
+  el("hasil-nilai").style.color = nilai >= 75 ? "var(--ok)" : "var(--bad)";
+  el("hasil-benar").textContent = benar;
+  el("hasil-salah").textContent = SOAL.length - benar;
+  el("hasil-durasi").textContent = durasi;
+  el("hasil-reguler").textContent = benarReg + "/" + (SOAL.length - totalHots);
+  el("hasil-hots").textContent = benarHots + "/" + totalHots;
+  el("hasil-pesan").textContent = (otomatis ? "Waktu habis, lembar jawaban dikumpulkan otomatis. " : "")
+    + (nilai >= 75 ? "Nilaimu sudah melewati KKM. Cek pembahasan di bawah untuk soal yang masih salah."
+                   : "Nilaimu masih di bawah KKM 75. Pelajari lagi pembahasan di bawah, lalu minta jadwal remedial ke gurumu.");
+
+  const w = el("wadah-review"); w.innerHTML = "";
+  SOAL.forEach(s => {
+    const jwb = state.jawab[s.no], tepat = jwb === s.kunci;
+    const kartu = document.createElement("article");
+    kartu.className = "card p-4";
+    let opsiHtml = "";
+    s.opsi.forEach((teks, i) => {
+      let kelas = "opsi";
+      if(i === s.kunci) kelas += " benar";
+      else if(i === jwb) kelas += " salah";
+      opsiHtml += '<div class="' + kelas + '" style="cursor:default"><span class="huruf">' + HURUF[i] + '</span><span class="opsi-teks">' + teks + '</span></div>';
+    });
+    kartu.innerHTML =
+      '<div class="flex items-center justify-between gap-2">' +
+        '<div class="flex items-center gap-2"><span class="text-lg font-extrabold tabular">' + s.no + '</span>' +
+        '<span class="pil pil-level">' + s.level + '</span></div>' +
+        '<span class="pil ' + (tepat ? "pil-benar" : "pil-salah") + '">' + (tepat ? "Benar" : (jwb === undefined ? "Kosong" : "Salah")) + '</span>' +
+      '</div>' +
+      '<p class="soal-teks mt-2">' + s.teks + '</p>' +
+      (s.kode ? '<div class="mt-2"><pre class="kode"><code>' + warnaiKode(s.kode) + '</code></pre></div>' : '') +
+      '<div class="grid gap-2 mt-3">' + opsiHtml + '</div>' +
+      '<div class="bahas mt-3"><b>Kunci ' + HURUF[s.kunci] + '.</b> ' + s.pembahasan + '</div>';
+    w.appendChild(kartu);
+  });
+
+  window.__rekap = state.nama + " (" + state.kelas + ")\nUlangan Harian Koding & KA — Dasar Python\nNilai: " + nilai
+    + " | Benar " + benar + "/" + SOAL.length + " | Waktu " + durasi;
+
+  layarUjian.style.display = "none";
+  layarHasil.style.display = "block";
+  window.scrollTo(0,0);
+}
+
+el("btn-salin").addEventListener("click", async () => {
+  const b = el("btn-salin");
+  try{ await navigator.clipboard.writeText(window.__rekap); b.textContent = "Rekap tersalin"; }
+  catch(e){ b.textContent = "Salin manual dari layar"; }
+  setTimeout(() => b.textContent = "Salin rekap nilai", 2200);
+});
+el("btn-cetak").addEventListener("click", () => window.print());
+el("btn-ulang").addEventListener("click", () => {
+  hapusSimpanan();
+  state.jawab = {}; state.ragu = {}; state.idx = 0; state.selesai = false;
+  state.mulai = Date.now(); state.deadline = Date.now() + DURASI_MENIT*60*1000;
+  simpan(); mulaiUjian();
+});
+
+/* ---------- pintasan keyboard untuk pengerjaan di laptop ---------- */
+document.addEventListener("keydown", (e) => {
+  if(layarUjian.style.display === "none") return;
+  const k = e.key.toUpperCase();
+  if(HURUF.includes(k)) pilihJawaban(SOAL[state.idx].no, HURUF.indexOf(k));
+  else if(e.key === "ArrowRight") el("btn-next").click();
+  else if(e.key === "ArrowLeft") el("btn-prev").click();
+  else if(e.key === "Escape") tutupSheet();
+});
+</script>
+</body>
+</html>
